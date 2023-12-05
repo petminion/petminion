@@ -9,6 +9,7 @@ new name petminion (petminion.org registered)
 - make basic API for recognizer/camera
 - make state machineish training rules engine (find existing state machine lib?) https://github.com/pytransitions/transitions
 - add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
+- add method documentation for all the key methods
 - clean up development docs (include how to install and setup python env)
 -   Get remote debugging working
 -   Have recognizer save interesting frames to a directory.  Where interesting

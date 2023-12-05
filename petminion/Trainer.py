@@ -1,5 +1,7 @@
 from .Camera import CV2Camera
-from . import ImageDetection, ImageRecognizer, Feeder, CatTrainingRule0
+from .ImageRecognizer import *
+from .Feeder import *
+from .TrainingRule import *
 
 class Trainer:
     def __init__(self):
