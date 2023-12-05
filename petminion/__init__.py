@@ -1,4 +1,7 @@
+import logging
 from functools import cached_property
+
+logger = logging.getLogger()
 
 class Feeder:
     
@@ -71,7 +74,7 @@ class Trainer:
     def __init__(self):
         self.camera = SimCamera()
         self.recognizer = ImageRecognizer()
-        self.rule = CatTrainingRule0()
+        self.rule = CatTrainingRule0(self)
         self.feeder = Feeder()
         self.image = None
 

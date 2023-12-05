@@ -1,5 +1,7 @@
 # TODO
 
+FIXME cleanup README and TODO
+
 Project Principals
 
 * A generalized tool for (semi?) automated training of animals

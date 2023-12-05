@@ -5,7 +5,7 @@ import logging
 # import os
 import platformdirs
 # import asyncio
-# from . import Engine, Config, test, util, gui
+from . import Trainer
 
 """The command line arguments"""
 args = None
@@ -33,10 +33,7 @@ def main():
     app_dir = platformdirs.user_data_dir(app_name, app_author)
     logger.info(f'Storing application data in { app_dir }')
 
-    all_games = e.find_all_game_info()
-    # print(f'All installed games: ')
-    # for i in all_games:
-    #    print(f'  {i}')
+    t = Trainer()
 
     if args.test:
         pass

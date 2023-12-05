@@ -1,0 +1,42 @@
+# This file is used to control packaging for distribution via pypi
+
+[project]
+name = "petminion"
+version = "0.0.1"
+authors = [
+  { name="Kevin Hester", email="kevinh@geeksville.com" },
+]
+description = "An application/framework for automated training of animals"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "platformdirs ~= 4.1.0",
+    "Pillow >= 9.2,< 9.5",
+    "opencv-python ~= 4.8.1",
+    "imageai ~= 3.0.3"
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["petminion*"]  # package names should match these glob patterns (["*"] by default)
+
+[tool.setuptools.package-data]
+# "*" = ["*.png"]
+
+[project.scripts]
+petminion = "petminion.__main__:main"
+
+[project.urls]
+"Homepage" = "https://github.com/geeksville/petminion"
+"Bug Tracker" = "https://github.com/geeksville/petminion/issues"
+
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
