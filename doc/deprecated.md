@@ -26,11 +26,99 @@ But my rough plan is (I'll keep a running public write-up on the progress in a n
 
 So that's my rough plan - any feedback is welcome.
 
+### Trainer engine
+
+statemachine ish engine?
+watch for keywords from recognizer to cause transitions
+different state machines can be listed as worth considering
+
+#### typical level 0 machine
+
+Runs until we get occasional bird visits
+
+if no food present, emit food 
+
+#### typical level 1 machine
+
+if bird present, emit food
+once no bird stop emitting food
+
+#### typical level 2 machine
+
+twigs/tokens/something TBD is in circle B
+
+only emit food if bird is in circle A
+
+#### typical level 3 machine
+
+only emit food if bird in circle A and anything is in 
+
+FIXME
+
 ## Task notes
 
 These notes might be expanded into a full article at some point, but for now they are just my notes on getting the hardware working.
 
-### Coral hardware & software setup
+## Home Assistant notes
+
+Use this zigbee adapter: https://www.amazon.com/dp/B09KXTCMSC
+
+created crowbot/ha/docker.yaml then "docker compose up -d" to start the container (with full access to the USB dongle for zigbee)
+
+  http://localhost:8123/
+
+  user: kevinh
+
+  Add the zigbee controller ( http://localhost:8123/config/integrations/integration/zha ) - it should be found automatically on the USB0 port
+
+  Attach feeder to USB power
+  Go to the zigbee controller device, ie: http://localhost:8123/config/devices/device/74283cf05c2ab831503920ea5f763162
+
+  Click on "add devices via this device"
+
+  Click the leftmost button (reset) on the feeder, hold it for 5 seconds.  LED on feeder will blink to indicate in pairing mode
+
+  HomeAssistant UI should prompt to add the device.  Add it and keep its default name of "aqara_aqara_feeder_acn001_feed".  Optionally change icon to "mdi:bird"
+
+### How to programmatically control
+
+per https://smarthomescene.com/reviews/aqara-c1-smart-pet-feeder-review/
+
+```
+description: ""
+mode: single
+trigger:
+  - platform: time
+    at: "08:00:00"
+condition: []
+action:
+  - service: number.set_value
+    data:
+      value: "5"
+    target:
+      entity_id: number.aqara_aqara_feeder_acn001_serving_to_dispense
+  - service: button.press
+    data: {}
+    target:
+      entity_id: button.aqara_aqara_feeder_acn001_feed
+```
+
+### How to calibrate feeder
+
+The Aqara C1 does not have a dedicated weight sensor to measure your pet food serving size. You need to measure it manually and subsequently operate the device knowing this information. To get an idea of how much you are feeding your pet:
+
+Dispense one portion manually with the button
+Measure the weight with a kitchen scale
+Let’s say your measurement is 7 grams and your cat needs 35g per feeding
+Set the portion weight to 7 grams
+Set the serving size to 5
+7g x 5 servings = 35g
+The Aqara C1 will dispense 5 servings one after another and fill the bowl
+
+Go to "http://localhost:8123/config/devices/device/b2f5b5fd1df7b186d7bb4ea313205596" to configure the portion 
+weight/serving size.
+
+## Coral hardware & software setup
 
 Per https://coral.withgoogle.com/docs/dev-board/get-started/
 
@@ -109,3 +197,7 @@ v4l2-ctl -d /dev/video6 --set-ctrl=focus_auto=0 # to turn on/off autofocus
 ### Remote debugging python on Coral with Intellij
 
 per <https://www.jetbrains.com/help/idea/run-debug-configuration-python-remote-debug.html>
+
+### coral board notes
+
+ssh crowbot
