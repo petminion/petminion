@@ -1,0 +1,1 @@
+This directory contains misc experiments/example code from testing various image APIs.  Someday it will probably be deleted.
