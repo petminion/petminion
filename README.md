@@ -1,6 +1,6 @@
 # Petminion
 
-## Project Principals
+## Project principles
 
 * A generalized tool for (semi?) automated training of animals
 * Use 'off-the-shelf' hardware as much as possible (hopefully no soldering, no requirement for 3D printing)

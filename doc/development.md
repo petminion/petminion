@@ -1,12 +1,5 @@
 ## General design plan
 
-ooh someone already did something similar? https://corvidcleaning.com/
-
-and https://www.thecrowbox.com/ seems to have failed/been abandoned?  nice design though - see youtube below
-https://thecrowbox.com/wiki/doku.php?id=kit:overview_doc
-https://www.youtube.com/watch?v=jcp_FWfYtLY
-oh! still alive! https://groups.google.com/g/CrowBoxKit?pli=1
-
 hmm - it seems like actual states in state machine are very limited.  instead of full general state machine at first just a base class like:
 
 TrainingRule with methods:
@@ -37,8 +30,6 @@ Camera.read_image() - uses camera apis to read images from a USB camera
 ImageRecognizer - initially just one implementation using the library I found
 
 Use PyPi for initial distribution (including all dependencies).
-
-
 
 ## Recognizer setup
 
@@ -201,3 +192,11 @@ mosquitto_pub -t zigbee2mqtt/feeder/set -m "{ \"feed\": \"START\", \"mode\": \"m
 
 {"level":"info","message":"MQTT publish: topic 'zigbee2mqtt/feeder', payload '{\"error\":false,\"feed\":\"START\",\"feeding_size\":1,\"feeding_source\":\"remote\",\"linkquality\":185,\"portions_per_day\":4,\"weight_per_day\":32}'"}
 
+## Other projects
+
+ooh someone already did something similar? https://corvidcleaning.com/
+
+and https://www.thecrowbox.com/ nice design - see youtube below
+https://thecrowbox.com/wiki/doku.php?id=kit:overview_doc
+https://www.youtube.com/watch?v=jcp_FWfYtLY
+oh! still alive! https://groups.google.com/g/CrowBoxKit?pli=1
