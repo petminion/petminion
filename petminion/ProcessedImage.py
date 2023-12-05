@@ -1,4 +1,4 @@
-
+from .ImageRecognizer import ImageRecognizer
 
 from functools import cached_property
 

@@ -7,4 +7,4 @@ python3 -m build
 python3 -m twine check dist/*
 # use API key per https://pypi.org/manage/account/token/ and ~/.pypirc
 python3 -m twine upload --repository pypi dist/*
-echo new version at https://pypi.org/project/steamback
+echo new version at https://pypi.org/project/petminion

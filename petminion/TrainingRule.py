@@ -7,12 +7,11 @@ class TrainingRule:
         self.trainer.feeder.feed()
 
     def evaluate_scene(self):
-        pass
+        raise NotImplementedError
 
 
 
 class CatTrainingRule0(TrainingRule):
-    pass
-
-
-
+    def evaluate_scene(self):
+        # FIXME
+        self.trainer.image.detections

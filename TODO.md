@@ -6,8 +6,12 @@ FIXME cleanup README and TODO
 new name petminion (petminion.org registered)
 
 - DONE make proposed state machine for initial crow and cat trainer - figure out how to deal with multiple deliveries for multiple rewards
-- make basic API for recognizer/camera
-- make state machineish training rules engine (find existing state machine lib?) https://github.com/pytransitions/transitions
+- DONE make basic API for recognizer/camera
+- DONE make state machineish training rules engine (find existing state machine lib?)
+- use recognizer keywords in the training rules
+- finish cat training rule 0
+- use minium score for considered matches
+- keep unexpected recognizer words in a log file 
 - add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
 - add method documentation for all the key methods
 - clean up development docs (include how to install and setup python env)

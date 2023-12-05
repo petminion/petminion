@@ -2,6 +2,7 @@ from .Camera import CV2Camera
 from .ImageRecognizer import *
 from .Feeder import *
 from .TrainingRule import *
+from .ProcessedImage import ProcessedImage
 
 class Trainer:
     def __init__(self):
@@ -12,7 +13,7 @@ class Trainer:
         self.image = None
 
     def runOnce(self):
-        self.image = self.camera.read_image()
+        self.image = ProcessedImage(self.recognizer, self.camera.read_image())
         self.rule.evaluate_scene()
 
     def run(self):
