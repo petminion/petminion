@@ -8,7 +8,32 @@
 * Two initial test cases: cat training and crow training
 * Project should be fun and useful for both the developers and the users
 
-## Schedule
+## Required hardware
+
+FIXME
+
+## Installing
+
+This project is probably not yet ready for others, so you should probably not install for now... 
+
+But!
+
+This framework is written in python and intended to be run on something like a raspberry pi.  However, if you are just interested in trying it out it can even be run on a desktop (where the feeder hardware and/or camera is simulated).
+
+To install, run the following command on any machine which has a recent python version installed.  
+
+```
+pipx install petminion
+```
+
+This tool is mostly written for linux, but if you find problems on other platforms please open a github issue and we'll try to figure out what's wrong.
+
+## Running
+
+Run 'petminion' from your command line and it should hopefully do something.
+(FIXME add more details)
+
+## Development Schedule
 
 I'll be writing the first version in Winter of 2023 (in this github) and then iterating with my cat and black winged test subjects through the winter and spring.
 If you'd like to contact me, I'm kevinh@geeksville.com.
