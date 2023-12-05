@@ -6,3 +6,5 @@ zigbee2mqtt/data/log
 zigbee2mqtt/*.txt
 experiments/pycoral
 experiments/tensorflow/models
+dist
+*.egg-info

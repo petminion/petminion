@@ -2,13 +2,6 @@
 
 FIXME cleanup README and TODO
 
-Project Principals
-
-* A generalized tool for (semi?) automated training of animals
-* Use 'off-the-shelf' hardware as much as possible (hopefully no soldering, no requirement for 3D printing)
-* Make the software accessible and extendable by beginning coders.  Particularly for adding training rules.
-* Two initial test cases: cat training and crow training
-* Project should be fun and useful for both the developers and the users
 
 new name petminion (petminion.org registered)
 
@@ -26,7 +19,9 @@ new name petminion (petminion.org registered)
 -   automatically load training rules from a directory.  This will allow users to make/share rules without using git/github
 -   Use a should_trigger() method in the rules to allow multiple rules to be candidates at once
 -   Add hotreloading of rules based on file changes
-
+- have the python app auto fetch teh (huge) machine vision model files
+- link petminion.org to the github pages site
+- 
 during development post 'success' images to mastodon https://mastodonpy.readthedocs.io/en/stable/
 
 ## General design plan
@@ -69,49 +64,6 @@ ImageRecognizer - initially just one implementation using the library I found
 
 Use PyPi for initial distribution (including all dependencies).
 
-### Sample cat training
-
-level 0 attempt CatTrainingRule0:
-
-- look for targets (springs) on white board.  
-- count number of springs seen.
-- if number of springs increases & cat present -> emit food (if # feed events per day not reached - or implicitly limited by # of springs in house)
-
-states: looking, feeding
-
-level 1 attempt CatTrainingRule1:
-
-- after spring seen and feed event -> power GPIO to somehow empty the target area
-
-### Sample crow training
-
-level 0 attempt (keep food always present CrowTrainingRule0):
-
-- look at target and if no food present -> emit food
-
-states: looking, feeding
-
-level 1 attempt (only emit food once we see a bird - to get birds used to feeder noise):
-
-- look at target no food and no bird -> emit food 
-
-states: looking, feeding
-
-level 2 attempt (only feed crows):
-
-- look at target no food and no crow -> emit food 
-
-states: looking, feeding
-
-level 3 attempt (provide tokens on a shelf just above target - hopefully crow knocks tokens into target)
-
-- look at target no food, no crow and no token -> emit food
-
-level 4 attempt (provide tokens nearby but not on shelf)
-
-- same as above except tokens are not close, also we will count anything as a 'token' doesn't have to be the tokens we provided
-
-FIXME - add GPIO control to empty unused food and empty tokens.
 
 
 ## Recognizer setup
@@ -123,13 +75,13 @@ apt install v4l-utils virtualenv
 
 Create and activate python environment
 ```
-kevinh@kdesktop:~/development/crowbot$ virtualenv crowenv
+kevinh@kdesktop:~/development/crowbot$ virtualenv minionenv
 created virtual environment CPython3.11.6.final.0-64 in 188ms
   creator CPython3Posix(dest=/home/kevinh/development/crowbot/crowenv, clear=False, no_vcs_ignore=False, global=False)
   seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/home/kevinh/.local/share/virtualenv)
     added seed packages: pip==23.2, setuptools==68.1.2, wheel==0.41.0
   activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
-kevinh@kdesktop:~/development/crowbot$ source crowenv/bin/activate
+kevinh@kdesktop:~/development/crowbot$ source minionenv/bin/activate
 (crowenv) kevinh@kdesktop:~/development/crowbot$ 
 ```
 
@@ -137,13 +89,10 @@ kevinh@kdesktop:~/development/crowbot$ source crowenv/bin/activate
 
 Read from USB camera in python
 ```
-pip install opencv-python
-```
+pip install --upgrade build twine imageai opencv-python cython numpy  torch --extra-index-url https://download.pytorch.org/whl/cpu torchvision --extra-index-url https://download.pytorch.org/whl/cpu pytest
 
-ImageAI setup:
-```
-pip install cython pillow>=7.0.0 numpy>=1.18.1 opencv-python>=4.1.2 torch>=1.9.0 --extra-index-url https://download.pytorch.org/whl/cpu torchvision>=0.10.0 --extra-index-url https://download.pytorch.org/whl/cpu pytest==7.1.3 tqdm==4.64.1 scipy>=1.7.3 matplotlib>=3.4.3 mock==4.0.3
-pip install imageai --upgrade
+# NOT SURE ALL OF THE FOLLOWING ARE NEEDED pip install --upgrade imageai opencv-python cython pillow>=7.0.0 numpy>=1.18.1 opencv-python>=4.1.2 torch>=1.9.0 --extra-index-url https://download.pytorch.org/whl/cpu torchvision>=0.10.0 --extra-index-url https://download.pytorch.org/whl/cpu pytest==7.1.3 tqdm==4.64.1 scipy>=1.7.3 matplotlib>=3.4.3 mock==4.0.3
+
 
 (crowenv) kevinh@kdesktop:~/development/crowbot/imageai$ mv ~/Downloads/yolov3.pt .
 (crowenv) kevinh@kdesktop:~/development/crowbot/imageai$ mv ~/Downloads/image2.jpg .
@@ -184,16 +133,6 @@ beach wagon  :  5.3134
 grille  :  4.7836
 (crowenv) kevinh@kdesktop:~/development/crowbot/imageai$ 
 
-```
-
-Tensorflow setup:
-
-```
-pip3 install tf-models-official numpy protobuf protobuf-compiler
-
-# Clone the tensorflow models repository
-git clone --depth 1 https://github.com/tensorflow/models
-
 kevinh@kdesktop:~/development/crowbot$ v4l2-ctl --list-formats-ext --device /dev/video0
 ioctl: VIDIOC_ENUM_FMT
 	Type: Video Capture
@@ -230,8 +169,7 @@ ioctl: VIDIOC_ENUM_FMT
 			Interval: Discrete 0.033s (30.000 fps)
 ```
 
-FIXME - find how to make cuda work with tensorflow: >>> import tensorflow as tf
-2023-12-01 12:47:20.772159: I external/local_tsl/tsl/cuda/cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+FIXME - figure out how to make CUDA & GoogleCoral HW work with imageai.
 
 
 ### Recognizer
