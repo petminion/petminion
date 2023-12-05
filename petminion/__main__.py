@@ -5,7 +5,7 @@ import logging
 # import os
 import platformdirs
 # import asyncio
-from . import Trainer
+from .Trainer import Trainer
 
 """The command line arguments"""
 args = None
@@ -42,8 +42,7 @@ def main():
         pass
         # asyncio.run(d.run_forever())
     else:
-        pass
-        # gui.run(e)
+        t.run()
 
 
 if __name__ == "__main__":

@@ -8,14 +8,6 @@ class Feeder:
     def feed():
         pass
 
-class Camera:
-    def read_image():
-        return None
-
-class SimCamera(Camera):
-    def read_image():
-        return None
-
 class ImageClassification:
     pass
 
@@ -30,10 +22,8 @@ class ImageRecognizer:
         return None
 
 
-class Trainer: pass 
-
 class TrainingRule:
-    def __init__(self, trainer: Trainer):
+    def __init__(self, trainer):
         self.trainer = trainer
 
     def do_feeding(self):
@@ -70,16 +60,4 @@ class ProcessedImage:
         self.__annotated = a
         return d
     
-class Trainer:
-    def __init__(self):
-        self.camera = SimCamera()
-        self.recognizer = ImageRecognizer()
-        self.rule = CatTrainingRule0(self)
-        self.feeder = Feeder()
-        self.image = None
-
-    def runOnce(self):
-        self.image = self.camera.read_image()
-        self.rule.evaluate_scene()
-
 
