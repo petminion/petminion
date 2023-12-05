@@ -1,0 +1,11 @@
+{
+    "0x54ef441000783ed7": {
+        "feed": "",
+        "feeding_source": "remote",
+        "feeding_size": 1,
+        "portions_per_day": 24,
+        "weight_per_day": 192,
+        "error": false,
+        "mode": "manual"
+    }
+}

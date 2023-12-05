@@ -1,0 +1,23 @@
+version: '3'
+services:
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: "koenkk/zigbee2mqtt"
+    # The dbus volume is essential to make bluetooth work
+    volumes:
+      - /home/kevinh/development/crowbot/zigbee2mqtt/data:/app/data
+      - /run/udev:/run/udev:ro
+      # - /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_24774eae8345ed11bda8ca8f0a86e0b4-if00-port0:/dev/ttyACM0
+    environment:
+      TZ: America/Los_Angeles
+    restart: unless-stopped
+    # Setting privileged to true gives the container full access to all host devices including USB
+    # This is convenient but may not be ideal
+    # https://robertjandegroot.wordpress.com/2021/01/03/adding-usb-devices-to-your-containers/
+    privileged: true
+    network_mode: host
+    #group_add:
+    #  - dialout
+    #user: 1000:1000
+    ports:
+      - 8080:8080

@@ -1,0 +1,15 @@
+homeassistant: false
+permit_join: false
+frontend: true
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://localhost
+serial:
+  port: /dev/ttyUSB0
+advanced:
+  homeassistant_legacy_entity_attributes: false
+  legacy_api: false
+  legacy_availability_payload: false
+devices:
+  '0x54ef441000783ed7':
+    friendly_name: feeder
