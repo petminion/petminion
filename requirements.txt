@@ -1,1 +1,10 @@
-build twine imageai paho-mqtt opencv-python cython numpy torch torchvision pytest
+build 
+twine 
+imageai 
+paho-mqtt 
+opencv-python 
+cython 
+numpy 
+torch 
+torchvision 
+pytest
