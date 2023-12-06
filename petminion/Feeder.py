@@ -34,6 +34,8 @@ class ZigbeeFeeder(Feeder):
     def feed(self):
         super().feed()
         logger.info(f'Feeding via Zigbee!')
+
+        # FIXME - wait for the confirmation publish from the feeder device, if it doesn't occur soon print a big error and don't consider this a feeding
         self.client.publish("zigbee2mqtt/feeder/set",
                             '{ "feed": "START", "mode": "manual" }')
         # mosquitto_pub -t zigbee2mqtt/feeder/set -m "{ \"feed\": \"START\", \"mode\": \"manual\" }"

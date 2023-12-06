@@ -1,4 +1,4 @@
-from .Camera import CV2Camera
+from .Camera import *
 from .ImageRecognizer import *
 from .Feeder import *
 from .TrainingRule import *
@@ -6,11 +6,11 @@ from .ProcessedImage import ProcessedImage
 
 
 class Trainer:
-    def __init__(self):
-        self.camera = CV2Camera()
+    def __init__(self, is_simulated: bool = False):
+        self.camera = SimCamera() if is_simulated else CV2Camera()
         self.recognizer = ImageRecognizer()
         self.rule = CatTrainingRule0(self)
-        self.feeder = ZigbeeFeeder()  # Feeder()
+        self.feeder = Feeder() if is_simulated else ZigbeeFeeder()
         self.image = None
 
     def runOnce(self):
@@ -19,4 +19,8 @@ class Trainer:
 
     def run(self):
         while True:
-            self.runOnce()
+            try:
+                self.runOnce()
+            except CameraDisconnectedError as e:
+                logger.error(f"exiting... { e }")
+                break

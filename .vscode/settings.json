@@ -5,4 +5,7 @@
   "[python]": {
     "editor.formatOnSave": true
   },
+  "cSpell.words": [
+    "imread"
+  ],
 }

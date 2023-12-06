@@ -18,6 +18,8 @@ def main():
                         action="store_true")
     parser.add_argument("--test", "-t", help="Run integration code test",
                         action="store_true")
+    parser.add_argument("--simulate", "-s", help="Simulate all hardware",
+                        action="store_true")
     parser.add_argument("--daemon", "-D", help="Run as a daemon (headless, talks to cameras/devices but no GUI)",
                         action="store_true")
 
@@ -33,7 +35,7 @@ def main():
     app_dir = platformdirs.user_data_dir(app_name, app_author)
     logger.info(f'Storing application data in { app_dir }')
 
-    t = Trainer()
+    t = Trainer(args.simulate)
 
     if args.test:
         pass

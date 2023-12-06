@@ -1,7 +1,12 @@
 import cv2
 import logging
+import os
 
 logger = logging.getLogger()
+
+
+class CameraDisconnectedError(IOError):
+    pass
 
 
 class Camera:
@@ -10,8 +15,28 @@ class Camera:
 
 
 class SimCamera(Camera):
+    def __init__(self, repeat_forever: bool = False):
+        self.img_dir = '/home/kevinh/development/petminion/tests/image'
+        self.filenames = list(filter(lambda x: x.endswith(
+            ".jpg"), os.listdir(self.img_dir)))
+        self.next_name = iter(self.filenames)
+        self.repeat_forever = repeat_forever
+
     def read_image(self):
-        return None
+        f = next(self.next_name, None)
+        if not f:
+            if not self.repeat_forever:
+                raise CameraDisconnectedError(
+                    "End of simulated camera frames reached")
+
+            # restart with the list of files again
+            self.next_name = iter(self.filenames)
+            f = next(self.next_name, None)
+            if not f:
+                # Note: this should not be simulated as CameraDisconnectedError
+                raise IOError("No frames in simulated camera")
+
+        return cv2.imread(os.path.join(self.img_dir, f))
 
 
 class CV2Camera(Camera):
@@ -43,4 +68,4 @@ class CV2Camera(Camera):
         if camGood:
             return camImage
         else:
-            raise IOError("Camera read error")
+            raise CameraDisconnectedError("Camera read error")

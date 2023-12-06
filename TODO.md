@@ -5,10 +5,11 @@
 - DONE make state machineish training rules engine (find existing state machine lib?)
 - DONE use recognizer keywords in the training rules
 - DONE make count_detections work
-- make ZigbeeFeeder class and install instructions
+- DONE make ZigbeeFeeder class 
+- Make app install instructions
 - have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
 - finish cat training rule 0
-- make simcamera actually useful
+- DONE make simcamera actually useful
 - have live camera dump success and occasional failure images to directories (for training & sim camera use)
 - add current BOM to the README
 - add basic developer instructions / clean up development docs (include how to install and setup python env)
