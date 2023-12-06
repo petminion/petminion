@@ -9,12 +9,14 @@
 - have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
 - finish cat training rule 0
 - make simcamera actually useful
+- have live camera dump success and occasional failure images to directories (for training & sim camera use)
+- add current BOM to the README
+- add basic developer instructions / clean up development docs (include how to install and setup python env)
 - use minium score for considered matches
 - map detections through an aliases table.  Use uppercase words for aliases (CAT, CROW etc).  Use a BLACKLIST alias for detections we never want to see (have an aliases dictionary that maps from grackle, bluejay, crow etc...)
 - keep unexpected recognizer words in a log file 
 - add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
 - add method documentation for all the key methods
-- clean up development docs (include how to install and setup python env)
 - Use a should_trigger() method in the rules to allow multiple rules to be candidates at once
 - Get remote debugging working
 - figure out gpioish mechanism (3d print? off the shelf?) for a door that drops tokens or uneaten food into a bucket
@@ -22,7 +24,6 @@
     can be: something not blank, something that is a bird.
 - have a blacklist of mistaken matches which we will never consider interesting  
 - Store image and the matching terms in a separate datafile  
-- make SimCamera work nicely
 - Only store a max of one frame every 30 seconds.
 - Find a rasberry pi distribution which can be auto populated to generate 'easy' install images for this app and all its dependencies
 - automatically load training rules from a directory.  This will allow users to make/share rules without using git/github

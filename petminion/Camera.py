@@ -1,4 +1,7 @@
 import cv2
+import logging
+
+logger = logging.getLogger()
 
 class Camera:
     def read_image(self):
@@ -22,8 +25,7 @@ class CV2Camera(Camera):
         # cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
         width  = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        print("Width=", width)
-        print("Height=",height)
+        logger.info(f"Camera width={ width }, height={height}")
 
         #we check if the camera is opened previously or not
         if (cam.isOpened()==False):
