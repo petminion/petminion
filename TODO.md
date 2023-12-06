@@ -3,10 +3,14 @@
 - DONE make proposed state machine for initial crow and cat trainer - figure out how to deal with multiple deliveries for multiple rewards
 - DONE make basic API for recognizer/camera
 - DONE make state machineish training rules engine (find existing state machine lib?)
-- use recognizer keywords in the training rules
+- DONE use recognizer keywords in the training rules
+- DONE make count_detections work
 - make ZigbeeFeeder class and install instructions
+- have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
 - finish cat training rule 0
+- make simcamera actually useful
 - use minium score for considered matches
+- map detections through an aliases table.  Use uppercase words for aliases (CAT, CROW etc).  Use a BLACKLIST alias for detections we never want to see (have an aliases dictionary that maps from grackle, bluejay, crow etc...)
 - keep unexpected recognizer words in a log file 
 - add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
 - add method documentation for all the key methods
@@ -14,7 +18,6 @@
 - Use a should_trigger() method in the rules to allow multiple rules to be candidates at once
 - Get remote debugging working
 - figure out gpioish mechanism (3d print? off the shelf?) for a door that drops tokens or uneaten food into a bucket
-- have an aliases dictionary that maps from grackle, bluejay, crow etc... to CROW 
 - Have recognizer save interesting frames to a directory.  Where interesting
     can be: something not blank, something that is a bird.
 - have a blacklist of mistaken matches which we will never consider interesting  

@@ -1,9 +1,11 @@
+import logging
 
+logger = logging.getLogger()
 
 class Feeder:
     
     def feed():
-        pass
+        logger.info(f'Doing a feeding!')
 
 
 

@@ -5,11 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Module",
+            "name": "Python: Petminion",
             "type": "python",
             "request": "launch",
             "module": "petminion",
-            "justMyCode": true
+            "justMyCode": true,
+            "args": [
+                "--debug"
+            ]
         }
     ]
 }
