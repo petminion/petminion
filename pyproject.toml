@@ -18,7 +18,8 @@ dependencies = [
     "platformdirs ~= 4.1.0",
     "Pillow >= 9.2,< 9.5",
     "opencv-python ~= 4.8.1",
-    "imageai ~= 3.0.3"
+    "imageai ~= 3.0.3",
+    "paho-mqtt ~=1.6.1"
 ]
 
 [tool.setuptools]
@@ -40,3 +41,9 @@ petminion = "petminion.__main__:main"
 [build-system]
 requires = ["setuptools>=61.0", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
+
+# recommended per https://docs.pytest.org/en/7.4.x/explanation/goodpractices.html#goodpractices
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]

@@ -10,7 +10,7 @@ class Trainer:
         self.camera = CV2Camera()
         self.recognizer = ImageRecognizer()
         self.rule = CatTrainingRule0(self)
-        self.feeder = Feeder()
+        self.feeder = ZigbeeFeeder()  # Feeder()
         self.image = None
 
     def runOnce(self):
