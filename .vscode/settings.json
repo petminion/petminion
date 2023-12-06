@@ -1,5 +1,8 @@
 {
-    "[markdown]": {
-        "editor.formatOnSave": true,
-      }
+  "[markdown]": {
+    "editor.formatOnSave": true,
+  },
+  "[python]": {
+    "editor.formatOnSave": true
+  },
 }

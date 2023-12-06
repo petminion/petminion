@@ -4,6 +4,7 @@ from .Feeder import *
 from .TrainingRule import *
 from .ProcessedImage import ProcessedImage
 
+
 class Trainer:
     def __init__(self):
         self.camera = CV2Camera()
@@ -19,4 +20,3 @@ class Trainer:
     def run(self):
         while True:
             self.runOnce()
-
