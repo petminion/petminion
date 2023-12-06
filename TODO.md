@@ -7,12 +7,15 @@
 - DONE make count_detections work
 - DONE make ZigbeeFeeder class 
 - Make app install instructions
+- make a simple scheduled based cat feeder that only enables feedings at mealtime and only dispenses food when a) a feeding is allowed and b) a cat is seen
 - have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
+- make test build run inside of github actions
 - finish cat training rule 0
 - DONE make simcamera actually useful
 - have live camera dump success and occasional failure images to directories (for training & sim camera use)
 - add current BOM to the README
 - add basic developer instructions / clean up development docs (include how to install and setup python env)
+- merge detector and classifier responses?
 - use minium score for considered matches
 - map detections through an aliases table.  Use uppercase words for aliases (CAT, CROW etc).  Use a BLACKLIST alias for detections we never want to see (have an aliases dictionary that maps from grackle, bluejay, crow etc...)
 - keep unexpected recognizer words in a log file 

@@ -54,7 +54,7 @@ kevinh@kdesktop:~/development/crowbot$ source minionenv/bin/activate
 
 Read from USB camera in python
 ```
-pip install --upgrade build twine imageai paho-mqtt opencv-python cython numpy  torch --extra-index-url https://download.pytorch.org/whl/cpu torchvision --extra-index-url https://download.pytorch.org/whl/cpu pytest
+pip install --upgrade build twine imageai paho-mqtt opencv-python cython numpy pytest torch --extra-index-url https://download.pytorch.org/whl/cpu torchvision
 
 # NOT SURE ALL OF THE FOLLOWING ARE NEEDED pip install --upgrade imageai opencv-python cython pillow>=7.0.0 numpy>=1.18.1 opencv-python>=4.1.2 torch>=1.9.0 --extra-index-url https://download.pytorch.org/whl/cpu torchvision>=0.10.0 --extra-index-url https://download.pytorch.org/whl/cpu pytest==7.1.3 tqdm==4.64.1 scipy>=1.7.3 matplotlib>=3.4.3 mock==4.0.3
 
