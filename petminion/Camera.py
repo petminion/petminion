@@ -16,7 +16,9 @@ class Camera:
 
 class SimCamera(Camera):
     def __init__(self, repeat_forever: bool = False):
-        self.img_dir = '/home/kevinh/development/petminion/tests/image'
+        my_dir = os.path.dirname(__file__)  # where this python file is located
+        # self.img_dir = '/home/kevinh/development/petminion/tests/image'
+        self.img_dir = os.path.join(my_dir, "..", "tests", "image")
         self.filenames = list(filter(lambda x: x.endswith(
             ".jpg"), os.listdir(self.img_dir)))
         self.next_name = iter(self.filenames)
