@@ -23,5 +23,5 @@ class Trainer:
             try:
                 self.runOnce()
             except CameraDisconnectedError as e:
-                logger.error(f"exiting... { e }")
+                logger.info(f"exiting... { e }")
                 break
