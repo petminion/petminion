@@ -3,7 +3,6 @@
 import argparse
 import logging
 # import os
-import platformdirs
 # import asyncio
 from .Trainer import Trainer
 
@@ -29,11 +28,6 @@ def main():
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
     logger = logging.getLogger()
     logger.info(f'Petminion running...')
-
-    app_name = "petminion"
-    app_author = "geeksville"
-    app_dir = platformdirs.user_data_dir(app_name, app_author)
-    logger.info(f'Storing application data in { app_dir }')
 
     t = Trainer(args.simulate)
 

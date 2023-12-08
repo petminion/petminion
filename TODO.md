@@ -9,7 +9,7 @@
 - Make app install instructions
 - make a simple scheduled based cat feeder that only enables feedings at mealtime and only dispenses food when a) a feeding is allowed and b) a cat is seen
 - have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
-- add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
+- DONE add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
 - finish cat training rule 0
 - DONE make simcamera actually useful
 - have live camera dump success and occasional failure images to directories (for training & sim camera use)
@@ -31,7 +31,7 @@
 - Find a rasberry pi distribution which can be auto populated to generate 'easy' install images for this app and all its dependencies
 - automatically load training rules from a directory.  This will allow users to make/share rules without using git/github
 - Add hotreloading of rules based on file changes
-- have the python app auto fetch teh (huge) machine vision model files
+- DONE have the python app auto fetch teh (huge) machine vision model files
 - link petminion.org to the github pages site
 - during development post 'success' images to mastodon https://mastodonpy.readthedocs.io/en/stable/
 

@@ -7,6 +7,7 @@ from .ProcessedImage import ProcessedImage
 
 class Trainer:
     def __init__(self, is_simulated: bool = False):
+
         self.camera = SimCamera() if is_simulated else CV2Camera()
         self.recognizer = ImageRecognizer()
         self.rule = CatFeederRule(self)
