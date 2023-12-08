@@ -9,7 +9,7 @@ class Trainer:
     def __init__(self, is_simulated: bool = False):
         self.camera = SimCamera() if is_simulated else CV2Camera()
         self.recognizer = ImageRecognizer()
-        self.rule = CatTrainingRule0(self)
+        self.rule = CatFeederRule(self)
         self.feeder = Feeder() if is_simulated else ZigbeeFeeder()
         self.image = None
 

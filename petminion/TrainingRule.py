@@ -1,6 +1,7 @@
 
 from .ImageRecognizer import ImageDetection
-
+from typing import NamedTuple
+from datetime import time, datetime
 import logging
 logger = logging.getLogger()
 
@@ -8,9 +9,13 @@ logger = logging.getLogger()
 class TrainingRule:
     def __init__(self, trainer):
         self.trainer = trainer
+        self.fed_today = 0  # how many feedings have we done so far today
 
     def do_feeding(self):
         self.trainer.feeder.feed()
+        self.fed_today += 1
+        # FIXME reset this count at midnight
+        # FIXME add a cooldown to not allow feedings to close to each other
 
     def evaluate_scene(self):
         raise NotImplementedError
@@ -22,8 +27,41 @@ class TrainingRule:
 
         return list(map(lambda x: x.name, detections)).count(name)
 
-    def is_detected(self, detections: list[ImageDetection]):
-        return self.count_detections() > 0
+    def is_detected(self, name):
+        return self.count_detections(name) > 0
+
+
+class ScheduledFeeding(NamedTuple):
+    """A scheduled feeding event for a particular time of day
+
+    Args:
+        NamedTuple (_type_): _description_
+    """
+    when: datetime.time
+    num_feedings: int
+
+
+class CatFeederRule(TrainingRule):
+    def __init__(self, trainer):
+        super().__init__(trainer)
+
+        self.schedule = [ScheduledFeeding(time(7, 20), 3),
+                         ScheduledFeeding(time(14, 00), 1),
+                         ScheduledFeeding(time(16, 00), 1)]
+
+    def is_feeding_allowed(self):
+        # find all previously allowed feedings for today
+        now = datetime.now().time()
+        num_allowed = 0
+        for f in self.schedule:
+            if now >= f.when:
+                num_allowed += f.num_feedings
+
+        return num_allowed > self.fed_today
+
+    def evaluate_scene(self):
+        if self.is_feeding_allowed() and self.is_detected("cat"):
+            self.do_feeding()
 
 
 class CatTrainingRule0(TrainingRule):
