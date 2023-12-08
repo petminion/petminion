@@ -31,6 +31,44 @@ ImageRecognizer - initially just one implementation using the library I found
 
 Use PyPi for initial distribution (including all dependencies).
 
+## Viewing test results (on github)
+
+Every change checked into github will trigger our pytest to run on the github servers.  Viewing the output from [these tests](https://github.com/geeksville/petminion/actions) may help you compare your development machine to the 'known good' github environment.  If you find errors in these build instructions, please send us a note or a pull-request to fix the error.
+
+## Running tests locally
+
+To verify your codebase is approximately correct you can run our (currently limited) python test suite. To run tests locally:
+
+* cd into the root project directory
+* Setup the python environment with 'source minionenv/bin/activate'
+* Run 'pytest'
+
+You should see something approximately like:
+
+```
+(minionenv) kevinh@kdesktop:~/development/petminion$ pytest
+=============================================================== test session starts ===============================================================
+platform linux -- Python 3.11.6, pytest-7.4.3, pluggy-1.3.0
+rootdir: /home/kevinh/development/petminion
+configfile: pyproject.toml
+testpaths: tests
+collected 2 items
+
+tests/test_app.py::test_integration
+------------------------------------------------------------------ live log call ------------------------------------------------------------------
+INFO     root:test_app.py:14 Petminion integration test running...
+INFO     root:ImageRecognizer.py:26 Model file 'yolov3.pt' not found in cache, downloading...
+INFO     root:ImageRecognizer.py:26 Model file 'resnet50-19c8e357.pth' not found in cache, downloading...
+DEBUG    root:ImageRecognizer.py:54 Detection: bird : 99.9 : [365, 352, 723, 589]
+DEBUG    root:ImageRecognizer.py:54 Detection: bird : 98.98 : [43, 78, 392, 622]
+DEBUG    root:ImageRecognizer.py:54 Detection: bird : 98.11 : [204, 162, 761, 376]
+DEBUG    root:ImageRecognizer.py:54 Detection: bird : 99.9 : [335, 23, 536, 264]
+DEBUG    root:ImageRecognizer.py:54 Detection: bird : 96.9 : [123, 116, 575, 284]
+ERROR    root:Trainer.py:26 exiting... End of simulated camera frames reached
+PASSED                                                                                                                                      [ 50%]
+tests/unit/test_stub.py::test_stub PASSED
+```
+
 ## Recognizer setup
 
 Install prerequisites 
