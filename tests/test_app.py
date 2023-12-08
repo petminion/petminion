@@ -9,7 +9,7 @@ import logging
 def integration_test():
     """A basic test of the entire app (using simulated data)
     """
-    logging.basicConfig(level=logging.DEBUG if true else logging.INFO)
+    logging.basicConfig(level=logging.DEBUG if True else logging.INFO)
     logger = logging.getLogger()
     logger.info(f'Petminion integration test running...')
 

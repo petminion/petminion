@@ -44,6 +44,8 @@ build-backend = "setuptools.build_meta"
 
 # recommended per https://docs.pytest.org/en/7.4.x/explanation/goodpractices.html#goodpractices
 [tool.pytest.ini_options]
+pythonpath = "."
+testpaths = "tests"
 addopts = [
     "--import-mode=importlib",
 ]
