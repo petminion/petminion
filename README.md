@@ -1,5 +1,7 @@
 # Petminion
 
+![Build Status](https://github.com/geeksville/petminion/actions/workflows/python-app.yml/badge.svg)
+
 ## Project principles
 
 * A generalized tool for (semi?) automated training of animals

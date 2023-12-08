@@ -208,8 +208,11 @@ mosquitto_sub -h localhost -t \#
 
 ### flash new firmware onto the sonoff adapter
 
+I'm not sure if other people will need to do this, but I needed to update the firmware on my USB zigbee adapter before it would talk to zigbee2mqtt...
+
 per https://www.zigbee2mqtt.io/guide/adapters/flashing/flashing_via_cc2538-bsl.html
 
+This docker container will automatically download and flash the correct firmware to the adapter:
 ```
 docker run --rm \
     --device /dev/ttyUSB0:/dev/ttyUSB0 \
