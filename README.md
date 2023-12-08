@@ -90,4 +90,4 @@ Copyright 2023 S. Kevin Hester kevinh@geeksville.com
 
 License: GNU Public License v3 (see [LICENSE](LICENSE) for details)
 
-Robot icons created by [Freepik - Flaticon](https://www.flaticon.com/free-icons/robot).
+Robot icons created by [Freepik - Flaticon](https://www.flaticon.com/free-icon/kitty_763754).
