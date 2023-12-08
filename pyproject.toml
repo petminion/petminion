@@ -47,3 +47,9 @@ build-backend = "setuptools.build_meta"
 addopts = [
     "--import-mode=importlib",
 ]
+markers = [
+    # "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integtest: integration test",
+]
+#log_cli=true
+#log_level="DEBUG"
