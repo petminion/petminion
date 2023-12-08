@@ -1,6 +1,8 @@
 # Petminion
 
-![Build Status](https://github.com/geeksville/petminion/actions/workflows/python-app.yml/badge.svg)
+![App Icon](doc/art/kitty.png)
+
+![Build Status](https://github.com/petminion/petminion/actions/workflows/python-app.yml/badge.svg)
 
 ## Project principles
 
@@ -81,3 +83,11 @@ level 4 attempt (provide tokens nearby but not on shelf)
 - same as above except tokens are not close, also we will count anything as a 'token' doesn't have to be the tokens we provided
 
 FIXME - add GPIO control to empty unused food and empty tokens.
+
+# Copyright, license and credits
+
+Copyright 2023 S. Kevin Hester kevinh@geeksville.com
+
+License: GNU Public License v3 (see [LICENSE](LICENSE) for details)
+
+Robot icons created by [Freepik - Flaticon](https://www.flaticon.com/free-icons/robot).
