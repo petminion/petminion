@@ -7,8 +7,8 @@
 - DONE make count_detections work
 - DONE make ZigbeeFeeder class 
 - Make app install instructions
-- make a simple scheduled based cat feeder that only enables feedings at mealtime and only dispenses food when a) a feeding is allowed and b) a cat is seen
-- have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
+- DONE make a simple scheduled based cat feeder that only enables feedings at mealtime and only dispenses food when a) a feeding is allowed and b) a cat is seen
+- DONE have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
 - DONE add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
 - finish cat training rule 0
 - DONE make simcamera actually useful

@@ -1,9 +1,14 @@
 
 from .ImageRecognizer import ImageDetection
 from typing import NamedTuple
-from datetime import time, datetime
+from datetime import time, datetime, timedelta
 import logging
 logger = logging.getLogger()
+
+
+class FeedingNotAllowed(Exception):
+    """Raised by do_feeding() when a feeding can not be permitted now"""
+    pass
 
 
 class TrainingRule:
@@ -11,12 +16,20 @@ class TrainingRule:
         self.trainer = trainer
         self.fed_today = 0  # how many feedings have we done so far today
         self.last_time = datetime.now().time()
+        self.last_feed_datetime = None
+        self.min_feed_interval = timedelta(minutes=10)
 
     def do_feeding(self):
-        self.trainer.feeder.feed()
-        self.fed_today += 1
-        # FIXME reset this count at midnight
-        # FIXME add a cooldown to not allow feedings to close to each other
+        # Use a cooldown to not allow feedings to close to each other
+        now = datetime.now()
+        if self.last_feed_datetime and now < self.last_feed_datetime + self.min_feed_interval:
+            # raise FeedingNotAllowed(f'Too soon for this feeding, try again at { self.last_feed_time + self.min_feed_interval }')
+            logger.warning(
+                f'Too soon for this feeding, try again at { self.last_feed_datetime + self.min_feed_interval }')
+        else:
+            self.trainer.feeder.feed()
+            self.fed_today += 1
+            self.last_feed_datetime = now
 
     def run_once(self):
         """Do idle processing for this rule - mostly by calling evaluate_scene()"""
