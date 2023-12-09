@@ -10,18 +10,18 @@ class Trainer:
 
         self.camera = SimCamera() if is_simulated else CV2Camera()
         self.recognizer = ImageRecognizer()
-        self.rule = CatFeederRule(self)
+        self.rule = SimpleFeederRule(self, "bird")
         self.feeder = Feeder() if is_simulated else ZigbeeFeeder()
         self.image = None
 
-    def runOnce(self):
+    def run_once(self):
         self.image = ProcessedImage(self.recognizer, self.camera.read_image())
-        self.rule.evaluate_scene()
+        self.rule.run_once()
 
     def run(self):
         while True:
             try:
-                self.runOnce()
+                self.run_once()
             except CameraDisconnectedError as e:
                 logger.info(f"exiting... { e }")
                 break

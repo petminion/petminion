@@ -10,12 +10,25 @@ class TrainingRule:
     def __init__(self, trainer):
         self.trainer = trainer
         self.fed_today = 0  # how many feedings have we done so far today
+        self.last_time = datetime.now().time()
 
     def do_feeding(self):
         self.trainer.feeder.feed()
         self.fed_today += 1
         # FIXME reset this count at midnight
         # FIXME add a cooldown to not allow feedings to close to each other
+
+    def run_once(self):
+        """Do idle processing for this rule - mostly by calling evaluate_scene()"""
+
+        now = datetime.now().time()
+        if now < self.last_time:
+            # We crossed midnight since last run
+            logger.debug(f'Did { self.fed_today } feedings yesterday')
+            self.fed_today = 0
+        self.last_time = now
+
+        self.evaluate_scene()
 
     def evaluate_scene(self):
         raise NotImplementedError
@@ -41,10 +54,11 @@ class ScheduledFeeding(NamedTuple):
     num_feedings: int
 
 
-class CatFeederRule(TrainingRule):
+class ScheduledFeederRule(TrainingRule):
     def __init__(self, trainer):
         super().__init__(trainer)
 
+        # FIXME - pull schedule from some sort of json file?
         self.schedule = [ScheduledFeeding(time(7, 20), 3),
                          ScheduledFeeding(time(14, 00), 1),
                          ScheduledFeeding(time(16, 00), 1)]
@@ -52,15 +66,27 @@ class CatFeederRule(TrainingRule):
     def is_feeding_allowed(self):
         # find all previously allowed feedings for today
         now = datetime.now().time()
+
         num_allowed = 0
         for f in self.schedule:
             if now >= f.when:
                 num_allowed += f.num_feedings
 
+        logger.debug(
+            f'Already fed { self.fed_today } out of { num_allowed } feedings')
         return num_allowed > self.fed_today
 
+
+class SimpleFeederRule(ScheduledFeederRule):
+    def __init__(self, trainer, target="cat"):
+        super().__init__(trainer)
+
+        self.target = target
+
     def evaluate_scene(self):
-        if self.is_feeding_allowed() and self.is_detected("cat"):
+        if self.is_feeding_allowed() and self.is_detected(self.target):
+            logger.debug(
+                f'A feeding is allowed and we just saw a { self.target }')
             self.do_feeding()
 
 

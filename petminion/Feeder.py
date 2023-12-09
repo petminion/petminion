@@ -32,7 +32,6 @@ class ZigbeeFeeder(Feeder):
         client.loop_start()  # FIXME, need to stop looper thread if we destroy this object
 
     def feed(self):
-        super().feed()
         logger.info(f'Feeding via Zigbee!')
 
         # FIXME - wait for the confirmation publish from the feeder device, if it doesn't occur soon print a big error and don't consider this a feeding
