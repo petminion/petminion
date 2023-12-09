@@ -38,10 +38,6 @@ petminion = "petminion.__main__:main"
 "Homepage" = "https://github.com/geeksville/petminion"
 "Bug Tracker" = "https://github.com/geeksville/petminion/issues"
 
-[build-system]
-requires = ["setuptools>=61.0", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
-
 # recommended per https://docs.pytest.org/en/7.4.x/explanation/goodpractices.html#goodpractices
 [tool.pytest.ini_options]
 pythonpath = "."
@@ -60,3 +56,19 @@ filterwarnings = [
 ]
 log_cli = "True"
 log_cli_level = "DEBUG"
+
+[tool.poetry]
+name = "petminion"
+version = "0.1.0"
+description = ""
+authors = ["geeksville <kevinh@geeksville.com>"]
+license = "GPL v3"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
