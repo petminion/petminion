@@ -10,6 +10,10 @@
 - DONE make a simple scheduled based cat feeder that only enables feedings at mealtime and only dispenses food when a) a feeding is allowed and b) a cat is seen
 - DONE have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
 - DONE add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
+- make a deploy to corral board script
+- measure feeding amount in grams
+- switch Meer feeding over to use the non-camera based feeder
+- switch Meer feeding over to use the camera based feeder
 - finish cat training rule 0
 - DONE make simcamera actually useful
 - have live camera dump success and occasional failure images to directories (for training & sim camera use)

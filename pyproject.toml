@@ -14,13 +14,13 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: OS Independent",
 ]
-dependencies = [
-    "platformdirs ~= 4.1.0",
-    "Pillow >= 9.2,< 9.5",
-    "opencv-python ~= 4.8.1",
-    "imageai ~= 3.0.3",
-    "paho-mqtt ~=1.6.1"
-]
+#dependencies = [
+#    "platformdirs ~= 4.1.0",
+#    "Pillow >= 9.2,< 9.5",
+#    "opencv-python ~= 4.8.1",
+#    "imageai ~= 3.0.3",
+#    "paho-mqtt ~=1.6.1"
+#]
 
 [tool.setuptools]
 include-package-data = true
@@ -67,6 +67,11 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+platformdirs = "^4.1.0"
+pillow = "^10.1.0"
+opencv-python = "^4.8.1.78"
+imageai = "^3.0.3"
+paho-mqtt = "^1.6.1"
 
 
 [build-system]
