@@ -7,6 +7,8 @@
   },
   "cSpell.words": [
     "imread",
+    "imwrite",
+    "ndarray",
     "platformdirs"
   ],
 }

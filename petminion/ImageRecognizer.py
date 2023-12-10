@@ -4,6 +4,7 @@ from typing import NamedTuple
 import urllib.request
 import os
 import logging
+import numpy
 from .util import user_cache_dir
 
 logger = logging.getLogger()
@@ -45,7 +46,7 @@ class ImageRecognizer:
             "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/resnet50-19c8e357.pth", "resnet50-19c8e357.pth"))
         classifier.loadModel()
 
-    def do_detection(self, image) -> tuple[any, list[ImageDetection]]:
+    def do_detection(self, image: numpy.ndarray) -> tuple[numpy.ndarray, list[ImageDetection]]:
         annotated, detections = self.detector.detectObjectsFromImage(input_image=image,
                                                                      minimum_percentage_probability=30,
                                                                      output_type="array")
@@ -61,7 +62,7 @@ class ImageRecognizer:
             detections))
         return annotated, d
 
-    def do_classification(self, image) -> list[ImageDetection]:
+    def do_classification(self, image: numpy.ndarray) -> list[ImageDetection]:
         predictions, probabilities = self.classifier.classifyImage(
             image, result_count=5)
         for eachPrediction, eachProbability in zip(predictions, probabilities):

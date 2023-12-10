@@ -16,9 +16,11 @@
 - switch Meer feeding over to use the camera based feeder
 - finish cat training rule 0
 - DONE make simcamera actually useful
-- have live camera dump success and occasional failure images to directories (for training & sim camera use)
+- DONE have live camera dump success and occasional failure images to directories (for training & sim camera use)
+- add blackout periods to rules, to prevent any feeding or image processing during those periods 
 - add current BOM to the README
 - add basic developer instructions / clean up development docs (include how to install and setup python env)
+- fix pypi release scripts to use pillow
 - merge detector and classifier responses?
 - use minium score for considered matches
 - map detections through an aliases table.  Use uppercase words for aliases (CAT, CROW etc).  Use a BLACKLIST alias for detections we never want to see (have an aliases dictionary that maps from grackle, bluejay, crow etc...)

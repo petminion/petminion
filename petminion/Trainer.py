@@ -10,8 +10,7 @@ class Trainer:
 
         self.camera = SimCamera() if is_simulated else CV2Camera()
         self.recognizer = ImageRecognizer()
-        self.rule = SimpleFeederRule(
-            self, "bird") if is_simulated else SimpleFeederRule(self, "cat")
+        self.rule = SimpleFeederRule(self, "cat")
         self.feeder = Feeder() if is_simulated else ZigbeeFeeder()
         self.image = None
 
