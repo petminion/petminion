@@ -10,7 +10,8 @@
 - DONE make a simple scheduled based cat feeder that only enables feedings at mealtime and only dispenses food when a) a feeding is allowed and b) a cat is seen
 - DONE have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
 - DONE add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
-- switch to the !docker version of mosquitto - to be more like the rasberry pi environment
+- DONE switch to the !docker version of mosquitto - to be more like the rasberry pi environment
+- make zigbee2mqtt config script/instructions - use docker - even when running on rasberry pi
 - make a deploy to corral board script
 - measure feeding amount in grams
 - switch Meer feeding over to use the non-camera based feeder

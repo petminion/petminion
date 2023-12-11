@@ -71,15 +71,7 @@ tests/unit/test_stub.py::test_stub PASSED
 
 ## Recognizer setup
 
-Install runtime prerequisites:
-```
-apt install mosquitto python3
-```
 
-Install dev prerequisites
-```
-apt install v4l-utils virtualenv mosquitto-clients
-```
 
 Create and activate python environment
 ```
@@ -201,7 +193,7 @@ docker compose up -d
 
 ## MQTT broker config
 
-### New 'apt get' based config
+### New 'apt get' broker config
 
 Configure the mosquitto service and set it to auto start on boot:
 ```
@@ -211,18 +203,22 @@ sudo systemctl enable mosquitto
 sudo systemctl start mosquitto
 ```
 
-### Old DEPRECATED docker-container version 
+### Old DEPRECATED docker-container broker config 
 in /home/kevinh/development/crowbot/mosquitto/compose.yaml per https://www.homeautomationguy.io/blog/docker-tips/configuring-the-mosquitto-mqtt-docker-container-for-use-with-home-assistant
 
 To start MQTT broker:
 cd mosquitto/docker-version
 docker compose up -d
 
-## MQTT command line test tools
+### MQTT command line test tools
 
 To subscribe to all
 
 mosquitto_sub -h localhost -t \#
+
+## Zigbee2Mqtt
+
+Per https://www.zigbee2mqtt.io/guide/installation/02_docker.html#starting-the-container
 
 ### flash new firmware onto the sonoff adapter
 

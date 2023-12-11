@@ -1,5 +1,8 @@
 homeassistant: false
-permit_join: false
+
+# FIXME: the following is insecure, but my devboard can only run an old version of node so I'm not currently using the frontend
+permit_join: true
+
 frontend: true
 mqtt:
   base_topic: zigbee2mqtt
