@@ -1,6 +1,5 @@
 kh-private.md
 ha/config/
-mosquitto/*
 tools/mount-crowbot.sh
 zigbee2mqtt/data/log
 zigbee2mqtt/*.txt
