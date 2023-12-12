@@ -8,7 +8,8 @@ authors = [
 ]
 description = "An application/framework for automated training of animals"
 readme = "README.md"
-requires-python = ">=3.7"
+# 3.5 is kinda old but needed to support the old python3 included on my google coral devboard
+requires-python = ">=3.5"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",

@@ -14,6 +14,16 @@
                 "--debug",
                 "--simulate"
             ]
+        },
+        {
+            "name": "Production Petminion",
+            "type": "python",
+            "request": "launch",
+            "module": "petminion",
+            "justMyCode": true,
+            "args": [
+                "--debug"
+            ]
         }
     ]
 }

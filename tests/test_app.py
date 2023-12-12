@@ -13,5 +13,5 @@ def test_integration():
     logger = logging.getLogger()
     logger.info(f'Petminion integration test running...')
 
-    t = Trainer(True)
+    t = Trainer(is_simulated=True)
     t.run()

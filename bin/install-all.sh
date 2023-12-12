@@ -13,14 +13,17 @@ echo "Updating repositories..."
 sudo apt-get update
 
 echo "Installing runtime prerequisites..."
-sudo apt-get upgrade -y mosquitto python3 docker-compose
+# The libgl1 is needed by open-cv
+sudo apt-get upgrade -y mosquitto python3-dev python3-pip libgl1 libgl1-mesa-glx libglib2.0-0 python3-tk
+# No longer needed (not using docker anymore)
+# docker-compose
 
 echo "Installing development prerequisites..."
-sudo apt-get upgrade -y v4l-utils virtualenv mosquitto-clients
+sudo apt-get upgrade -y v4l-utils virtualenv mosquitto-clients rsync man less
 
-echo "Configuring docker (needed for zigbee2mqtt)"
-sudo groupadd docker
-sudo usermod -aG docker $USER
+#echo "Configuring docker (needed for zigbee2mqtt)"
+#sudo groupadd docker
+#sudo usermod -aG docker $USER
 
 echo "Enabling and starting MQTT broker..."
 sudo cp mosquitto/petminion.conf /etc/mosquitto/conf.d/
@@ -53,12 +56,22 @@ newgrp dialout
 
 # Start zigbee2mqtt
 sudo systemctl enable zigbee2mqtt
-sudo systemctl start zigbee2mqtts
+sudo systemctl start zigbee2mqtt
 
-sleep 5
 echo "Zigbee2mqtt is running, now you should pair your feeder to the zigbee network (long-press the reset button - after success the feeder will beep)"
+read -p "Press any key to continue... " -n1 -s
 
 echo "Generating a test feeder command (your feeder should dispense)"
 mosquitto_pub -t zigbee2mqtt/feeder/set -m "{ \"feed\": \"START\", \"mode\": \"manual\" }"
 
+# Setup development environment
+echo "Creating local development environment (this will take a while)"
+virtualenv -p python3 minionenv
+source minionenv/bin/activate
 
+# install all of our python development dependencies
+# FIXME - change the open-cv dependency to opencv-python-headless to pull in a much smaller install
+pip install --upgrade --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+
+echo "Testing installation by running petminion simulator (this might take a while the first time...)"
+pytest

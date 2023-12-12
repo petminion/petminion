@@ -2,8 +2,7 @@
 
 import argparse
 import logging
-# import os
-# import asyncio
+import os
 from .Trainer import Trainer
 
 """The command line arguments"""
@@ -28,6 +27,11 @@ def main():
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
     logger = logging.getLogger()
     logger.info(f'Petminion running...')
+
+    if not os.path.exists("/dev/video0"):
+        logger.warning(
+            f'No camera detected, forcing simulation mode instead...')
+        args.simulate = True
 
     t = Trainer(args.simulate)
 
