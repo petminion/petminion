@@ -12,7 +12,7 @@
 - DONE add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
 - DONE switch to the !docker version of mosquitto - to be more like the rasberry pi environment
 - make zigbee2mqtt config script/instructions - use docker - even when running on rasberry pi
-- make a deploy to corral board script
+- DONE make a deploy to corral board script
 - measure feeding amount in grams
 - switch Meer feeding over to use the non-camera based feeder
 - switch Meer feeding over to use the camera based feeder
@@ -29,6 +29,7 @@
 - keep unexpected recognizer words in a log file 
 - add method documentation for all the key methods
 - Use a should_trigger() method in the rules to allow multiple rules to be candidates at once
+- possibly use camera to make a squirrel proof feeder
 - Get remote debugging working
 - figure out gpioish mechanism (3d print? off the shelf?) for a door that drops tokens or uneaten food into a bucket
 - Have recognizer save interesting frames to a directory.  Where interesting

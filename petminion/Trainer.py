@@ -11,7 +11,7 @@ class Trainer:
         self.camera = SimCamera() if is_simulated else CV2Camera()
         self.recognizer = ImageRecognizer()
         self.rule = SimpleFeederRule(self, "cat")
-        self.feeder = Feeder() if is_simulated else ZigbeeFeeder()
+        self.feeder = Feeder() if True or is_simulated else ZigbeeFeeder()
         self.image = None
 
     def run_once(self):

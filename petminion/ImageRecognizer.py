@@ -33,18 +33,19 @@ def get_model_path(url, filename):
 class ImageRecognizer:
     def __init__(self):
         # autodownload the model files if needed
+        fast_and_small = False
 
         self.detector = detector = ObjectDetection()
         detector.setModelTypeAsYOLOv3()
-        detector.setModelPath(get_model_path(
-            "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/yolov3.pt", "yolov3.pt"))
+        detector.setModelPath(get_model_path("https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/tiny-yolov3.pt" if fast_and_small else
+                                             "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/yolov3.pt", "yolov3.pt"))
         logger.debug('Loading detector model (this can take a while)...')
         detector.loadModel()
 
         self.classifier = classifier = ImageClassification()
         classifier.setModelTypeAsResNet50()
-        classifier.setModelPath(get_model_path(
-            "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/resnet50-19c8e357.pth", "resnet50-19c8e357.pth"))
+        classifier.setModelPath(get_model_path("https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/mobilenet_v2-b0353104.pth" if fast_and_small else
+                                               "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/resnet50-19c8e357.pth", "resnet50-19c8e357.pth"))
         logger.debug('Loading classifier model (this can take a while)...')
         classifier.loadModel()
 
