@@ -5,7 +5,7 @@ This project is only ready for 'brave' co-developers at this point - so these in
 
 The current rough BOM for the system I'm using now is:
 
-FIXME raspberry PI 3 doesn't have enough RAM runs super slow with the models.  The full virtual size of our python process is about 6GB, but the resident size only needs to be about 1GB.  But a 1GB rpi3 doesn't have enough free RAM to avoid constantly paging that 1GB.
+FIXME raspberry PI 3 doesn't have enough RAM runs super slow with the models.  The full virtual size of our python process is about 6GB, but the resident size only needs to be about 1GB.  But a 1GB rpi3 doesn't have enough free RAM to avoid constantly paging that 1GB.  I tried using smaller models but that only cuts the resident size to 700MB (not a big change).
 
 * A raspberry PI 3 (see below for details).  (Developers with a linux computer can also run/develop on their desktop directly)
 * This $50 camera (because waterproof and long USB cable to reach my computer inside): https://www.amazon.com/gp/product/B07C2RL8PB/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1 

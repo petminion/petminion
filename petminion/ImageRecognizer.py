@@ -36,16 +36,26 @@ class ImageRecognizer:
         fast_and_small = False
 
         self.detector = detector = ObjectDetection()
-        detector.setModelTypeAsYOLOv3()
-        detector.setModelPath(get_model_path("https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/tiny-yolov3.pt" if fast_and_small else
-                                             "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/yolov3.pt", "yolov3.pt"))
+        if fast_and_small:
+            detector.setModelTypeAsTinyYOLOv3()
+            detector.setModelPath(get_model_path(
+                "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/tiny-yolov3.pt", "tiny-yolov3.pt"))
+        else:
+            detector.setModelTypeAsYOLOv3()
+            detector.setModelPath(get_model_path(
+                "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/yolov3.pt", "yolov3.pt"))
         logger.debug('Loading detector model (this can take a while)...')
         detector.loadModel()
 
         self.classifier = classifier = ImageClassification()
-        classifier.setModelTypeAsResNet50()
-        classifier.setModelPath(get_model_path("https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/mobilenet_v2-b0353104.pth" if fast_and_small else
-                                               "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/resnet50-19c8e357.pth", "resnet50-19c8e357.pth"))
+        if fast_and_small:
+            classifier.setModelTypeAsMobileNetV2()
+            classifier.setModelPath(get_model_path(
+                "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/mobilenet_v2-b0353104.pth", "mobilenet_v2-b0353104.pth"))
+        else:
+            classifier.setModelTypeAsResNet50()
+            classifier.setModelPath(get_model_path(
+                "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/resnet50-19c8e357.pth", "resnet50-19c8e357.pth"))
         logger.debug('Loading classifier model (this can take a while)...')
         classifier.loadModel()
 
