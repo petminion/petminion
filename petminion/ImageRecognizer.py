@@ -38,15 +38,18 @@ class ImageRecognizer:
         detector.setModelTypeAsYOLOv3()
         detector.setModelPath(get_model_path(
             "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/yolov3.pt", "yolov3.pt"))
+        logger.debug('Loading detector model (this can take a while)...')
         detector.loadModel()
 
         self.classifier = classifier = ImageClassification()
         classifier.setModelTypeAsResNet50()
         classifier.setModelPath(get_model_path(
             "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/resnet50-19c8e357.pth", "resnet50-19c8e357.pth"))
+        logger.debug('Loading classifier model (this can take a while)...')
         classifier.loadModel()
 
     def do_detection(self, image: numpy.ndarray) -> tuple[numpy.ndarray, list[ImageDetection]]:
+        logger.debug("Doing detection...")
         annotated, detections = self.detector.detectObjectsFromImage(input_image=image,
                                                                      minimum_percentage_probability=30,
                                                                      output_type="array")
@@ -63,6 +66,7 @@ class ImageRecognizer:
         return annotated, d
 
     def do_classification(self, image: numpy.ndarray) -> list[ImageDetection]:
+        logger.debug("Doing classification...")
         predictions, probabilities = self.classifier.classifyImage(
             image, result_count=5)
         for eachPrediction, eachProbability in zip(predictions, probabilities):

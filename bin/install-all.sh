@@ -73,5 +73,9 @@ source minionenv/bin/activate
 # FIXME - change the open-cv dependency to opencv-python-headless to pull in a much smaller install
 pip install --upgrade --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
 
+# Give the user access to the USB camera
+sudo adduser $USER video
+newgrp video
+
 echo "Testing installation by running petminion simulator (this might take a while the first time...)"
 pytest

@@ -10,3 +10,4 @@ torchvision
 pytest
 platformdirs
 poetry
+tensorflow
