@@ -1,12 +1,14 @@
 
 from .ImageRecognizer import ImageDetection
-from .util import user_data_dir
+from .util import user_state_dir, user_data_dir
 from typing import NamedTuple
 from datetime import time, datetime, timedelta
 import os
 import cv2
 import json
 import logging
+import tempfile
+import jsonpickle
 logger = logging.getLogger()
 
 
@@ -15,15 +17,61 @@ class FeedingNotAllowed(Exception):
     pass
 
 
+save_name = os.path.join(user_state_dir(), "rule_state.json")
+
+# FIXME do this someplace better
+# jsonpickle.handlers.register(datetime, jsonpickle.handlers.DatetimeHandler)
+
+
 class TrainingRule:
+
     def __init__(self, trainer):
+        """The normal constructor when created by the Trainer"""
         self.trainer = trainer
         self.fed_today = 0  # how many feedings have we done so far today
         self.last_time = datetime.now().time()
         self.last_feed_datetime = None
         self.last_failure_datetime = None
+        self.last_live_frame = None
         self.min_feed_interval = timedelta(minutes=10)
         self.failure_capture_interval = timedelta(hours=4)
+        self.live_frame_capture_interval = timedelta(seconds=5)
+
+    @staticmethod
+    def create_from_save(trainer, desired_class):
+        """Try to recreate a pickled/saved TrainingRule from our saved state file, return None if not possible"""
+        try:
+            logger.info(f'Restoring training state from {save_name}')
+            with open(save_name, "r") as f:
+                json = f.read()
+                o = jsonpickle.decode(json)
+                o.trainer = trainer  # We never serialized this, so must reinit
+                return o
+        except Exception as e:
+            logger.warning(
+                f'No saved training state ({e}) found, using default state...')
+            return desired_class(trainer)  # create a default instance
+
+    def save_state(self):
+        """Serialize this object to the filesystem so it can be restore_state later..."""
+        # FIXME - move out of this class into a general utility pickling class
+
+        logger.debug(f'Saving state to {save_name}')
+        json = jsonpickle.encode(self, unpicklable=False, indent=2)
+        with open(save_name, "w") as f:
+            f.write(json)
+
+    def __getstate__(self):
+        """Used by jsonpickle to get the object used for serialization
+        """
+        # per https://stackoverflow.com/questions/18147435/how-to-exclude-specific-fields-on-serialization-with-jsonpickle
+        state = self.__dict__.copy()
+        del state['trainer']  # We do not want this serialized
+        return state
+
+    def __setstate__(self, state):
+        """Used by jsonpickle to unpickle from a saved state object"""
+        self.__dict__.update(state)
 
     def do_feeding(self):
         """Do a feeding
@@ -40,6 +88,8 @@ class TrainingRule:
             self.trainer.feeder.feed()
             self.fed_today += 1
             self.last_feed_datetime = now
+
+        self.save_state()  # save to disk so we don't miss feedings if we restart
 
     def run_once(self):
         """Do idle processing for this rule - mostly by calling evaluate_scene()"""
@@ -58,6 +108,11 @@ class TrainingRule:
             if not self.last_failure_datetime or now >= self.last_failure_datetime + self.failure_capture_interval:
                 self.last_failure_datetime = now
                 self.save_image(is_success=False)
+
+        if not self.last_live_frame or now >= self.last_live_frame + self.live_frame_capture_interval:
+            self.last_live_frame = now
+            filepath = os.path.join(tempfile.gettempdir(), "minion_live.png")
+            self.store_annotated(filepath)
 
     def evaluate_scene(self) -> bool:
         """Evaluate the current scene
@@ -79,6 +134,10 @@ class TrainingRule:
 
     def is_detected(self, name: str):
         return self.count_detections(name) > 0
+
+    def store_annotated(self, filepath):
+        """Store the current annotated frame in a file"""
+        cv2.imwrite(filepath, self.trainer.image.annotated)
 
     def save_image(self, is_success: bool, summary: str = None, details: str = None, store_annotated: bool = False):
         """Save the current image
@@ -107,8 +166,8 @@ class TrainingRule:
 
         # store annotated image if any detections were found
         if store_annotated and self.trainer.image.detections:
-            cv2.imwrite(os.path.join(
-                image_dir, f"{filename}-annotated.png"), self.trainer.image.annotated)
+            self.store_annotated(os.path.join(
+                image_dir, f"{filename}-annotated.png"))
 
         # write metadata
         data = {

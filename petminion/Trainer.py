@@ -21,7 +21,10 @@ class Trainer:
 
         self.camera = SimCamera() if is_simulated else CV2Camera()
         self.recognizer = ImageRecognizer()
-        self.rule = class_by_name("TrainingRule")(self)
+
+        rule_class = class_by_name("TrainingRule")
+        self.rule = TrainingRule.create_from_save(self, rule_class)
+
         self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()
         self.image = None
 
@@ -36,3 +39,4 @@ class Trainer:
             except CameraDisconnectedError as e:
                 logger.info(f"exiting... { e }")
                 break
+        self.rule.save_state()  # Keep current feeding/schedule data

@@ -23,6 +23,11 @@ def user_config_dir():
     return platformdirs.user_config_dir(app_name, app_author, ensure_exists=True)
 
 
+def user_state_dir():
+    """Get our state directory"""
+    return platformdirs.user_state_dir(app_name, app_author, ensure_exists=True)
+
+
 class AppConfig:
     """Provides read/write access to application config file"""
 

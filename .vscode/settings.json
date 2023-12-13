@@ -8,6 +8,7 @@
   "cSpell.words": [
     "imread",
     "imwrite",
+    "jsonpickle",
     "mosquitto",
     "MQTT",
     "ndarray",
