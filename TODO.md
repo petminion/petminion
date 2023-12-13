@@ -14,6 +14,7 @@
 - make zigbee2mqtt config script/instructions - use docker - even when running on rasberry pi
 - DONE make a deploy to corral board script
 - measure feeding amount in grams
+- store live camera frames to /tmp
 - switch Meer feeding over to use the non-camera based feeder
 - switch Meer feeding over to use the camera based feeder
 - finish cat training rule 0
@@ -37,6 +38,7 @@
 - have a blacklist of mistaken matches which we will never consider interesting  
 - Store image and the matching terms in a separate datafile  
 - Only store a max of one frame every 30 seconds.
+- convert models to tensorflow lite which supposedly runs much faster on rPi https://www.tensorflow.org/lite/guide/python
 - Find a rasberry pi distribution which can be auto populated to generate 'easy' install images for this app and all its dependencies
 - automatically load training rules from a directory.  This will allow users to make/share rules without using git/github
 - Add hotreloading of rules based on file changes

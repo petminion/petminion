@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import logging
+from .util import app_config
 
 logger = logging.getLogger()
 
@@ -27,7 +28,7 @@ class ZigbeeFeeder(Feeder):
 
         client.on_connect = on_connect
         client.on_message = on_message
-        host = "localhost"
+        host = app_config.settings['MQTTHost']
         client.connect(host, 1883, 60)
         client.loop_start()  # FIXME, need to stop looper thread if we destroy this object
 

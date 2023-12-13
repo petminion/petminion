@@ -9,6 +9,7 @@
     "imread",
     "imwrite",
     "mosquitto",
+    "MQTT",
     "ndarray",
     "platformdirs"
   ],
