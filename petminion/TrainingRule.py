@@ -20,7 +20,7 @@ class FeedingNotAllowed(Exception):
 save_name = os.path.join(user_state_dir(), "rule_state.json")
 
 # FIXME do this someplace better
-# jsonpickle.handlers.register(datetime, jsonpickle.handlers.DatetimeHandler)
+jsonpickle.handlers.register(datetime, jsonpickle.handlers.DatetimeHandler)
 
 
 class TrainingRule:
@@ -33,9 +33,11 @@ class TrainingRule:
         self.last_feed_datetime = None
         self.last_failure_datetime = None
         self.last_live_frame = None
-        self.min_feed_interval = timedelta(minutes=10)
-        self.failure_capture_interval = timedelta(hours=4)
-        self.live_frame_capture_interval = timedelta(seconds=5)
+
+        # Note, we have to use seconds for these intervals because timedelta is not properly serialized by jsonpickle
+        self.min_feed_interval = timedelta(minutes=10).total_seconds()
+        self.failure_capture_interval = timedelta(hours=4).total_seconds()
+        self.live_frame_capture_interval = timedelta(seconds=5).total_seconds()
 
     @staticmethod
     def create_from_save(trainer, desired_class):
@@ -80,10 +82,10 @@ class TrainingRule:
         self.save_image(is_success=True, store_annotated=True)
 
         now = datetime.now()
-        if self.last_feed_datetime and now < self.last_feed_datetime + self.min_feed_interval:
+        if self.last_feed_datetime and now < self.last_feed_datetime + timedelta(seconds=self.min_feed_interval):
             # raise FeedingNotAllowed(f'Too soon for this feeding, try again at { self.last_feed_time + self.min_feed_interval }')
             logger.warning(
-                f'Too soon for this feeding, try again at { self.last_feed_datetime + self.min_feed_interval }')
+                f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.min_feed_interval) }')
         else:
             self.trainer.feeder.feed()
             self.fed_today += 1
@@ -105,11 +107,11 @@ class TrainingRule:
         if not self.evaluate_scene():
             # We 'failed' on this camera frame.  The vast majority of frames will be failures
             # but it is useful to save a few of them for future training purposes - let's do one every four hours?
-            if not self.last_failure_datetime or now >= self.last_failure_datetime + self.failure_capture_interval:
+            if not self.last_failure_datetime or now >= self.last_failure_datetime + timedelta(seconds=self.failure_capture_interval):
                 self.last_failure_datetime = now
                 self.save_image(is_success=False)
 
-        if not self.last_live_frame or now >= self.last_live_frame + self.live_frame_capture_interval:
+        if not self.last_live_frame or now >= self.last_live_frame + timedelta(seconds=self.live_frame_capture_interval):
             self.last_live_frame = now
             filepath = os.path.join(tempfile.gettempdir(), "minion_live.png")
             self.store_annotated(filepath)
