@@ -72,7 +72,7 @@ class ImageRecognizer:
         # Convert to our typed representation
         d = list(map(lambda x: ImageDetection(
             x["name"], x["percentage_probability"],
-            eachObject["box_points"][0], eachObject["box_points"][1], eachObject["box_points"][2], eachObject["box_points"][3]),
+            x["box_points"][0], x["box_points"][1], x["box_points"][2], x["box_points"][3]),
             detections))
         return annotated, d
 

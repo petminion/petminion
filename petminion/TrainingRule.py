@@ -223,7 +223,7 @@ class SimpleFeederRule(ScheduledFeederRule):
         self.target = target
 
     def evaluate_scene(self) -> bool:
-        if self.is_feeding_allowed() and self.is_detected(self.target):
+        if self.is_detected(self.target) and self.is_feeding_allowed():
             logger.debug(
                 f'A feeding is allowed and we just saw a { self.target }')
             self.do_feeding()
