@@ -19,9 +19,6 @@ class FeedingNotAllowed(Exception):
 
 save_name = os.path.join(user_state_dir(), "rule_state.json")
 
-# FIXME do this someplace better
-jsonpickle.handlers.register(datetime, jsonpickle.handlers.DatetimeHandler)
-
 
 class TrainingRule:
 
@@ -46,9 +43,9 @@ class TrainingRule:
             logger.info(f'Restoring training state from {save_name}')
             with open(save_name, "r") as f:
                 json = f.read()
-                o = jsonpickle.decode(json)
-                o.trainer = trainer  # We never serialized this, so must reinit
-                return o
+                r = jsonpickle.decode(json)
+                r.trainer = trainer  # restore unsaved field
+                return r
         except Exception as e:
             logger.warning(
                 f'No saved training state ({e}) found, using default state...')
@@ -59,7 +56,8 @@ class TrainingRule:
         # FIXME - move out of this class into a general utility pickling class
 
         logger.debug(f'Saving state to {save_name}')
-        json = jsonpickle.encode(self, unpicklable=False, indent=2)
+        # unpicklable=False, doesn't work well - we loose too much type info
+        json = jsonpickle.encode(self,  indent=2)
         with open(save_name, "w") as f:
             f.write(json)
 
