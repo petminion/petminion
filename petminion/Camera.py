@@ -1,30 +1,58 @@
 import cv2
 import logging
 import os
+import numpy
 
 logger = logging.getLogger()
 
 
 class CameraDisconnectedError(IOError):
+    """A camera was disconnected
+    """
     pass
 
 
 class Camera:
-    def read_image(self):
+    """A base-class for camera classes
+    """
+
+    def read_image(self) -> numpy.ndarray:
+        """Subclasses must implement
+
+        Raises:
+            NotImplementedError: _description_
+        """
         raise NotImplementedError
 
 
 class SimCamera(Camera):
+    """A simulated camera that fakes images by reading files from a filesystem.
+
+    """
+
     def __init__(self, repeat_forever: bool = False):
+        """Constructor
+
+        Args:
+            repeat_forever (bool, optional): If false we will end the stream after the last test-image is consumed, if true we will loop back to the first image. 
+            Defaults to False.
+        """
         my_dir = os.path.dirname(__file__)  # where this python file is located
-        # self.img_dir = '/home/kevinh/development/petminion/tests/image'
         self.img_dir = os.path.join(my_dir, "..", "tests", "image")
         self.filenames = list(filter(lambda x: x.endswith(
             ".jpg"), os.listdir(self.img_dir)))
         self.next_name = iter(self.filenames)
         self.repeat_forever = repeat_forever
 
-    def read_image(self):
+    def read_image(self) -> numpy.ndarray:
+        """Read an image from our tests directory.
+
+        Raises:
+            CameraDisconnectedError: at end of stream
+
+        Returns:
+            numpy.ndarray: A frame from the camera
+        """
         f = next(self.next_name, None)
         if not f:
             if not self.repeat_forever:
@@ -42,7 +70,15 @@ class SimCamera(Camera):
 
 
 class CV2Camera(Camera):
+    """Uses the OpenCV API to read from a USB webcam.
+    """
+
     def __init__(self):
+        """Constructor
+
+        Raises:
+            ConnectionError: Raised if we don't have permission to access the camera device
+        """
         # initialize the camera
         # If you have multiple camera connected with
         # current device, assign a value in cam_port
@@ -61,7 +97,15 @@ class CV2Camera(Camera):
         if (cam.isOpened() == False):
             raise ConnectionError("Can't access camera")
 
-    def read_image(self):
+    def read_image(self) -> numpy.ndarray:
+        """Read a frame from the camera
+
+        Raises:
+            CameraDisconnectedError: Raised if the camera is removed
+
+        Returns:
+            numpy.ndarray: A frame from the camera
+        """
         # reading the input using the camera
         camGood, camImage = self.cam.read()
 

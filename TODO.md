@@ -13,7 +13,7 @@
 - DONE switch to the !docker version of mosquitto - to be more like the rasberry pi environment
 - make zigbee2mqtt config script/instructions - use docker - even when running on rasberry pi
 - DONE make a deploy to corral board script
-- measure feeding amount in grams
+- measure feeding amount in grams.   Old feeder=7g/feeding. Aguara feeder=TBD/feeding
 - DONE store live camera frames to /tmp
 - switch Meer feeding over to use the non-camera based feeder
 - switch Meer feeding over to use the camera based feeder
@@ -24,6 +24,7 @@
 - add current BOM to the README
 - add basic developer instructions / clean up development docs (include how to install and setup python env)
 - fix pypi release scripts to use pillow
+- log high level events (feedings etc...) into a file so that users can remotely monitor
 - merge detector and classifier responses?
 - use minium score for considered matches
 - map detections through an aliases table.  Use uppercase words for aliases (CAT, CROW etc).  Use a BLACKLIST alias for detections we never want to see (have an aliases dictionary that maps from grackle, bluejay, crow etc...)
@@ -39,7 +40,7 @@
 - DONE Store image and the matching terms in a separate datafile  
 - Only store a max of one frame every 30 seconds.
 - convert models to tensorflow lite which supposedly runs much faster on rPi https://www.tensorflow.org/lite/guide/python
-- Find a rasberry pi distribution which can be auto populated to generate 'easy' install images for this app and all its dependencies
+- DONE - DietPi - Find a rasberry pi distribution which can be auto populated to generate 'easy' install images for this app and all its dependencies
 - automatically load training rules from a directory.  This will allow users to make/share rules without using git/github
 - Add hotreloading of rules based on file changes
 - DONE have the python app auto fetch teh (huge) machine vision model files
