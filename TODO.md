@@ -13,7 +13,7 @@
 - DONE switch to the !docker version of mosquitto - to be more like the rasberry pi environment
 - make zigbee2mqtt config script/instructions - use docker - even when running on rasberry pi
 - DONE make a deploy to corral board script
-- measure feeding amount in grams.   Old feeder=7g/feeding. Aguara feeder=TBD/feeding
+- measure feeding amount in grams.   Old feeder=7g/feeding. Aguara feeder=8g/feeding
 - DONE store live camera frames to /tmp
 - switch Meer feeding over to use the non-camera based feeder
 - switch Meer feeding over to use the camera based feeder

@@ -11,6 +11,8 @@ class Feeder:
         logger.info(f'Simulating a feeding!')
 
 
+command_topic = "zigbee2mqtt/feeder/set"
+
 class ZigbeeFeeder(Feeder):
     def __init__(self):
         self.client = client = mqtt.Client()
@@ -21,6 +23,7 @@ class ZigbeeFeeder(Feeder):
             # Subscribing in on_connect() means that if we lose the connection and
             # reconnect then subscriptions will be renewed.
             client.subscribe("zigbee2mqtt/feeder")
+            self.init_feeder()
 
         # The callback for when a PUBLISH message is received from the server.
         def on_message(client, userdata, msg):
@@ -36,7 +39,14 @@ class ZigbeeFeeder(Feeder):
         logger.info(f'Feeding via Zigbee!')
 
         # FIXME - wait for the confirmation publish from the feeder device, if it doesn't occur soon print a big error and don't consider this a feeding
-        self.client.publish("zigbee2mqtt/feeder/set",
+        # FIXME - "remote" might be better than manual
+        self.client.publish(command_topic,
                             '{ "feed": "START", "mode": "manual" }')
         # mosquitto_pub -t zigbee2mqtt/feeder/set -m "{ \"feed\": \"START\", \"mode\": \"manual\" }"
         # {"level":"info","message":"MQTT publish: topic 'zigbee2mqtt/feeder', payload '{\"error\":false,\"feed\":\"START\",\"feeding_size\":1,\"feeding_source\":\"remote\",\"linkquality\":185,\"portions_per_day\":4,\"weight_per_day\":32}'"}
+
+    def init_feeder(self):
+        """Send MQTT to force feeder into manual mode, with no built-in scheduled feedings"""
+        # a full payload seems to contain '{"child_lock":"UNLOCK","error":false,"feed":"","feeding_size":1,"feeding_source":"schedule","led_indicator":"OFF","linkquality":149,"mode":"manual","portion_weight":8,"portions_per_day":7,"schedule":[],"serving_size":1,"weight_per_day":56}'
+        payload = '{"schedule":[]}'
+        self.client.publish(command_topic, payload)
