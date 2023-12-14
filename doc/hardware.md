@@ -11,6 +11,8 @@ FIXME raspberry PI 3 doesn't have enough RAM runs super slow with the models.  T
 
 With a RPi4B and the 'full/slow' machine vision model it takes about six seconds of CPU time to fully analyze a frame - which I think is fine for this application.  Eventually we will switch to Tensorflow Lite which should be **much** faster, but that will be a few months.
 
+But even better the 'fast/slightly-crummy' machine vision models only need one secondish to fully analyze a frame!  So we are using that for now (by default, you can change it in your config.ini file).
+
 * A raspberry PI 4 with at least 4GB of RAM, 8GB recommended.  (Developers with a linux computer can also run/develop on their desktop directly)
 * This $50 camera (because waterproof and long USB cable to reach my computer inside): https://www.amazon.com/gp/product/B07C2RL8PB/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1 
 * This $80 feeder https://www.amazon.com/gp/product/B0B9XZ96PH

@@ -83,6 +83,15 @@ mv id_petminion.pub .ssh/authorized_keys
 apt install git
 git clone https://github.com/petminion/petminion.git
 
+## Remote debugging/development on a Raspberry Pi
+
+* Install the "Remote - SSH" VS-Code extension (by Microsoft)
+* Press F1 and choose "Remote SSH Connect to Host".
+* Select your host (i.e. petminion1)
+* It should open linux shell on the devboard...
+* Select "open folder" and open "development/petminion"
+* At this point you can develop/edit/debug/run in that VScode window just like the machine was local!
+
 ## Recognizer setup
 
 
