@@ -6,10 +6,11 @@
 
 ## Project principles
 
-* A generalized tool for (semi?) automated training of animals
+* A generalized tool for (semi?) automated training of animals (initially: cats, dogs, crows)
+* Use machine vision to simplify hardware and training
 * Use 'off-the-shelf' hardware as much as possible (hopefully no soldering, no requirement for 3D printing)
-* Make the software accessible and extendable by beginning coders.  Particularly for adding training rules.
-* Two initial test cases: cat training and crow training
+* Make the software accessible and extendable by beginning coders
+* Easy for anyone to add new training rules
 * Project should be fun and useful for both the developers and the users
 
 ## Required hardware
