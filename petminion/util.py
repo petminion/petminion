@@ -53,7 +53,8 @@ class AppConfig:
             'MQTTHost': 'localhost',
             'Feeder': 'ZigbeeFeeder',
             'TrainingRule': 'SimpleFeederRule',
-            'FastModel': True
+            'FastModel': True,
+            'SimFallback': True
         }
 
     @property

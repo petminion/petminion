@@ -200,7 +200,8 @@ class ScheduledFeederRule(TrainingRule):
         # FIXME - pull schedule from some sort of json file?
         self.schedule = [ScheduledFeeding(time(7, 20), 3),
                          ScheduledFeeding(time(14, 00), 1),
-                         ScheduledFeeding(time(16, 00), 1)]
+                         ScheduledFeeding(time(16, 00), 1),
+                         ScheduledFeeding(time(18, 00), 3)]
 
     def is_feeding_allowed(self):
         # find all previously allowed feedings for today

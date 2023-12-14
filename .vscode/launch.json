@@ -9,6 +9,8 @@
             "type": "python",
             "request": "launch",
             "module": "petminion",
+            // use our virtualenv
+            "python": "${workspaceFolder}/minionenv/bin/python",
             "justMyCode": true,
             "args": [
                 "--debug",
@@ -20,6 +22,8 @@
             "type": "python",
             "request": "launch",
             "module": "petminion",
+            // use our virtualenv
+            "python": "${workspaceFolder}/minionenv/bin/python",
             "justMyCode": true,
             "args": [
                 "--debug"

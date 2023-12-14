@@ -4,6 +4,7 @@ import argparse
 import logging
 import os
 from .Trainer import Trainer
+from .util import app_config
 
 """The command line arguments"""
 args = None
@@ -28,7 +29,7 @@ def main():
     logger = logging.getLogger()
     logger.info(f'Petminion running...')
 
-    if not os.path.exists("/dev/video0"):
+    if not os.path.exists("/dev/video0") and app_config.settings['SimFallback']:
         logger.warning(
             f'No camera detected, forcing simulation mode instead...')
         args.simulate = True

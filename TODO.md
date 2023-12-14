@@ -21,6 +21,7 @@
 - DONE make simcamera actually useful
 - DONE have live camera dump success and occasional failure images to directories (for training & sim camera use)
 - add blackout periods to rules, to prevent any feeding or image processing during those periods 
+- remove bogus scheduled feeding that seems to be by default in the zigbee feeder
 - add current BOM to the README
 - add basic developer instructions / clean up development docs (include how to install and setup python env)
 - fix pypi release scripts to use pillow
