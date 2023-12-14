@@ -14,12 +14,15 @@ sudo apt-get update
 
 echo "Installing runtime prerequisites..."
 # The libgl1 is needed by open-cv
-sudo apt-get upgrade -y mosquitto python3-dev python3-pip libgl1 libgl1-mesa-glx libglib2.0-0 python3-tk
+sudo apt-get upgrade -y mosquitto python3-dev python3-pip python3 libgl1 libgl1-mesa-glx libglib2.0-0 python3-tk apt-utils
 # No longer needed (not using docker anymore)
 # docker-compose
 
+# Force python3 as the default python
+# sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
 echo "Installing development prerequisites..."
-sudo apt-get upgrade -y v4l-utils virtualenv mosquitto-clients rsync man less
+sudo apt-get upgrade -y v4l-utils virtualenv mosquitto-clients rsync man less git
 
 #echo "Configuring docker (needed for zigbee2mqtt)"
 #sudo groupadd docker
@@ -52,7 +55,6 @@ sudo cp zigbee2mqtt/zigbee2mqtt.service /etc/systemd/system
 
 # Give user access to serial port (for zigbee adapter)
 sudo adduser $USER dialout
-newgrp dialout
 
 # Start zigbee2mqtt
 sudo systemctl enable zigbee2mqtt
@@ -61,6 +63,7 @@ sudo systemctl start zigbee2mqtt
 echo "Zigbee2mqtt is running, now you should pair your feeder to the zigbee network (long-press the reset button - after success the feeder will beep)"
 read -p "Press any key to continue... " -n1 -s
 
+sleep 5 # give time for pairing to complete
 echo "Generating a test feeder command (your feeder should dispense)"
 mosquitto_pub -t zigbee2mqtt/feeder/set -m "{ \"feed\": \"START\", \"mode\": \"manual\" }"
 
@@ -75,7 +78,6 @@ pip install --upgrade --extra-index-url https://download.pytorch.org/whl/cpu -r 
 
 # Give the user access to the USB camera
 sudo adduser $USER video
-newgrp video
 
 echo "Testing installation by running petminion simulator (this might take a while the first time...)"
 pytest

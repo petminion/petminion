@@ -44,7 +44,8 @@ class ImageRecognizer:
             detector.setModelTypeAsYOLOv3()
             detector.setModelPath(get_model_path(
                 "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/yolov3.pt", "yolov3.pt"))
-        logger.debug('Loading detector model (this can take a while)...')
+        logger.debug(
+            "Loading detector model (If this takes a long time, your computer doesn't have enough RAM)...")
         detector.loadModel()
 
         self.classifier = classifier = ImageClassification()
@@ -56,7 +57,8 @@ class ImageRecognizer:
             classifier.setModelTypeAsResNet50()
             classifier.setModelPath(get_model_path(
                 "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/resnet50-19c8e357.pth", "resnet50-19c8e357.pth"))
-        logger.debug('Loading classifier model (this can take a while)...')
+        logger.debug(
+            "Loading classifier model (If this takes a long time, your computer doesn't have enough RAM)...")
         classifier.loadModel()
 
     def do_detection(self, image: numpy.ndarray) -> tuple[numpy.ndarray, list[ImageDetection]]:

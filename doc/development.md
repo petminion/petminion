@@ -69,6 +69,20 @@ PASSED                                                                          
 tests/unit/test_stub.py::test_stub PASSED
 ```
 
+## A 'from-scratch' developer install on a Rasberry Pi 4B
+
+mv id_petminion.pub .ssh/authorized_keys
+    7  ls -la
+    8  chmod go-rwx ssh
+    9  chmod go-rwx .ssh
+   10  cd .ssh
+   11  ls -la
+   12  chmod go-rwx authorized_keys 
+   13  mkdir development
+   14  cd development/
+apt install git
+git clone https://github.com/petminion/petminion.git
+
 ## Recognizer setup
 
 

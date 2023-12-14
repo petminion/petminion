@@ -33,7 +33,8 @@ class Trainer:
         self.rule.run_once()
 
     def run(self):
-        logger.info("Watching camera (press ctrl-C to exit)...")
+        logger.info(
+            "Watching camera (use --debug for progress info. press ctrl-C to exit)...")
         while True:
             try:
                 self.run_once()

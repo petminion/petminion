@@ -11,7 +11,7 @@ StandardOutput=inherit
 StandardError=inherit
 Restart=always
 RestartSec=10s
-User=dietspi
+User=dietpi
 
 [Install]
 WantedBy=multi-user.target
