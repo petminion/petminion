@@ -1,0 +1,17 @@
+[Unit]
+Description=petminion
+After=network.target
+
+[Service]
+Environment=PYTHONPATH=.
+ExecStart=/home/dietpi/development/petminion/minionenv/bin/python -m petminion --debug
+WorkingDirectory=/home/dietpi/development/petminion
+StandardOutput=inherit
+# Or use StandardOutput=null if you don't want petminion messages filling syslog, for more options see systemd.exec(5)
+StandardError=inherit
+Restart=always
+RestartSec=10s
+User=dietpi
+
+[Install]
+WantedBy=multi-user.target

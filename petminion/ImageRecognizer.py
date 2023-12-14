@@ -62,7 +62,8 @@ class ImageRecognizer:
         classifier.loadModel()
 
     def do_detection(self, image: numpy.ndarray) -> tuple[numpy.ndarray, list[ImageDetection]]:
-        logger.debug("Doing detection...")
+        # too verbose
+        # logger.debug("Doing detection...")
         annotated, detections = self.detector.detectObjectsFromImage(input_image=image,
                                                                      minimum_percentage_probability=30,
                                                                      output_type="array")
