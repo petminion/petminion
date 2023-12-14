@@ -14,15 +14,16 @@ sudo apt-get update
 
 echo "Installing runtime prerequisites..."
 # The libgl1 is needed by open-cv
-sudo apt-get upgrade -y mosquitto python3-dev python3-pip python3 libgl1 libgl1-mesa-glx libglib2.0-0 python3-tk apt-utils
+sudo apt-get upgrade -y mosquitto python3-dev python3-pip python3 libgl1 libgl1-mesa-glx libglib2.0-0 python3-tk apt-utils python3-picamera2
 # No longer needed (not using docker anymore)
 # docker-compose
+# python3-picamera
 
 # Force python3 as the default python
 # sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
 echo "Installing development prerequisites..."
-sudo apt-get upgrade -y v4l-utils virtualenv mosquitto-clients rsync man less git
+sudo apt-get upgrade -y v4l-utils virtualenv mosquitto-clients rsync man less git libcamera-apps
 
 #echo "Configuring docker (needed for zigbee2mqtt)"
 #sudo groupadd docker
@@ -69,7 +70,7 @@ mosquitto_pub -t zigbee2mqtt/feeder/set -m "{ \"feed\": \"START\", \"mode\": \"m
 
 # Setup development environment
 echo "Creating local development environment (this will take a while)"
-virtualenv -p python3 minionenv
+virtualenv -p python3 minionenv --system-site-packages
 source minionenv/bin/activate
 
 # install all of our python development dependencies

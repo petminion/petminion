@@ -45,7 +45,7 @@ class ImageRecognizer:
             detector.setModelPath(get_model_path(
                 "https://github.com/OlafenwaMoses/ImageAI/releases/download/3.0.0-pretrained/yolov3.pt", "yolov3.pt"))
         logger.debug(
-            "Loading detector model (If this takes a long time, your computer doesn't have enough RAM)...")
+            f"Loading fast={fast_and_small} detector model (If this takes a long time, your computer doesn't have enough RAM)...")
         detector.loadModel()
 
         self.classifier = classifier = ImageClassification()

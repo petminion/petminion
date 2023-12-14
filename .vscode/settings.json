@@ -5,6 +5,7 @@
   "[python]": {
     "editor.formatOnSave": true
   },
+  "python.defaultInterpreterPath": "${workspaceFolder}/minionenv/bin/python",
   "cSpell.words": [
     "imread",
     "imwrite",

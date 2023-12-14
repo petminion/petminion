@@ -52,8 +52,9 @@ class AppConfig:
         self.config['DEFAULT'] = {
             'MQTTHost': 'localhost',
             'Feeder': 'ZigbeeFeeder',
+            'Camera': 'CV2Camera',
             'TrainingRule': 'SimpleFeederRule',
-            'FastModel': True,
+            'FastModel': False,
             'SimFallback': True
         }
 

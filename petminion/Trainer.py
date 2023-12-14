@@ -1,4 +1,6 @@
 from .Camera import *
+from .CV2Camera import CV2Camera
+from .PiCamera import PiCamera
 from .ImageRecognizer import *
 from .Feeder import *
 from .TrainingRule import *
@@ -19,7 +21,7 @@ def class_by_name(name):
 class Trainer:
     def __init__(self, is_simulated: bool = False):
 
-        self.camera = SimCamera() if is_simulated else CV2Camera()
+        self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
         self.recognizer = ImageRecognizer()
 
         rule_class = class_by_name("TrainingRule")

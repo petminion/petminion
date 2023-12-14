@@ -12,3 +12,4 @@ platformdirs
 poetry
 tensorflow
 jsonpickle
+
