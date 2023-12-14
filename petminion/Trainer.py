@@ -6,7 +6,7 @@ from .Feeder import *
 from .TrainingRule import *
 from .ProcessedImage import ProcessedImage
 from .util import app_config
-
+import time
 
 def class_by_name(name):
     """
@@ -33,6 +33,7 @@ class Trainer:
     def run_once(self):
         self.image = ProcessedImage(self.recognizer, self.camera.read_image())
         self.rule.run_once()
+        time.sleep(0.100) # sleep for 100ms, because if we are on a low-end rPI the image processing (if allowed to run nonstop) will fully consume the CPU (starving critical things like zigbee)
 
     def run(self):
         logger.info(
