@@ -17,7 +17,7 @@
 - DONE store live camera frames to /tmp
 - make camera optional for scheduled feedings
 - switch Meer feeding over to use the non-camera based feeder
-- log messages to file
+- DONE log messages to file
 - list new terms in log file
 - use regexes for alias handling
 - switch Meer feeding over to use the camera based feeder

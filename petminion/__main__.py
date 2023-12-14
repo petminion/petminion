@@ -3,11 +3,33 @@
 import argparse
 import logging
 import os
+import sys
 from .Trainer import Trainer
-from .util import app_config
+from .util import app_config, user_data_dir
 
 """The command line arguments"""
 args = None
+
+
+def init_logging():
+    """Setup our logging environment"""
+
+    rootLogger = logging.getLogger()
+
+    filename = os.path.join(user_data_dir(), "petminion.log")
+    fileHandler = logging.FileHandler(filename)
+
+    fileFormatter = logging.Formatter(
+        "%(asctime)s %(levelname)-5.5s %(message)s")
+    fileHandler.setFormatter(fileFormatter)
+    rootLogger.addHandler(fileHandler)
+
+    # [%(threadName)-12.12s]
+    consoleFormatter = logging.Formatter(
+        "%(asctime)s %(levelname)-5.5s %(message)s", "%H:%M:%S")
+    consoleHandler = logging.StreamHandler(sys.stdout)
+    consoleHandler.setFormatter(consoleFormatter)
+    rootLogger.addHandler(consoleHandler)
 
 
 def main():
@@ -25,8 +47,9 @@ def main():
     global args
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
+    init_logging()
     logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
     logger.info(f'Petminion running...')
 
     if not os.path.exists("/dev/video0") and app_config.settings['SimFallback']:

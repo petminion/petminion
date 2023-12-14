@@ -1,6 +1,6 @@
 from .Camera import *
 from .CV2Camera import CV2Camera
-from .PiCamera import PiCamera
+# Not yet ready: from .PiCamera import PiCamera
 from .ImageRecognizer import *
 from .Feeder import *
 from .TrainingRule import *
