@@ -34,7 +34,7 @@ class TrainingRule:
         # Note, we have to use seconds for these intervals because timedelta is not properly serialized by jsonpickle
         self.min_feed_interval = timedelta(minutes=10).total_seconds()
         self.failure_capture_interval = timedelta(hours=4).total_seconds()
-        self.live_frame_capture_interval = timedelta(seconds=5).total_seconds()
+        self.live_frame_capture_interval = timedelta(seconds=2).total_seconds()
 
     @staticmethod
     def create_from_save(trainer, desired_class):
