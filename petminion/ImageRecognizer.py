@@ -5,7 +5,7 @@ import urllib.request
 import os
 import logging
 import numpy
-from .util import user_cache_dir
+from .util import user_cache_dir, app_config
 
 logger = logging.getLogger()
 
@@ -33,7 +33,7 @@ def get_model_path(url, filename):
 class ImageRecognizer:
     def __init__(self):
         # autodownload the model files if needed
-        fast_and_small = False
+        fast_and_small = app_config.settings['FastModel']
 
         self.detector = detector = ObjectDetection()
         if fast_and_small:

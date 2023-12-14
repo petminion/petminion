@@ -52,7 +52,8 @@ class AppConfig:
         self.config['DEFAULT'] = {
             'MQTTHost': 'localhost',
             'Feeder': 'ZigbeeFeeder',
-            'TrainingRule': 'SimpleFeederRule'
+            'TrainingRule': 'SimpleFeederRule',
+            'FastModel': True
         }
 
     @property
