@@ -11,11 +11,15 @@
 - DONE have a max feedings per day / per hour / per x feature for rules. or possibly have the feeder enforce that and throw an exception up?
 - DONE add github actions to do test builds and run tests per https://github.com/geeksville/petminion/actions/new
 - DONE switch to the !docker version of mosquitto - to be more like the rasberry pi environment
-- make zigbee2mqtt config script/instructions - use docker - even when running on rasberry pi
+- DONE make zigbee2mqtt config script/instructions - use docker - even when running on rasberry pi
 - DONE make a deploy to corral board script
-- measure feeding amount in grams.   Old feeder=7g/feeding. Aguara feeder=8g/feeding
+- DONE measure feeding amount in grams.   Old feeder=7g/feeding. Aguara feeder=8g/feeding
 - DONE store live camera frames to /tmp
+- make camera optional for scheduled feedings
 - switch Meer feeding over to use the non-camera based feeder
+- log messages to file
+- list new terms in log file
+- use regexes for alias handling
 - switch Meer feeding over to use the camera based feeder
 - finish cat training rule 0
 - DONE make simcamera actually useful

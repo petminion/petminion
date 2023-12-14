@@ -2,11 +2,9 @@ import cv2
 import logging
 import os
 import numpy
-from .Camera import Camera
+from .Camera import Camera, CameraDisconnectedError
 
 logger = logging.getLogger()
-
-
 
 
 class CV2Camera(Camera):
