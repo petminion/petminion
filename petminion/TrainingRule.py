@@ -198,7 +198,7 @@ class ScheduledFeederRule(TrainingRule):
         super().__init__(trainer)
 
         # FIXME - pull schedule from some sort of json file?
-        self.schedule = [ScheduledFeeding(time(7, 20), 3),
+        self.schedule = [ScheduledFeeding(time(7, 00), 3),
                          ScheduledFeeding(time(14, 00), 1),
                          ScheduledFeeding(time(16, 00), 1),
                          ScheduledFeeding(time(18, 00), 3)]
