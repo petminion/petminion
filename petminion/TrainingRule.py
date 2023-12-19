@@ -201,7 +201,7 @@ class ScheduledFeederRule(TrainingRule):
         self.schedule = [ScheduledFeeding(time(7, 00), 3),
                          ScheduledFeeding(time(14, 00), 1),
                          ScheduledFeeding(time(16, 00), 1),
-                         ScheduledFeeding(time(18, 00), 3)]
+                         ScheduledFeeding(time(17, 45), 2)]
 
     def is_feeding_allowed(self):
         # find all previously allowed feedings for today
