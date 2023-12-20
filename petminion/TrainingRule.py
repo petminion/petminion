@@ -78,9 +78,9 @@ class TrainingRule:
         Use a cooldown to not allow feedings to close to each other.
         """
         now = datetime.now()
-        #if self.last_feed_datetime and now < self.last_feed_datetime + timedelta(seconds=self.min_feed_interval):
+        # if self.last_feed_datetime and now < self.last_feed_datetime + timedelta(seconds=self.min_feed_interval):
         # raise FeedingNotAllowed(f'Too soon for this feeding, try again at { self.last_feed_time + self.min_feed_interval }')
-        #logger.warning(f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.min_feed_interval) }')
+        # logger.warning(f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.min_feed_interval) }')
 
         # FIXME - we should also store success images occasionally (but not to frequently) when target is seen but feeding not currently allowed
         self.save_image(is_success=True, store_annotated=True)
@@ -91,7 +91,7 @@ class TrainingRule:
 
         # wait a few seconds after food dispensed to see if we can store a photo of the target eating
         time.sleep(20)
-        self.trainer.capture_image() 
+        self.trainer.capture_image()
         self.save_image(is_success=False, summary="eating")
 
         self.save_state()  # save to disk so we don't miss feedings if we restart
@@ -158,7 +158,8 @@ class TrainingRule:
             store_annotated (bool, optional): If true, also store the annotated image in filename-annotated.png.
         """
         now = datetime.now()
-        prefix = summary if summary else ("success" if is_success else "failure")
+        prefix = summary if summary else (
+            "success" if is_success else "failure")
         filename = f'{ prefix }-{now:%Y%m%d_%H%M%S}'
         image_dir = os.path.join(
             user_data_dir(), self.__class__.__name__, "captures")
@@ -219,15 +220,16 @@ class ScheduledFeederRule(TrainingRule):
                 num_allowed += f.num_feedings
 
         if num_allowed <= self.fed_today:
-            logger.debug(f'Feeding not allowed. Already fed { self.fed_today } out of { num_allowed } feedings')
+            logger.debug(
+                f'Feeding not allowed. Already fed { self.fed_today } out of { num_allowed } feedings')
             return False
-        
+
         if self.last_feed_datetime and now < self.last_feed_datetime + timedelta(seconds=self.min_feed_interval):
             logger.warning(
                 f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.min_feed_interval) }')
             return False
-        
-        return Rtue
+
+        return True
 
 
 class SimpleFeederRule(ScheduledFeederRule):
