@@ -77,17 +77,22 @@ class TrainingRule:
         """Do a feeding
         Use a cooldown to not allow feedings to close to each other.
         """
+        now = datetime.now()
+        #if self.last_feed_datetime and now < self.last_feed_datetime + timedelta(seconds=self.min_feed_interval):
+        # raise FeedingNotAllowed(f'Too soon for this feeding, try again at { self.last_feed_time + self.min_feed_interval }')
+        #logger.warning(f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.min_feed_interval) }')
+
+        # FIXME - we should also store success images occasionally (but not to frequently) when target is seen but feeding not currently allowed
         self.save_image(is_success=True, store_annotated=True)
 
-        now = datetime.now()
-        if self.last_feed_datetime and now < self.last_feed_datetime + timedelta(seconds=self.min_feed_interval):
-            # raise FeedingNotAllowed(f'Too soon for this feeding, try again at { self.last_feed_time + self.min_feed_interval }')
-            logger.warning(
-                f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.min_feed_interval) }')
-        else:
-            self.trainer.feeder.feed()
-            self.fed_today += 1
-            self.last_feed_datetime = now
+        self.trainer.feeder.feed()
+        self.fed_today += 1
+        self.last_feed_datetime = now
+
+        # wait a few seconds after food dispensed to see if we can store a photo of the target eating
+        time.sleep(20)
+        self.trainer.capture_image() 
+        self.save_image(is_success=False, summary="eating")
 
         self.save_state()  # save to disk so we don't miss feedings if we restart
 
@@ -148,12 +153,13 @@ class TrainingRule:
 
         Args:
             is_success (bool): If true this image is 'successful' and will be marked that way in the name
-            summary (str, optional): A short string which is added to the filename. Defaults to None.
+            summary (str, optional): A short string which replaces the default 'success' or 'failure' prefixes. Defaults to None.
             details (str, optional): If provided this long string will be stored in filename.json. Defaults to None.
             store_annotated (bool, optional): If true, also store the annotated image in filename-annotated.png.
         """
         now = datetime.now()
-        filename = f'{ "success" if is_success else "failure" }-{now:%Y%m%d_%H%M%S}{ ("-" + summary) if summary else "" }'
+        prefix = summary if summary else ("success" if is_success else "failure")
+        filename = f'{ prefix }-{now:%Y%m%d_%H%M%S}'
         image_dir = os.path.join(
             user_data_dir(), self.__class__.__name__, "captures")
         os.makedirs(image_dir, exist_ok=True)
@@ -205,16 +211,23 @@ class ScheduledFeederRule(TrainingRule):
 
     def is_feeding_allowed(self):
         # find all previously allowed feedings for today
-        now = datetime.now().time()
+        now = datetime.now()
 
         num_allowed = 0
         for f in self.schedule:
-            if now >= f.when:
+            if now.time() >= f.when:
                 num_allowed += f.num_feedings
 
-        logger.debug(
-            f'Already fed { self.fed_today } out of { num_allowed } feedings')
-        return num_allowed > self.fed_today
+        if num_allowed <= self.fed_today:
+            logger.debug(f'Feeding not allowed. Already fed { self.fed_today } out of { num_allowed } feedings')
+            return False
+        
+        if self.last_feed_datetime and now < self.last_feed_datetime + timedelta(seconds=self.min_feed_interval):
+            logger.warning(
+                f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.min_feed_interval) }')
+            return False
+        
+        return Rtue
 
 
 class SimpleFeederRule(ScheduledFeederRule):
@@ -224,10 +237,13 @@ class SimpleFeederRule(ScheduledFeederRule):
         self.target = target
 
     def evaluate_scene(self) -> bool:
-        if self.is_detected(self.target) and self.is_feeding_allowed():
-            logger.debug(
-                f'A feeding is allowed and we just saw a { self.target }')
-            self.do_feeding()
+        if self.is_detected(self.target):
+            if self.is_feeding_allowed():
+                logger.debug(
+                    f'A feeding is allowed and we just saw a { self.target }')
+                self.do_feeding()
+
+            # claim success because we just saw the target (even though we weren't allowed to feed)
             return True
 
         return False

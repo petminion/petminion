@@ -30,18 +30,26 @@ class Trainer:
         self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()
         self.image = None
 
-    def run_once(self):
+    def capture_image(self):
+        """Grab a new image from the camera"""
         self.image = ProcessedImage(self.recognizer, self.camera.read_image())
+
+    def run_once(self):
+        """Run one iteration of the training rules"""
+        self.capture_image()
         self.rule.run_once()
         time.sleep(0.100) # sleep for 100ms, because if we are on a low-end rPI the image processing (if allowed to run nonstop) will fully consume the CPU (starving critical things like zigbee)
 
     def run(self):
+        """Run forever, the app is normally terminated by SIGTERM"""
         logger.info(
             "Watching camera (use --debug for progress info. press ctrl-C to exit)...")
-        while True:
-            try:
-                self.run_once()
-            except CameraDisconnectedError as e:
-                logger.info(f"exiting... { e }")
-                break
-        self.rule.save_state()  # Keep current feeding/schedule data
+        try:
+            while True:
+                try:
+                    self.run_once()
+                except CameraDisconnectedError as e:
+                    logger.info(f"exiting... { e }")
+                    break
+        finally:
+            self.rule.save_state()  # Keep current feeding/schedule data even if we get an exception
