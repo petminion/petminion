@@ -57,7 +57,7 @@ def main():
             f'No camera detected, forcing simulation mode instead...')
         args.simulate = True
 
-    t = Trainer(args.simulate)
+    t = Trainer(is_simulated=args.simulate, force_clean=args.simulate)
 
     if args.test:
         pass

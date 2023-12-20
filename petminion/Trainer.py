@@ -8,6 +8,7 @@ from .ProcessedImage import ProcessedImage
 from .util import app_config
 import time
 
+
 def class_by_name(name):
     """
     Look for a named class in the settings file and try to create an instance
@@ -19,13 +20,15 @@ def class_by_name(name):
 
 
 class Trainer:
-    def __init__(self, is_simulated: bool = False):
+    def __init__(self, is_simulated: bool = False, force_clean: bool = False):
 
+        self.is_simulated = is_simulated
         self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
         self.recognizer = ImageRecognizer()
 
         rule_class = class_by_name("TrainingRule")
-        self.rule = TrainingRule.create_from_save(self, rule_class)
+        self.rule = TrainingRule.create_from_save(
+            self, rule_class) if not force_clean else rule_class(self)
 
         self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()
         self.image = None
@@ -38,7 +41,8 @@ class Trainer:
         """Run one iteration of the training rules"""
         self.capture_image()
         self.rule.run_once()
-        time.sleep(0.100) # sleep for 100ms, because if we are on a low-end rPI the image processing (if allowed to run nonstop) will fully consume the CPU (starving critical things like zigbee)
+        # sleep for 100ms, because if we are on a low-end rPI the image processing (if allowed to run nonstop) will fully consume the CPU (starving critical things like zigbee)
+        time.sleep(0.100)
 
     def run(self):
         """Run forever, the app is normally terminated by SIGTERM"""

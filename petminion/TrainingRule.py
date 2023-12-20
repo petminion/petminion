@@ -2,14 +2,14 @@
 from .ImageRecognizer import ImageDetection
 from .util import user_state_dir, user_data_dir
 from typing import NamedTuple
-from datetime import datetime, timedelta
+from datetime import time, datetime, timedelta
 import os
 import cv2
 import json
 import logging
 import tempfile
 import jsonpickle
-import time
+import time as systime  # prevent name clash with datetime.time
 logger = logging.getLogger()
 
 
@@ -91,7 +91,9 @@ class TrainingRule:
         self.last_feed_datetime = now
 
         # wait a few seconds after food dispensed to see if we can store a photo of the target eating
-        time.sleep(20)
+        if not self.trainer.is_simulated:
+            # don't sleep if running in the sim (to be developer friendly)
+            systime.sleep(10)
         self.trainer.capture_image()
         self.save_image(is_success=False, summary="eating")
 
@@ -183,9 +185,9 @@ class TrainingRule:
             "detections": self.trainer.image.detections
         }
         if summary:
-            data.summary = summary
+            data['summary'] = summary
         if details:
-            data.details = details
+            data['details'] = details
         with open(os.path.join(
                 image_dir, f"{filename}.json"), "w") as f:
             json.dump(data, f, indent=2)
