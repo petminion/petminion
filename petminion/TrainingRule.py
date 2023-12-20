@@ -2,13 +2,14 @@
 from .ImageRecognizer import ImageDetection
 from .util import user_state_dir, user_data_dir
 from typing import NamedTuple
-from datetime import time, datetime, timedelta
+from datetime import datetime, timedelta
 import os
 import cv2
 import json
 import logging
 import tempfile
 import jsonpickle
+import time
 logger = logging.getLogger()
 
 
