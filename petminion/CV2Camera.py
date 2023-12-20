@@ -32,7 +32,7 @@ class CV2Camera(Camera):
         logger.info(f"Camera width={ width }, height={height}")
 
         # we check if the camera is opened previously or not
-        if (cam.isOpened() == False):
+        if (cam.isOpened() == False or width == 0):
             raise ConnectionError("Can't access camera")
 
     def read_image(self) -> numpy.ndarray:
