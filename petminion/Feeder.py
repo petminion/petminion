@@ -13,6 +13,7 @@ class Feeder:
 
 command_topic = "zigbee2mqtt/feeder/set"
 
+
 class ZigbeeFeeder(Feeder):
     def __init__(self):
         self.client = client = mqtt.Client()
@@ -53,5 +54,5 @@ class ZigbeeFeeder(Feeder):
         # Dec 20 07:57:41 petminion npm[595]: Zigbee2MQTT:error 2023-12-20 07:57:41: Exception while calling fromZigbee converter: Expected one of: 1, 2, 4, 8, 16, 31, 32, 42, 64, 85, 96, 127, got: 'undefined'}
 
         # a full payload seems to contain '{"child_lock":"UNLOCK","error":false,"feed":"","feeding_size":1,"feeding_source":"schedule","led_indicator":"OFF","linkquality":149,"mode":"manual","portion_weight":8,"portions_per_day":7,"schedule":[],"serving_size":1,"weight_per_day":56}'
-        payload = '{"schedule":[], "portion_weight":8, "portions_per_day":10, "weight_per_day":80 }'
+        payload = '{"schedule":[], "portion_weight":8 }'
         self.client.publish(command_topic, payload)
