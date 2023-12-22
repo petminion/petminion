@@ -6,6 +6,7 @@
 	"recommendations": [
 		"ms-python.python",
 		"ms-python.autopep8",
+		"ms-python.flake8",
 		"ms-vscode-remote.remote-ssh"
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
