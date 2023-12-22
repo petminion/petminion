@@ -4,6 +4,7 @@ from .CV2Camera import CV2Camera
 from .ImageRecognizer import *
 from .Feeder import *
 from .TrainingRule import *
+from .RedditClient import *
 from .ProcessedImage import ProcessedImage
 from .util import app_config
 import time
@@ -26,6 +27,8 @@ class Trainer:
         self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
         self.recognizer = ImageRecognizer()
 
+        self.reddit = RedditClient()
+
         rule_class = class_by_name("TrainingRule")
         self.rule = TrainingRule.create_from_save(
             self, rule_class) if not force_clean else rule_class(self)
@@ -36,6 +39,10 @@ class Trainer:
     def capture_image(self):
         """Grab a new image from the camera"""
         self.image = ProcessedImage(self.recognizer, self.camera.read_image())
+
+    def share_social(self, title: str) -> None:
+        """Share the current image to social media with the given title"""
+        self.reddit.post_image("petminion_test", title, self.image.annotated)
 
     def run_once(self):
         """Run one iteration of the training rules"""

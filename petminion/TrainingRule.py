@@ -96,6 +96,7 @@ class TrainingRule:
             systime.sleep(30)
         self.trainer.capture_image()
         self.save_image(is_success=False, summary="eating")
+        self.trainer.share_social("Fed my cat")
 
         self.save_state()  # save to disk so we don't miss feedings if we restart
 

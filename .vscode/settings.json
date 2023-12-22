@@ -13,6 +13,7 @@
     "mosquitto",
     "MQTT",
     "ndarray",
+    "petminion",
     "platformdirs",
     "systime"
   ],
