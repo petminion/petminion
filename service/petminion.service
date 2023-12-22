@@ -12,7 +12,7 @@ StandardError=inherit
 Restart=always
 RestartSec=10s
 User=dietpi
-Requires=zigbee2mqtt
+# Requires=zigbee2mqtt
 
 [Install]
 WantedBy=multi-user.target

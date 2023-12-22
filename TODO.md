@@ -16,8 +16,9 @@
 - DONE measure feeding amount in grams.   Old feeder=7g/feeding. Aguara feeder=8g/feeding
 - DONE store live camera frames to /tmp
 - make camera optional for scheduled feedings
-- switch Meer feeding over to use the non-camera based feeder
+- DONE switch Meer feeding over to use the non-camera based feeder
 - DONE log messages to file
+- Use reddit API to post meer feeding pics
 - list new terms in log file
 - use regexes for alias handling
 - switch Meer feeding over to use the camera based feeder
