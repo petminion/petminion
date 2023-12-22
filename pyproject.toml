@@ -61,12 +61,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-platformdirs = "^4.1.0"
+platformdirs = "4.0.0"
 pillow = "^10.1.0"
 opencv-python = "^4.8.1.78"
 imageai = "^3.0.3"
 paho-mqtt = "^1.6.1"
 praw = "^7.7.1"
+jsonpickle = "^3.0.2"
+numpy = "^1.26.2"
 
 
 [build-system]
