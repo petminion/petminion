@@ -1,6 +1,6 @@
 # Petminion
 
-![App Icon](doc/art/kitty.png)
+![App Icon](docs/art/kitty.png)
 
 ![Build Status](https://github.com/petminion/petminion/actions/workflows/python-app.yml/badge.svg)
 
