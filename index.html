@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Welcome to Petminion’s documentation! &#8212; Petminion  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="welcome-to-petminion-s-documentation">
+<h1>Welcome to Petminion’s documentation!<a class="headerlink" href="#welcome-to-petminion-s-documentation" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<dl class="py class" id="module-petminion">
+<dt class="sig sig-object py" id="petminion.SimpleFeederRule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">petminion.</span></span><span class="sig-name descname"><span class="pre">SimpleFeederRule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cat'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#petminion.SimpleFeederRule" title="Link to this definition">¶</a></dt>
+<dd><p>A rule that allows feeding when a specific target is detected.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>trainer (Trainer): The trainer object.
+target (str): The target to detect.</p>
+</dd>
+<dt>Attributes:</dt><dd><p>target (str): The target to detect.</p>
+</dd>
+<dt>Methods:</dt><dd><p>evaluate_scene: Evaluates the scene and performs feeding if the target is detected and feeding is allowed.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.SimpleFeederRule.evaluate_scene">
+<span class="sig-name descname"><span class="pre">evaluate_scene</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#petminion.SimpleFeederRule.evaluate_scene" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluates the scene and performs feeding if the target is detected and feeding is allowed.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>bool: True if the target is detected, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="petminion.Trainer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">petminion.</span></span><span class="sig-name descname"><span class="pre">Trainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_simulated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_clean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#petminion.Trainer" title="Link to this definition">¶</a></dt>
+<dd><p>Class representing a trainer for pet minions.</p>
+<p>The Trainer class is responsible for capturing images from a camera, running training rules,
+and sharing images to social media. It provides methods to run the trainer once or run it
+continuously until terminated.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>is_simulated (bool): Flag indicating if the trainer is running in simulated mode.
+camera: An instance of the camera class used for capturing images.
+recognizer: An instance of the image recognizer class used for image processing.
+reddit: An instance of the Reddit client class used for posting images to social media.
+rule: An instance of the training rule class used for running training rules.
+feeder: An instance of the feeder class used for feeding the pet minion.
+image: The current captured image.</p>
+</dd>
+<dt>Methods:</dt><dd><p>capture_image: Captures a new image from the camera.
+share_social: Shares the current image to social media with a given title.
+run_once: Runs one iteration of the training rules.
+run: Runs the trainer continuously until terminated.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.Trainer.capture_image">
+<span class="sig-name descname"><span class="pre">capture_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#petminion.Trainer.capture_image" title="Link to this definition">¶</a></dt>
+<dd><p>Grab a new image from the camera</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.Trainer.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#petminion.Trainer.run" title="Link to this definition">¶</a></dt>
+<dd><p>Run forever, the app is normally terminated by SIGTERM</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.Trainer.run_once">
+<span class="sig-name descname"><span class="pre">run_once</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#petminion.Trainer.run_once" title="Link to this definition">¶</a></dt>
+<dd><p>Run one iteration of the training rules</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.Trainer.share_social">
+<span class="sig-name descname"><span class="pre">share_social</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#petminion.Trainer.share_social" title="Link to this definition">¶</a></dt>
+<dd><p>Share the current image to social media with the given title</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="petminion.TrainingRule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">petminion.</span></span><span class="sig-name descname"><span class="pre">TrainingRule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#petminion.TrainingRule" title="Link to this definition">¶</a></dt>
+<dd><p>A class representing a training rule for the pet minion</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.TrainingRule.create_from_save">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_from_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_class</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#petminion.TrainingRule.create_from_save" title="Link to this definition">¶</a></dt>
+<dd><p>Try to recreate a pickled/saved TrainingRule from our saved state file, return None if not possible</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.TrainingRule.do_feeding">
+<span class="sig-name descname"><span class="pre">do_feeding</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#petminion.TrainingRule.do_feeding" title="Link to this definition">¶</a></dt>
+<dd><p>Do a feeding
+Use a cooldown to not allow feedings to close to each other.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.TrainingRule.evaluate_scene">
+<span class="sig-name descname"><span class="pre">evaluate_scene</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#petminion.TrainingRule.evaluate_scene" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate the current scene</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><p>NotImplementedError: Subclasses must implement</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: return true if we considered it ‘successful’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.TrainingRule.run_once">
+<span class="sig-name descname"><span class="pre">run_once</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#petminion.TrainingRule.run_once" title="Link to this definition">¶</a></dt>
+<dd><p>Do idle processing for this rule - mostly by calling evaluate_scene()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.TrainingRule.save_image">
+<span class="sig-name descname"><span class="pre">save_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_success</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">details</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_annotated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#petminion.TrainingRule.save_image" title="Link to this definition">¶</a></dt>
+<dd><p>Save the current image
+Useful for future model training, or simulated camera input or social media purposes. The image is stored in
+filename.png, metadata stored in filename.json.</p>
+<p>filename will be (success|failure)-localtime-summary</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>is_success (bool): If true this image is ‘successful’ and will be marked that way in the name
+summary (str, optional): A short string which replaces the default ‘success’ or ‘failure’ prefixes. Defaults to None.
+details (str, optional): If provided this long string will be stored in filename.json. Defaults to None.
+store_annotated (bool, optional): If true, also store the annotated image in filename-annotated.png.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.TrainingRule.save_state">
+<span class="sig-name descname"><span class="pre">save_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#petminion.TrainingRule.save_state" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize this object to the filesystem so it can be restore_state later…</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.TrainingRule.store_annotated">
+<span class="sig-name descname"><span class="pre">store_annotated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#petminion.TrainingRule.store_annotated" title="Link to this definition">¶</a></dt>
+<dd><p>Store the current annotated frame in a file</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Petminion</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Geeksville Industries, LLC..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
