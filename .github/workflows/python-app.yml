@@ -40,7 +40,7 @@ jobs:
         # This command will install all dependencies specified in your pyproject.toml file, including the dev dependencies. 
         # The --no-interaction option is used to prevent Poetry from prompting for input, which is necessary in a CI environment. 
         # The --no-root option is used to skip installing the package in the current directory (i.e., the package that's being built). 
-        poetry install --no-interaction --no-root 
+        poetry install --no-interaction 
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -50,3 +50,17 @@ jobs:
     - name: Test with pytest
       run: |
         poetry run pytest
+    - name: Build documentation
+      # per https://tomasfarias.dev/articles/sphinx-docs-with-poetry-and-github-pages/
+      run: |
+        mkdir gh-pages
+        touch gh-pages/.nojekyll
+        cd docs/
+        poetry run sphinx-build -b html . _build
+        cp -r _build/* ../gh-pages/          
+    - name: Deploy docs on push 🚀
+      if: ${{ github.event_name == 'push' }}
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: gh-pages
