@@ -27,7 +27,7 @@ class RedditClient:
             self.reddit.validate_on_submit = True  # Needed by reddit someday in the future
             logger.info(
                 f"Connected to Reddit read_only={ self.reddit.read_only } as { self.reddit.user.me() }")
-        except configparser.NoSectionError as e:
+        except configparser.NoSectionError:
             logger.warning(
                 f"No reddit config file (~/.config/praw.ini) { section_name } found, disabling reddit posts")
 

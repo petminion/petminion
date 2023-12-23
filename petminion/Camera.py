@@ -27,7 +27,6 @@ class Camera:
 
 class SimCamera(Camera):
     """A simulated camera that fakes images by reading files from a filesystem.
-
     """
 
     def __init__(self, repeat_forever: bool = False):
@@ -67,4 +66,3 @@ class SimCamera(Camera):
                 raise IOError("No frames in simulated camera")
 
         return cv2.imread(os.path.join(self.img_dir, f))
-

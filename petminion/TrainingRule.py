@@ -25,6 +25,7 @@ save_name = os.path.join(user_state_dir(), "rule_state.json")
 
 
 class TrainingRule:
+    """A class representing a training rule for the pet minion"""
 
     def __init__(self, trainer):
         """The normal constructor when created by the Trainer"""
@@ -209,6 +210,14 @@ class ScheduledFeeding(NamedTuple):
 
 
 class ScheduledFeederRule(TrainingRule):
+    """
+    A class representing a rule for scheduled feeding.
+
+    Attributes:
+        trainer (Trainer): The trainer object associated with the rule.
+        schedule (list): A list of ScheduledFeeding objects representing the feeding schedule.
+    """
+
     def __init__(self, trainer):
         super().__init__(trainer)
 
@@ -219,6 +228,12 @@ class ScheduledFeederRule(TrainingRule):
                          ScheduledFeeding(time(17, 45), 2)]
 
     def is_feeding_allowed(self):
+        """
+        Check if feeding is allowed based on the current time and feeding schedule.
+
+        Returns:
+            bool: True if feeding is allowed, False otherwise.
+        """
         # find all previously allowed feedings for today
         now = datetime.now()
 
@@ -241,12 +256,32 @@ class ScheduledFeederRule(TrainingRule):
 
 
 class SimpleFeederRule(ScheduledFeederRule):
+    """
+    A rule that allows feeding when a specific target is detected.
+
+    Args:
+        trainer (Trainer): The trainer object.
+        target (str): The target to detect.
+
+    Attributes:
+        target (str): The target to detect.
+
+    Methods:
+        evaluate_scene: Evaluates the scene and performs feeding if the target is detected and feeding is allowed.
+    """
+
     def __init__(self, trainer, target="cat"):
         super().__init__(trainer)
 
         self.target = target
 
     def evaluate_scene(self) -> bool:
+        """
+        Evaluates the scene and performs feeding if the target is detected and feeding is allowed.
+
+        Returns:
+            bool: True if the target is detected, False otherwise.
+        """
         if self.is_detected(self.target):
             if self.is_feeding_allowed():
                 logger.debug(
@@ -260,11 +295,39 @@ class SimpleFeederRule(ScheduledFeederRule):
 
 
 class CatTrainingRule0(TrainingRule):
+    """
+    Rule for training a cat.
+
+    This rule checks if a new token has appeared and if the cat is detected. If both conditions are met,
+    it performs a feeding. If a token is removed from the target, it logs a warning and saves an image.
+
+    Attributes:
+        trainer (Trainer): The trainer object associated with this rule.
+        old_count (int): The previous count of detections.
+
+    Methods:
+        evaluate_scene: Evaluates the scene and performs the necessary actions based on the conditions.
+
+    """
+
     def __init__(self, trainer):
+        """
+        Initializes a new instance of the TrainingRule class.
+
+        Args:
+            trainer: The trainer object.
+
+        """
         super().__init__(trainer)
         self.old_count = 0
 
     def evaluate_scene(self) -> bool:
+        """
+        Evaluates the scene and determines if a feeding should be performed based on the detected objects.
+
+        Returns:
+            bool: True if a feeding is performed, False otherwise.
+        """
         count = self.count_detections("spring")
         # self.since_success > 60 * 5 FIXME place a limit on repeated feedings in a short time?
 

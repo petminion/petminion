@@ -32,10 +32,16 @@ class AppConfig:
     """Provides read/write access to application config file"""
 
     def __init__(self):
+        """
+        Initializes an instance of MyClass.
+
+        This method sets up the filename, logger, and configuration for the class.
+        It reads the application settings from the config.ini file and sets defaults if necessary.
+        """
         self.filename = filename = os.path.join(
             user_config_dir(), "config.ini")
         logger.info(
-            "Reading application settings from {filename} - you can edit this file to change options.")
+            f"Reading application settings from {filename} - you can edit this file to change options.")
         self.config = config = configparser.ConfigParser()
 
         self.set_defaults()
@@ -48,7 +54,18 @@ class AppConfig:
             self.set_defaults()
 
     def set_defaults(self):
-        # FIXME - someday if this class is reused, move this default stuff elsewhere
+        """
+        Sets the default configuration values for the PetMinion class.
+
+        This method initializes the 'DEFAULT' section of the configuration dictionary
+        with default values for various settings such as 'MQTTHost', 'Feeder', 'Camera',
+        'TrainingRule', 'FastModel', and 'SimFallback'.
+
+        Note:
+            If this class is reused in the future, it is recommended to move the default
+            configuration values to a separate location.
+
+        """
         self.config['DEFAULT'] = {
             'MQTTHost': 'localhost',
             'Feeder': 'ZigbeeFeeder',

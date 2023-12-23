@@ -34,8 +34,12 @@ class CV2Camera(Camera):
         # the default of 250 is -6 as a signed byte
         # a logitech c920 supports between-2 to -11.  Recommended -6 to prevent bluring.  Might need to go lower if bluring still occurs. Trying -7
         # Must be set _after_ setting width and height
-        cam.set(cv2.CAP_PROP_EXPOSURE, -7)
+        cam.set(cv2.CAP_PROP_EXPOSURE, -8)
         exp = int(cam.get(cv2.CAP_PROP_EXPOSURE))
+
+        # FIXME - might need to turn off autofocus if shortening exposures is not enough to make things sharp
+        # Possibly also see if frame rate can be changed to 60 fps instead of 30
+        # https://pedja.supurovic.net/setting-up-logitech-c920-webcam-for-the-best-video-complete-guide/?lang=lat
 
         logger.info(
             f"Camera width={ width }, height={height}, exposure={exp}")

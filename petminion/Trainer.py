@@ -25,8 +25,29 @@ def class_by_name(name):
 
 
 class Trainer:
-    def __init__(self, is_simulated: bool = False, force_clean: bool = False):
+    """Class representing a trainer for pet minions.
 
+    The Trainer class is responsible for capturing images from a camera, running training rules,
+    and sharing images to social media. It provides methods to run the trainer once or run it
+    continuously until terminated.
+
+    Attributes:
+        is_simulated (bool): Flag indicating if the trainer is running in simulated mode.
+        camera: An instance of the camera class used for capturing images.
+        recognizer: An instance of the image recognizer class used for image processing.
+        reddit: An instance of the Reddit client class used for posting images to social media.
+        rule: An instance of the training rule class used for running training rules.
+        feeder: An instance of the feeder class used for feeding the pet minion.
+        image: The current captured image.
+
+    Methods:
+        capture_image: Captures a new image from the camera.
+        share_social: Shares the current image to social media with a given title.
+        run_once: Runs one iteration of the training rules.
+        run: Runs the trainer continuously until terminated.
+    """
+
+    def __init__(self, is_simulated: bool = False, force_clean: bool = False):
         self.is_simulated = is_simulated
         self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
         self.recognizer = ImageRecognizer()
