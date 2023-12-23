@@ -3,8 +3,7 @@ twine
 cython 
 torch 
 torchvision 
-pytest
 poetry
 tensorflow
-flake8
+opencv-python
 

@@ -28,15 +28,17 @@ jobs:
       uses: abatilo/actions-poetry@v2
       with:
         poetry-version: 1.7.1   
-    - name: Configure poetry
-      run: |
-        # Not needed currently
-        # python -m poetry config virtualenvs.in-project true
-    - name: Install dependencies
+    #- name: Configure poetry
+    # run: |
+    #    python -m poetry config virtualenvs.in-project true
+    - name: Install via pip (FIXME - move to poetry)
       run: |
         pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt; fi        
         poetry install
-        if [ -f requirements.txt ]; then pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt; fi
+    - name: Install via poetry
+      run: | 
+        poetry install        
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
