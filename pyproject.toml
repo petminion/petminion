@@ -70,6 +70,7 @@ praw = "^7.7.1"
 jsonpickle = "^3.0.2"
 numpy = "^1.26.2"
 torch = "^2.1.2"
+torchvision = "^0.16.2"
 
 
 [tool.poetry.group.dev.dependencies]
