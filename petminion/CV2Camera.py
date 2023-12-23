@@ -31,10 +31,10 @@ class CV2Camera(Camera):
         width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        # the default of 250 seems to mean 'auto' exposure
-        # a logitech c920 supports between-2 to -11.  Recommended -6 to prevent bluring.  Might need to go lower if bluring still occurs.
+        # the default of 250 is -6 as a signed byte
+        # a logitech c920 supports between-2 to -11.  Recommended -6 to prevent bluring.  Might need to go lower if bluring still occurs. Trying -7
         # Must be set _after_ setting width and height
-        cam.set(cv2.CAP_PROP_EXPOSURE, -6)
+        cam.set(cv2.CAP_PROP_EXPOSURE, -7)
         exp = int(cam.get(cv2.CAP_PROP_EXPOSURE))
 
         logger.info(
