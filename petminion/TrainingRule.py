@@ -1,15 +1,18 @@
 
-from .ImageRecognizer import ImageDetection
-from .util import user_state_dir, user_data_dir
-from typing import NamedTuple
-from datetime import time, datetime, timedelta
-import os
-import cv2
 import json
 import logging
+import os
 import tempfile
-import jsonpickle
 import time as systime  # prevent name clash with datetime.time
+from datetime import datetime, time, timedelta
+from typing import NamedTuple
+
+import cv2
+import jsonpickle
+
+from .ImageRecognizer import ImageDetection
+from .util import user_data_dir, user_state_dir
+
 logger = logging.getLogger()
 
 
@@ -120,7 +123,8 @@ class TrainingRule:
 
         if not self.last_live_frame or now >= self.last_live_frame + timedelta(seconds=self.live_frame_capture_interval):
             self.last_live_frame = now
-            filepath = os.path.join(tempfile.gettempdir(), "minion_live.png")
+            filepath = os.path.join(
+                tempfile.gettempdir(), "petminion_live.png")
             self.store_annotated(filepath)
 
     def evaluate_scene(self) -> bool:

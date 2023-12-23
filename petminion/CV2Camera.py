@@ -1,7 +1,8 @@
-import cv2
 import logging
-import os
+
+import cv2
 import numpy
+
 from .Camera import Camera, CameraDisconnectedError
 
 logger = logging.getLogger()
@@ -29,10 +30,18 @@ class CV2Camera(Camera):
         # cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
         width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        logger.info(f"Camera width={ width }, height={height}")
 
-        # we check if the camera is opened previously or not
-        if (cam.isOpened() == False or width == 0):
+        # the default of 250 seems to mean 'auto' exposure
+        # a logitech c920 supports between-2 to -11.  Recommended -6 to prevent bluring.  Might need to go lower if bluring still occurs.
+        # Must be set _after_ setting width and height
+        cam.set(cv2.CAP_PROP_EXPOSURE, -6)
+        exp = int(cam.get(cv2.CAP_PROP_EXPOSURE))
+
+        logger.info(
+            f"Camera width={ width }, height={height}, exposure={exp}")
+
+        # check access
+        if (not cam.isOpened() or width == 0):
             raise ConnectionError("Can't access camera")
 
     def read_image(self) -> numpy.ndarray:
