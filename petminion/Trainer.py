@@ -1,13 +1,17 @@
-from .Camera import *
+import logging
+import time as systime  # prevent name clash with datetime.time
+
+from .Camera import CameraDisconnectedError, SimCamera
 from .CV2Camera import CV2Camera
+from .Feeder import Feeder
 # Not yet ready: from .PiCamera import PiCamera
-from .ImageRecognizer import *
-from .Feeder import *
-from .TrainingRule import *
-from .RedditClient import *
+from .ImageRecognizer import ImageRecognizer
 from .ProcessedImage import ProcessedImage
+from .RedditClient import RedditClient
+from .TrainingRule import *
 from .util import app_config
-import time
+
+logger = logging.getLogger()
 
 
 def class_by_name(name):
@@ -27,7 +31,7 @@ class Trainer:
         self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
         self.recognizer = ImageRecognizer()
 
-        self.reddit = RedditClient()
+        self.reddit = RedditClient(is_simulated)
 
         rule_class = class_by_name("TrainingRule")
         self.rule = TrainingRule.create_from_save(
@@ -49,7 +53,7 @@ class Trainer:
         self.capture_image()
         self.rule.run_once()
         # sleep for 100ms, because if we are on a low-end rPI the image processing (if allowed to run nonstop) will fully consume the CPU (starving critical things like zigbee)
-        time.sleep(0.100)
+        systime.sleep(0.100)
 
     def run(self):
         """Run forever, the app is normally terminated by SIGTERM"""

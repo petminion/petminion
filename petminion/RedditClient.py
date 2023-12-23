@@ -1,10 +1,11 @@
-import praw
-import logging
-import numpy
-import tempfile
-import cv2
-import os
 import configparser
+import logging
+import os
+import tempfile
+
+import cv2
+import numpy
+import praw
 
 logger = logging.getLogger()
 
@@ -12,8 +13,14 @@ logger = logging.getLogger()
 class RedditClient:
     """Talks to the Reddit API for posting pictures of birds and pets"""
 
-    def __init__(self) -> None:
+    def __init__(self, is_simulated: bool = False) -> None:
+        """Constructor
+
+        Args:
+            is_simulated (bool, optional): If true, most code paths will be used but actual posting to reddit will be skipped. Defaults to False.
+        """
         section_name = "petminion"
+        self.is_simulated = is_simulated
         self.reddit = None  # assume failure
         try:
             self.reddit = praw.Reddit(section_name)
@@ -36,8 +43,11 @@ class RedditClient:
             cv2.imwrite(path, image)
 
             s = self.reddit.subreddit(subreddit)
-            logger.info(f"Posting to subreddit {subreddit} title={title}")
-            s.submit_image(title, path)
+            if self.is_simulated:
+                logger.warn(f"Skipping reddit post because simulating...")
+            else:
+                logger.info(f"Posting to subreddit {subreddit} title={title}")
+                s.submit_image(title, path)
         pass
 
 

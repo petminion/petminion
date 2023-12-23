@@ -93,7 +93,7 @@ class TrainingRule:
         # wait a few seconds after food dispensed to see if we can store a photo of the target eating
         if not self.trainer.is_simulated:
             # don't sleep if running in the sim (to be developer friendly)
-            systime.sleep(30)
+            systime.sleep(60)
         self.trainer.capture_image()
         self.save_image(is_success=False, summary="eating")
         self.trainer.share_social("Fed my cat")
