@@ -6,4 +6,4 @@ torchvision
 poetry
 tensorflow
 opencv-python
-
+flake8
