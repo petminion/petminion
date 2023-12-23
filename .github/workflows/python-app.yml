@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: read
+  contents: write # we need this permission so we can write to the gh-pages branch
 
 jobs:
   build:
