@@ -7,3 +7,4 @@ poetry
 tensorflow
 opencv-python
 flake8
+imageai
