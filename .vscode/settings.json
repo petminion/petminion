@@ -17,4 +17,7 @@
     "platformdirs",
     "systime"
   ],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  }
 }

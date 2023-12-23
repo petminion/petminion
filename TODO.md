@@ -18,7 +18,8 @@
 - make camera optional for scheduled feedings
 - DONE switch Meer feeding over to use the non-camera based feeder
 - DONE log messages to file
-- Use reddit API to post meer feeding pics
+- DONE Use reddit API to post meer feeding pics
+- disable simulator fallback on real device
 - list new terms in log file
 - use regexes for alias handling
 - switch Meer feeding over to use the camera based feeder
