@@ -3,12 +3,12 @@ import time as systime  # prevent name clash with datetime.time
 
 from .Camera import CameraDisconnectedError, SimCamera
 from .CV2Camera import CV2Camera
-from .Feeder import Feeder
+from .Feeder import *  # must use * here because we find classnames at runtime
 # Not yet ready: from .PiCamera import PiCamera
 from .ImageRecognizer import ImageRecognizer
 from .ProcessedImage import ProcessedImage
 from .RedditClient import RedditClient
-from .TrainingRule import *
+from .TrainingRule import *  # must use * here because we find classnames at runtime
 from .util import app_config
 
 logger = logging.getLogger()
