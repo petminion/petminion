@@ -19,7 +19,7 @@
 - DONE switch Meer feeding over to use the non-camera based feeder
 - DONE log messages to file
 - DONE Use reddit API to post meer feeding pics
-- disable simulator fallback on real device
+- DONE disable simulator fallback on real device
 - list new terms in log file
 - use regexes for alias handling
 - switch Meer feeding over to use the camera based feeder

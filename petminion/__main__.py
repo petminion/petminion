@@ -4,6 +4,7 @@ import argparse
 import logging
 import os
 import sys
+
 from .Trainer import Trainer
 from .util import app_config, user_data_dir
 
@@ -52,10 +53,13 @@ def main():
     logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
     logger.info(f'Petminion running...')
 
-    if not os.path.exists("/dev/video0") and app_config.settings['SimFallback']:
-        logger.warning(
-            f'No camera detected, forcing simulation mode instead...')
-        args.simulate = True
+    if not os.path.exists("/dev/video0") and not args.simulate:
+        if app_config.settings.getboolean('SimFallback'):
+            logger.warning('No camera detected, forcing simulation mode instead...')
+            args.simulate = True
+        else:
+            logger.error('No camera detected, aborting...')
+            sys.exit(1)  # Exit with error code 1
 
     t = Trainer(is_simulated=args.simulate, force_clean=args.simulate)
 
