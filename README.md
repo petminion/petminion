@@ -51,13 +51,39 @@ To drive initial development @geeksville is using two use-case rules.  One for h
 
 ### Sample cat training
 
-level 0 attempt CatTrainingRule0:
+Machine vision test of mylar balls went poorly.
+Springs also probably not idea.
+Next to try is felt pom-pom balls sold as cat toys (some sort of colored ball would also work for birds someday?).  
+Use colored gaffers tape (which can be HSV encoded for standard tapes) to mark target area. 
 
-- look for targets (springs) on white board.  
-- count number of springs seen.
+FIXME: Notes on how to do this: Use a simple color based recognizer (https://dontrepeatyourself.org/post/color-based-object-detection-with-opencv-and-python/).  
+Use find contours to find N balls in the camera view: https://stackoverflow.com/questions/71491995/how-to-count-the-color-detected-objects-using-opencv 
+Optionally check for roundness by comparing % of minimum enclosing circle to the discovered contours: https://docs.opencv.org/4.x/dd/d49/tutorial_py_contour_features.html.  or use matchShapes https://docs.opencv.org/4.x/d5/d45/tutorial_py_contours_more_functions.html 
+contour docs: https://docs.opencv.org/3.4/d4/d73/tutorial_py_contours_begin.html
+https://docs.opencv.org/4.x/dd/d49/tutorial_py_contour_features.html
+Use this HSV picker on reference image: https://getimagecolor.com/#pick-color
+Use cheap/weatherproof colored gaffers tape to mark target regions etc.  Much better than requiring a painted board for a target because we can use HSV colors & contours to robustly find target regions.
+
+level 0 attempt CatTrainingRule:
+
+- look for targets (pom-poms) on a color-coded shelf (so balls above shelf height are ignored by the machine vision).  If cat knocks pom-pom off shelf they get food for each pom-pom  
+- count number of pom-poms seen.
 - if number of springs increases & cat present -> emit food (if # feed events per day not reached - or implicitly limited by # of springs in house)
 
-level 1 attempt CatTrainingRule1:
+level 1 attempt CatTrainingRule:
+
+- as above but pom-poms must be delivered by cat to viewing area (delimited by HSV encoded gaffers tape).  Initially placed just to left of viewing.  
+
+level 2 attempt CatTrainingRule:
+
+- pom-poms now placed outside of test room occasionally by human.  For each pom-pom delivered cat gets treat.
+
+level 3 attempt CatTrainingRule:
+
+- humans randomly place pom-poms around house for cat to discover and exchange for treats
+
+
+level n attempt CatTrainingRule:
 
 - after spring seen and feed event -> power GPIO to somehow empty the target area
 

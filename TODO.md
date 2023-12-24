@@ -20,9 +20,10 @@
 - DONE log messages to file
 - DONE Use reddit API to post meer feeding pics
 - DONE disable simulator fallback on real device
-- list new terms in log file
 - use regexes for alias handling
-- switch Meer feeding over to use the camera based feeder
+- DONE switch Meer feeding over to use the camera based feeder
+- make minimum threshold for cat detection be 50%
+- make opencv based ball detector (eventually support region detection based on colored gaffers tape)
 - finish cat training rule 0
 - DONE make simcamera actually useful
 - DONE have live camera dump success and occasional failure images to directories (for training & sim camera use)

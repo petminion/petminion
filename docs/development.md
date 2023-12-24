@@ -94,8 +94,6 @@ git clone https://github.com/petminion/petminion.git
 
 ## Recognizer setup
 
-
-
 Create and activate python environment
 ```
 kevinh@kdesktop:~/development/crowbot$ virtualenv minionenv
@@ -194,13 +192,30 @@ ioctl: VIDIOC_ENUM_FMT
 
 FIXME - figure out how to make CUDA & GoogleCoral HW work with imageai.
 
-
 ### Recognizer
 
 * reads from USB camera
 * recognizer runs and outputs keywords/confidence for matches
 
 Plywood with marked circle A, feeder bowl (which can be emptied) and circle B
+
+The imageai object-detection models seem to be based on the COCO dataset, which only recognizes about 80 items.  Background information here: https://tech.amikelive.com/node-718/what-object-categories-labels-are-in-coco-dataset/
+
+Great list of major datasets: https://www.tasq.ai/blog/top-15-public-datasets-for-object-detection/
+for instance: https://storage.googleapis.com/openimages/web/visualizer/index.html
+
+Google's AI image cloud API stuff: https://cloud.google.com/vision/?hl=en
+Microsoft's AI cloud stuff seems cheaper: https://portal.vision.cognitive.azure.com/gallery/imageanalysis
+
+A tool for viewing datasets: https://docs.voxel51.com/
+
+
+roboflow seems great but fee?
+They do also have a repo of models.  In particular:
+https://universe.roboflow.com/b-aja/ball-detect-tgcun
+https://universe.roboflow.com/kritikal-solutions/ball_tracker
+https://universe.roboflow.com/brad-dwyer/oxford-pets src paper and dataset: https://www.robots.ox.ac.uk/~vgg/data/pets/
+
 
 ### Feeder control
 
