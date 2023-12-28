@@ -16,7 +16,7 @@
 		"testOnSave.languageId": "python",
 		"editor.codeActionsOnSave": {
 			"source.fixAll": "always",
-			"source.organizeImports": true
+			"source.organizeImports": "explicit"
 		}
 	}
 }
