@@ -23,6 +23,10 @@ class RateLimit:
         self.state = load_state(state_name, SavedState(interval_secs))
 
     @property
+    def interval_secs(self) -> float:
+        return state.interval_secs
+
+    @property
     def is_runnable(self) -> bool:
         """
         Checks if a post can be made based on the last post time.  

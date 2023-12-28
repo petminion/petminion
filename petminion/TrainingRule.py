@@ -56,7 +56,7 @@ class TrainingRule:
                 f'No saved training state ({e}) found, using default state...')
         return r
 
-    def do_feeding(self):
+    def do_feeding(self, num_feedings: int = 1) -> None:
         """Do a feeding
         Use a cooldown to not allow feedings to close to each other.
         """
@@ -65,8 +65,8 @@ class TrainingRule:
         # FIXME - we should also store success images occasionally (but not to frequently) when target is seen but feeding not currently allowed
         self.save_image(is_success=True, store_annotated=True)
 
-        self.trainer.feeder.feed()
-        self.state.fed_today += 1
+        self.trainer.feeder.feed(num_feedings)
+        self.state.fed_today += num_feedings
         self.state.last_feed_datetime = now
 
         # wait a few seconds after food dispensed to see if we can store a photo of the target eating
@@ -255,13 +255,21 @@ class SimpleFeederRule(ScheduledFeederRule):
             bool: True if the target is detected, False otherwise.
         """
         if self.is_detected(self.target):
-            if self.num_allowed:
+            num_allowed = self.num_allowed
+
+            if num_allowed:
                 if not self.feed_interval_limit.can_run():
                     logger.warning('Too soon for this feeding, try again later')
                 else:
                     logger.debug(
                         f'A feeding is allowed and we just saw a { self.target }')
-                    self.do_feeding()
+
+                    to_feed = 1  # assume one feeding
+                    if self.feed_interval_limit.interval_secs == 0.0:
+                        # There is no minimum interval, therefore we should just feed all eligible feedings now
+                        to_feed = num_allowed
+
+                    self.do_feeding(to_feed)
 
                     # claim success because we just saw the target (even though we weren't allowed to feed)
                     return True
