@@ -33,7 +33,7 @@ def user_state_dir():
 def save_state(file_base_name: str, data: any) -> None:
     """Save an object's state using jsonpickle"""
     path = os.path.join(user_state_dir(), file_base_name + ".json")
-    logger.debug(f'Saving state to {path}')
+    # logger.debug(f'Saving state to {path}')
     json = jsonpickle.encode(data, indent=2)
     with open(path, "w") as f:
         f.write(json)
