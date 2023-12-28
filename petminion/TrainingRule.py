@@ -8,10 +8,10 @@ from datetime import datetime, time, timedelta
 from typing import NamedTuple
 
 import cv2
-import jsonpickle
 
-from .ImageRecognizer import ImageDetection
-from .util import user_data_dir, user_state_dir
+from .ImageRecognizer import \
+    ImageDetection  # noqa: F401 needed for find at runtime
+from .util import load_state, save_state, user_data_dir
 
 logger = logging.getLogger()
 
@@ -21,7 +21,7 @@ class FeedingNotAllowed(Exception):
     pass
 
 
-save_name = os.path.join(user_state_dir(), "rule_state.json")
+save_name = "rule_state"
 
 
 class TrainingRule:
@@ -45,26 +45,13 @@ class TrainingRule:
     def create_from_save(trainer, desired_class):
         """Try to recreate a pickled/saved TrainingRule from our saved state file, return None if not possible"""
         try:
-            logger.info(f'Restoring training state from {save_name}')
-            with open(save_name, "r") as f:
-                json = f.read()
-                r = jsonpickle.decode(json)
-                r.trainer = trainer  # restore unsaved field
-                return r
+            r = load_state(save_name)
+            r.trainer = trainer  # restore unsaved field
+            return r
         except Exception as e:
             logger.warning(
                 f'No saved training state ({e}) found, using default state...')
             return desired_class(trainer)  # create a default instance
-
-    def save_state(self):
-        """Serialize this object to the filesystem so it can be restore_state later..."""
-        # FIXME - move out of this class into a general utility pickling class
-
-        logger.debug(f'Saving state to {save_name}')
-        # unpicklable=False, doesn't work well - we loose too much type info
-        json = jsonpickle.encode(self,  indent=2)
-        with open(save_name, "w") as f:
-            f.write(json)
 
     def __getstate__(self):
         """Used by jsonpickle to get the object used for serialization
@@ -102,7 +89,7 @@ class TrainingRule:
         self.save_image(is_success=False, summary="eating")
         self.trainer.share_social("Fed my cat")
 
-        self.save_state()  # save to disk so we don't miss feedings if we restart
+        save_state(save_name, self)  # save to disk so we don't miss feedings if we restart
 
     def run_once(self):
         """Do idle processing for this rule - mostly by calling evaluate_scene()"""

@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../.config/petminion"
+		},
+		{
+			"path": "../../.local/state/petminion"
 		}
 	],
 	"settings": {}

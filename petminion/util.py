@@ -2,6 +2,7 @@ import configparser
 import logging
 import os
 
+import jsonpickle
 import platformdirs
 
 app_name = "petminion"
@@ -27,6 +28,43 @@ def user_config_dir():
 def user_state_dir():
     """Get our state directory"""
     return platformdirs.user_state_dir(app_name, app_author, ensure_exists=True)
+
+
+def save_state(file_base_name: str, data: any) -> None:
+    """Save an object's state using jsonpickle"""
+    path = os.path.join(user_state_dir(), file_base_name + ".json")
+    logger.debug(f'Saving state to {path}')
+    json = jsonpickle.encode(data, indent=2)
+    with open(path, "w") as f:
+        f.write(json)
+
+
+def load_state(file_base_name: str, default_value: any = None) -> any:
+    """
+    Load an object's state using jsonpickle.
+
+    Args:
+        file_base_name (str): The base name of the file to load the state from.
+        default_value (any, optional): The default value to return if loading the state fails. Defaults to None.
+
+    Returns:
+        any: The loaded object's state.
+
+    Raises:
+        Exception: If loading the state fails and no default value is provided.
+    """
+    try:
+        path = os.path.join(user_state_dir(), file_base_name + ".json")
+        logger.debug(f'Loading state from {path}')
+        with open(path, "r") as f:
+            json = f.read()
+            return jsonpickle.decode(json)
+    except Exception as e:
+        if default_value:
+            logger.warning(f'Failed to load state from {path}, using defaults...')
+            return default_value
+        else:
+            raise e
 
 
 class AppConfig:

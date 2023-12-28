@@ -9,6 +9,7 @@ from .Feeder import *  # noqa: F403 must use * here because we find classnames a
 from .ImageRecognizer import ImageRecognizer
 from .MastodonClient import MastodonClient
 from .ProcessedImage import ProcessedImage
+from .rate_limit import RateLimit
 from .RedditClient import RedditClient
 from .SocialMediaClient import SocialMediaClient
 from .TrainingRule import *  # noqa: F403 must use * here because we find classnames at runtime
@@ -55,6 +56,7 @@ class Trainer:
         self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
         self.recognizer = ImageRecognizer()
 
+        self.social_rate = RateLimit("social_rate", 60 * 60 * 1)  # 1 post per hour
         self.social = SocialMediaClient()  # provide a stub implementation that does nothing
         if not is_simulated or app_config.settings.getboolean('SimSocialMedia'):
             try:
@@ -79,7 +81,10 @@ class Trainer:
 
     def share_social(self, title: str) -> None:
         """Share the current image to social media with the given title"""
-        self.social.post_image("petminion_test", title, self.image.annotated)
+        if self.social_rate.can_run():
+            self.social.post_image("petminion_test", title, self.image.annotated)
+        else:
+            logger.warning("Skipping social media post due to rate limit")
 
     def run_once(self):
         """Run one iteration of the training rules"""
