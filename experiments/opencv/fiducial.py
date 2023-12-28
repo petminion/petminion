@@ -6,6 +6,7 @@ from fpdf import FPDF
 
 dict_name = cv2.aruco.DICT_4X4_50
 dict = cv2.aruco.getPredefinedDictionary(dict_name)
+detector = cv2.aruco.ArucoDetector(dict)
 
 
 def make_marker(marker_id=1) -> np.ndarray:
@@ -132,6 +133,38 @@ def draw_markers_on_paper():
     cv2.destroyAllWindows()
 
 
+def find_markers(image: np.ndarray) -> np.ndarray:
+    """
+    Finds ArUco markers in an OpenCV image and draws bounding boxes around them.
+
+    Args:
+        image (np.ndarray): The input OpenCV image.
+
+    Returns:
+        np.ndarray: The output image with bounding boxes drawn around the ArUco markers.
+    """
+    # Convert the image to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Detect ArUco markers
+    corners, ids, _ = detector.detectMarkers(gray)
+
+    # Draw bounding boxes around the markers
+    output_image = image.copy()
+    if ids is not None:
+        cv2.aruco.drawDetectedMarkers(output_image, corners, ids, (0, 255, 0))
+
+    return output_image
+
+
+# Example usage
+# input_image = cv2.imread("input_image.jpg")
+# output_image = find_aruco_markers(input_image)
+# cv2.imshow("output", output_image)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+
 def draw_marker(marker_id=1):
     """
     Draws an ArUco marker to an OpenCV window.
@@ -155,4 +188,29 @@ def draw_marker(marker_id=1):
     cv2.destroyAllWindows()
 
 
-draw_markers_on_paper()
+# draw_markers_on_paper()
+
+def show_camera_feed():
+    # Open the camera
+    cap = cv2.VideoCapture(3)
+
+    while True:
+        # Read a frame from the camera
+        ret, frame = cap.read()
+
+        marked = find_markers(frame)
+
+        # Display the frame in a window
+        cv2.imshow("Camera Feed", marked)
+
+        # Wait for a key press
+        if cv2.waitKey(1) == ord('q'):
+            break
+
+    # Release the camera and close the window
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+# Call the function to start showing the camera feed
+show_camera_feed()
