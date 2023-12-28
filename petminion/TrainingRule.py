@@ -4,7 +4,7 @@ import logging
 import os
 import tempfile
 import time as systime  # prevent name clash with datetime.time
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 from typing import NamedTuple
 
 import cv2

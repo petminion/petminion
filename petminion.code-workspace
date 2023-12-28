@@ -13,6 +13,10 @@
 	"settings": {
 		"testOnSave.enabled": true,
 		"testOnSave.testCommand": "poetry run pytest",
-		"testOnSave.languageId": "python"
+		"testOnSave.languageId": "python",
+		"editor.codeActionsOnSave": {
+			"source.fixAll": "always",
+			"source.organizeImports": true
+		}
 	}
 }

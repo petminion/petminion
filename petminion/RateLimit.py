@@ -1,5 +1,4 @@
 import time
-from typing import NamedTuple
 
 from .util import load_state, save_state
 
@@ -17,7 +16,7 @@ class RateLimit:
 
     def __init__(self, state_name: str, interval_secs: float):
         """
-        Initializes the RateLimit object.
+        Initializes the RateLimit object. 
         """
         self.state_name = state_name
         self.state = load_state(state_name, SavedState(interval_secs))
