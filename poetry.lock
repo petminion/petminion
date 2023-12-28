@@ -190,6 +190,16 @@ pycodestyle = ">=2.11.0,<2.12.0"
 pyflakes = ">=3.1.0,<3.2.0"
 
 [[package]]
+name = "fpdf"
+version = "1.7.2"
+description = "Simple PDF generation for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "fpdf-1.7.2.tar.gz", hash = "sha256:125840783289e7d12552b1e86ab692c37322e7a65b96a99e0ea86cca041b6779"},
+]
+
+[[package]]
 name = "fsspec"
 version = "2023.12.2"
 description = "File-system specification"
@@ -1283,4 +1293,4 @@ docs = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ab2244aade3038b7fa564705e9eabe443e4dbe92459dc13ae9970c46eabd2bca"
+content-hash = "7bdc66f4dbd966678d04f95686f2f8d4e7d2e5b285e871273e429114617b6adf"

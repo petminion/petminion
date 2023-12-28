@@ -1,11 +1,14 @@
+import tempfile
+
 import cv2
 import numpy as np
+from fpdf import FPDF
 
 dict_name = cv2.aruco.DICT_4X4_50
 dict = cv2.aruco.getPredefinedDictionary(dict_name)
 
 
-def draw_aruco_marker(marker_id=1):
+def make_marker(marker_id=1) -> np.ndarray:
     """
     Draws an ArUco marker to an OpenCV window.
 
@@ -26,8 +29,125 @@ def draw_aruco_marker(marker_id=1):
     tag = np.zeros((marker_size, marker_size, 1), dtype="uint8")
     marker_image = cv2.aruco.generateImageMarker(dict, marker_id, marker_size, tag, 1)
 
+    return marker_image
+
+
+def render_to_png(image: np.ndarray) -> str:
+    """
+    Renders an OpenCV image to a temporary PNG file.
+
+    Args:
+        image (np.ndarray): The input image.
+
+    Returns:
+        str: The path to the temporary PNG file.
+    """
+    # Create a temporary file with a .png extension
+    temp_file = tempfile.NamedTemporaryFile(suffix=".png", delete=True)
+
+    # Write the image to the temporary file
+    cv2.imwrite(temp_file.name, image)
+
+    # Return the path to the temporary file
+    return temp_file
+
+
+def render_to_pdf(image: np.ndarray, output_path="/tmp/test.pdf"):
+    """
+    Renders an OpenCV image to a full-page PDF output file.
+
+    Args:
+        image_path (str): The path to the input image.
+        output_path (str): The path to the output PDF file.
+
+    Returns:
+        None
+    """
+    # Create a PDF object
+    pdf = FPDF(unit="pt", format=(image.shape[1], image.shape[0]))
+
+    # Add a page to the PDF
+    pdf.add_page()
+
+    # Calculate the scaling factor to fit the image within the page
+    page_width = pdf.w
+    page_height = pdf.h
+    image_width = image.shape[1]
+    image_height = image.shape[0]
+    scaling_factor = min(page_width / image_width, page_height / image_height)
+
+    # Calculate the position of the image on the page
+    x = (page_width - image_width * scaling_factor) / 2
+    y = (page_height - image_height * scaling_factor) / 2
+
+    # Add the image to the PDF
+    with render_to_png(image) as temp_file:
+        pdf.image(temp_file.name, x, y, w=image_width * scaling_factor, h=image_height * scaling_factor)
+
+    # Save the PDF to the output path
+    pdf.output(output_path)
+
+
+def draw_markers_on_paper():
+    """
+    Draws ArUco markers in the four corners of a page of paper.
+
+    Returns:
+        None
+    """
+    # Define the marker IDs for the four corners
+    marker_ids = [0, 1, 2, 3]
+
+    # Define the size of the markers
+    marker_size = 256
+
+    # Define the size of the paper
+    paper_size = (800, 600)
+
+    # Create a blank white paper image
+    paper = np.ones((paper_size[1], paper_size[0], 3), dtype=np.uint8) * 255
+
+    # Draw markers in the four corners of the paper
+    for i, marker_id in enumerate(marker_ids):
+        # Define the corner positions as an array
+        corner_positions = [(0, 0),
+                            (paper_size[0] - marker_size, 0),
+                            (0, paper_size[1] - marker_size),
+                            (paper_size[0] - marker_size, paper_size[1] - marker_size)]
+
+        # Calculate the position of the marker in each corner
+        for i, marker_id in enumerate(marker_ids):
+            x, y = corner_positions[i]
+
+            # Generate the marker image
+            marker_image = make_marker(marker_id)
+
+            # Paste the marker image onto the paper
+            paper[y:y + marker_size, x:x + marker_size] = marker_image
+
+    # Display the paper with markers
+    cv2.imshow("paper", paper)
+    render_to_pdf(paper)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def draw_marker(marker_id=1):
+    """
+    Draws an ArUco marker to an OpenCV window.
+
+    Args:
+        window_name (str): The name of the OpenCV window.
+        marker_id (int): The ID of the ArUco marker.
+        marker_size (int): The size of the ArUco marker.
+
+    Returns:
+        None
+    """
+    image = make_marker(marker_id)
+
     # Create a black image with the same size as the marker image
-    image = cv2.cvtColor(marker_image, cv2.COLOR_GRAY2BGR)
+    # image = cv2.cvtColor(marker_image, cv2.COLOR_GRAY2BGR)
 
     # Display the marker image in the OpenCV window
     cv2.imshow("aruco", image)
@@ -35,4 +155,4 @@ def draw_aruco_marker(marker_id=1):
     cv2.destroyAllWindows()
 
 
-draw_aruco_marker()
+draw_markers_on_paper()
