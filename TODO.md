@@ -30,6 +30,7 @@
 - add blackout periods to rules, to prevent any feeding or image processing during those periods 
 - remove bogus scheduled feeding that seems to be by default in the zigbee feeder
 - add current BOM to the README
+- let config based templates build the titles for social media posts
 - add basic developer instructions / clean up development docs (include how to install and setup python env)
 - fix pypi release scripts to use pillow
 - log high level events (feedings etc...) into a file so that users can remotely monitor

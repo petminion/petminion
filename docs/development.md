@@ -216,6 +216,8 @@ https://universe.roboflow.com/b-aja/ball-detect-tgcun
 https://universe.roboflow.com/kritikal-solutions/ball_tracker
 https://universe.roboflow.com/brad-dwyer/oxford-pets src paper and dataset: https://www.robots.ox.ac.uk/~vgg/data/pets/
 
+A really interesting article on how to do automatic color correction with opencv: https://pyimagesearch.com/2021/02/15/automatic-color-correction-with-opencv-and-python/
+It uses something like a qr code but more easily detectable: https://pyimagesearch.com/2020/12/14/generating-aruco-markers-with-opencv-and-python/
 
 ### Feeder control
 

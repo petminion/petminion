@@ -52,9 +52,10 @@ To drive initial development @geeksville is using two use-case rules.  One for h
 ### Sample cat training
 
 Machine vision test of mylar balls went poorly.
-Springs also probably not idea.
+Springs also probably not ideal.
 Next to try is felt pom-pom balls sold as cat toys (some sort of colored ball would also work for birds someday?).  
 Use colored gaffers tape (which can be HSV encoded for standard tapes) to mark target area. 
+Eventually for crows brightly colored poker chips would be easily countable.
 
 FIXME: Notes on how to do this: Use a simple color based recognizer (https://dontrepeatyourself.org/post/color-based-object-detection-with-opencv-and-python/).  
 Use find contours to find N balls in the camera view: https://stackoverflow.com/questions/71491995/how-to-count-the-color-detected-objects-using-opencv 

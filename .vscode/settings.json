@@ -8,6 +8,7 @@
   "python.defaultInterpreterPath": "${workspaceFolder}/minionenv/bin/python",
   "cSpell.words": [
     "imread",
+    "imshow",
     "imwrite",
     "jsonpickle",
     "mosquitto",

@@ -28,6 +28,15 @@
             "args": [
                 "--debug"
             ]
+        },
+        {
+            "name": "Run Current Python File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            // use our virtualenv
+            "python": "${workspaceFolder}/minionenv/bin/python",
+            "justMyCode": true
         }
     ]
 }
