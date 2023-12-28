@@ -1,14 +1,17 @@
+import configparser
 import logging
 import time as systime  # prevent name clash with datetime.time
 
 from .Camera import CameraDisconnectedError, SimCamera
-from .CV2Camera import CV2Camera
-from .Feeder import *  # must use * here because we find classnames at runtime
+from .CV2Camera import CV2Camera  # noqa: F401 needed for find at runtime
+from .Feeder import *  # noqa: F403 must use * here because we find classnames at runtime
 # Not yet ready: from .PiCamera import PiCamera
 from .ImageRecognizer import ImageRecognizer
+from .MastodonClient import MastodonClient
 from .ProcessedImage import ProcessedImage
 from .RedditClient import RedditClient
-from .TrainingRule import *  # must use * here because we find classnames at runtime
+from .SocialMediaClient import SocialMediaClient
+from .TrainingRule import *  # noqa: F403 must use * here because we find classnames at runtime
 from .util import app_config
 
 logger = logging.getLogger()
@@ -52,13 +55,22 @@ class Trainer:
         self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
         self.recognizer = ImageRecognizer()
 
-        self.reddit = RedditClient(is_simulated)
+        self.social = SocialMediaClient()  # provide a stub implementation that does nothing
+        if not is_simulated or app_config.settings.getboolean('SimSocialMedia'):
+            try:
+                self.social = RedditClient()
+            except configparser.Error:
+                logger.warning("RedditClient not available - reddit posting disabled")
+            try:
+                self.social = MastodonClient()
+            except configparser.Error:
+                logger.warning("MastodonClient not available - reddit posting disabled")
 
         rule_class = class_by_name("TrainingRule")
-        self.rule = TrainingRule.create_from_save(
+        self.rule = TrainingRule.create_from_save(  # noqa: F405
             self, rule_class) if not force_clean else rule_class(self)
 
-        self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()
+        self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()  # noqa: F405
         self.image = None
 
     def capture_image(self):
@@ -67,7 +79,7 @@ class Trainer:
 
     def share_social(self, title: str) -> None:
         """Share the current image to social media with the given title"""
-        self.reddit.post_image("petminion_test", title, self.image.annotated)
+        self.social.post_image("petminion_test", title, self.image.annotated)
 
     def run_once(self):
         """Run one iteration of the training rules"""

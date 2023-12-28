@@ -192,7 +192,7 @@ def draw_marker(marker_id=1):
 
 def show_camera_feed():
     # Open the camera
-    cap = cv2.VideoCapture(3)
+    cap = cv2.VideoCapture("/dev/camera")
     exp = cap.get(cv2.CAP_PROP_EXPOSURE)  # my crummy cheap webcam defaults to 157, but that setting shows banding with LED lights
     fps = exp = cap.get(cv2.CAP_PROP_FPS)
     print(f"Default exposure: {exp}, fps: {fps}")
@@ -222,3 +222,5 @@ def show_camera_feed():
 # Call the function to start showing the camera feed
 draw_markers_on_paper()
 show_camera_feed()
+
+# FIXME - possibly do camera calibration with https://medium.com/@ed.twomey1/using-charuco-boards-in-opencv-237d8bc9e40d

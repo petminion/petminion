@@ -22,8 +22,9 @@ class CV2Camera(Camera):
         # If you have multiple camera connected with
         # current device, assign a value in cam_port
         # variable according to that
-        cam_port = 0
-        self.cam = cam = cv2.VideoCapture(cam_port)
+        # cam_port = 0
+        # we no longer use port numbers, instead we use linux udev rules to assign a consistent name
+        self.cam = cam = cv2.VideoCapture("/dev/camera")
 
         # cam.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('U','Y','V','Y'))
         # cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)

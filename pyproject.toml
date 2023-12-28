@@ -72,6 +72,7 @@ numpy = "^1.26.2"
 torch = "^2.1.2"
 torchvision = "^0.16.2"
 fpdf = "^1.7.2"
+mastodon-py = "^1.8.1"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,7 +1,8 @@
-import platformdirs
 import configparser
 import logging
 import os
+
+import platformdirs
 
 app_name = "petminion"
 app_author = "geeksville"
@@ -72,7 +73,8 @@ class AppConfig:
             'Camera': 'CV2Camera',
             'TrainingRule': 'SimpleFeederRule',
             'FastModel': False,
-            'SimFallback': True
+            'SimFallback': True,
+            'SimSocialMedia': False
         }
 
     @property

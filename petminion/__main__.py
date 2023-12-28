@@ -53,7 +53,7 @@ def main():
     logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
     logger.info(f'Petminion running...')
 
-    if not os.path.exists("/dev/video0") and not args.simulate:
+    if not os.path.exists("/dev/camera") and not args.simulate:
         if app_config.settings.getboolean('SimFallback'):
             logger.warning('No camera detected, forcing simulation mode instead...')
             args.simulate = True
