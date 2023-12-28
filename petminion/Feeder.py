@@ -44,7 +44,7 @@ class ZigbeeFeeder(Feeder):
         # FIXME - wait for the confirmation publish from the feeder device, if it doesn't occur soon print a big error and don't consider this a feeding
         # FIXME - "remote" might be better than manual
         self.client.publish(command_topic,
-                            f'{{ "feed": "START", "mode": "manual", "feeding_size": { num_feedings } }}')
+                            f'{{ "feed": "START", "mode": "manual", "serving_size": { num_feedings } }}')
 
     def init_feeder(self):
         """Send MQTT to force feeder into manual mode, with no built-in scheduled feedings"""

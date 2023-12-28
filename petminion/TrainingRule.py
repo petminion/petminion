@@ -259,15 +259,16 @@ class SimpleFeederRule(ScheduledFeederRule):
 
             if num_allowed:
                 if not self.feed_interval_limit.can_run():
-                    logger.warning('Too soon for this feeding, try again later')
+                    logger.warning(f'Too soon for this { num_allowed } feedings, try again later')
                 else:
-                    logger.debug(
-                        f'A feeding is allowed and we just saw a { self.target }')
 
                     to_feed = 1  # assume one feeding
                     if self.feed_interval_limit.interval_secs == 0.0:
                         # There is no minimum interval, therefore we should just feed all eligible feedings now
                         to_feed = num_allowed
+
+                    logger.debug(
+                        f'A { to_feed } feeding is allowed and we just saw a { self.target }')
 
                     self.do_feeding(to_feed)
 
