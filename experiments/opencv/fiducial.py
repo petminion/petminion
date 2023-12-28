@@ -4,12 +4,13 @@ import cv2
 import numpy as np
 from fpdf import FPDF
 
-dict_name = cv2.aruco.DICT_4X4_50
+dict_name = cv2.aruco.DICT_4X4_50  # 6x6 doesn't seem hugely better based on my testing
 dict = cv2.aruco.getPredefinedDictionary(dict_name)
-detector = cv2.aruco.ArucoDetector(dict)
+detect_params = cv2.aruco.DetectorParameters()
+detector = cv2.aruco.ArucoDetector(dict, detect_params)
 
 
-def make_marker(marker_id=1) -> np.ndarray:
+def make_marker(marker_id=1, marker_size=64) -> np.ndarray:
     """
     Draws an ArUco marker to an OpenCV window.
 
@@ -23,8 +24,6 @@ def make_marker(marker_id=1) -> np.ndarray:
     """
     # Based on this article: https://pyimagesearch.com/2020/12/14/generating-aruco-markers-with-opencv-and-python/
     # Create an ArUco dictionary
-
-    marker_size = 256
 
     # Generate the marker image
     tag = np.zeros((marker_size, marker_size, 1), dtype="uint8")
@@ -70,7 +69,7 @@ def render_to_pdf(image: np.ndarray, output_path="/tmp/test.pdf"):
     # Add a page to the PDF
     pdf.add_page()
 
-    # Calculate the scaling factor to fit the image within the page
+    # Calculate the scaling factor to fit the image within the page (but preserve aspect ratio)
     page_width = pdf.w
     page_height = pdf.h
     image_width = image.shape[1]
@@ -100,37 +99,40 @@ def draw_markers_on_paper():
     marker_ids = [0, 1, 2, 3]
 
     # Define the size of the markers
-    marker_size = 256
+    marker_size = 256  # 64 is too small for the camera to detect reliably, 128 was better but still not great
 
-    # Define the size of the paper
-    paper_size = (800, 600)
+    # Define the size of the paper - assume 8.5" x 11"
+    pix_height = 1024
+    paper_size = (int(pix_height * 8.5 / 11), pix_height)
 
     # Create a blank white paper image
     paper = np.ones((paper_size[1], paper_size[0], 3), dtype=np.uint8) * 255
 
+    inset = 16
+
     # Draw markers in the four corners of the paper
     for i, marker_id in enumerate(marker_ids):
         # Define the corner positions as an array
-        corner_positions = [(0, 0),
-                            (paper_size[0] - marker_size, 0),
-                            (0, paper_size[1] - marker_size),
-                            (paper_size[0] - marker_size, paper_size[1] - marker_size)]
+        corner_positions = [(inset, inset),
+                            (paper_size[0] - marker_size - inset, inset),
+                            (inset, paper_size[1] - marker_size - inset),
+                            (paper_size[0] - marker_size - inset, paper_size[1] - marker_size - inset)]
 
         # Calculate the position of the marker in each corner
         for i, marker_id in enumerate(marker_ids):
             x, y = corner_positions[i]
 
             # Generate the marker image
-            marker_image = make_marker(marker_id)
+            marker_image = make_marker(marker_id, marker_size)
 
             # Paste the marker image onto the paper
             paper[y:y + marker_size, x:x + marker_size] = marker_image
 
     # Display the paper with markers
-    cv2.imshow("paper", paper)
+    # cv2.imshow("paper", paper)
     render_to_pdf(paper)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
 
 def find_markers(image: np.ndarray) -> np.ndarray:
@@ -143,11 +145,11 @@ def find_markers(image: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: The output image with bounding boxes drawn around the ArUco markers.
     """
-    # Convert the image to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Convert the image to grayscale - doesn't seem to be needed
+    # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Detect ArUco markers
-    corners, ids, _ = detector.detectMarkers(gray)
+    corners, ids, _ = detector.detectMarkers(image)
 
     # Draw bounding boxes around the markers
     output_image = image.copy()
@@ -188,11 +190,16 @@ def draw_marker(marker_id=1):
     cv2.destroyAllWindows()
 
 
-# draw_markers_on_paper()
-
 def show_camera_feed():
     # Open the camera
     cap = cv2.VideoCapture(3)
+    exp = cap.get(cv2.CAP_PROP_EXPOSURE)  # my crummy cheap webcam defaults to 157, but that setting shows banding with LED lights
+    fps = exp = cap.get(cv2.CAP_PROP_FPS)
+    print(f"Default exposure: {exp}, fps: {fps}")
+    # cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
+    # cap.set(cv2.CAP_PROP_EXPOSURE, 200)
+    exp = cap.get(cv2.CAP_PROP_EXPOSURE)
+    print(f"Exposure: {exp}")
 
     while True:
         # Read a frame from the camera
@@ -213,4 +220,5 @@ def show_camera_feed():
 
 
 # Call the function to start showing the camera feed
+draw_markers_on_paper()
 show_camera_feed()
