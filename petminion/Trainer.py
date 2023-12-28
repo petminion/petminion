@@ -97,12 +97,9 @@ class Trainer:
         """Run forever, the app is normally terminated by SIGTERM"""
         logger.info(
             "Watching camera (use --debug for progress info. press ctrl-C to exit)...")
-        try:
-            while True:
-                try:
-                    self.run_once()
-                except CameraDisconnectedError as e:
-                    logger.info(f"exiting... { e }")
-                    break
-        finally:
-            self.rule.save_state()  # Keep current feeding/schedule data even if we get an exception
+        while True:
+            try:
+                self.run_once()
+            except CameraDisconnectedError as e:
+                logger.info(f"exiting... { e }")
+                break
