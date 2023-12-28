@@ -21,7 +21,23 @@ class FeedingNotAllowed(Exception):
     pass
 
 
-save_name = "rule_state"
+save_name = "rule-v2"
+
+
+class State():
+    """A class representing the serializable state of a TrainingRule"""
+
+    def __init__(self):
+        self.fed_today = 0  # how many feedings have we done so far today
+        self.last_time = datetime.now().time()
+        self.last_feed_datetime = None
+        self.last_failure_datetime = None
+        self.last_live_frame = None
+
+        # Note, we have to use seconds for these intervals because timedelta is not properly serialized by jsonpickle
+        self.min_feed_interval = 10 * 60
+        self.failure_capture_interval = 4 * 60 * 60  # 4 hours
+        self.live_frame_capture_interval = 2
 
 
 class TrainingRule:
@@ -30,40 +46,19 @@ class TrainingRule:
     def __init__(self, trainer):
         """The normal constructor when created by the Trainer"""
         self.trainer = trainer
-        self.fed_today = 0  # how many feedings have we done so far today
-        self.last_time = datetime.now().time()
-        self.last_feed_datetime = None
-        self.last_failure_datetime = None
-        self.last_live_frame = None
-
-        # Note, we have to use seconds for these intervals because timedelta is not properly serialized by jsonpickle
-        self.min_feed_interval = timedelta(minutes=10).total_seconds()
-        self.failure_capture_interval = timedelta(hours=4).total_seconds()
-        self.live_frame_capture_interval = timedelta(seconds=2).total_seconds()
+        self.state = State()
 
     @staticmethod
-    def create_from_save(trainer, desired_class):
+    def create_from_save(trainer, desired_class) -> 'TrainingRule':
         """Try to recreate a pickled/saved TrainingRule from our saved state file, return None if not possible"""
+
+        r = desired_class(trainer)  # create a default instance
         try:
-            r = load_state(save_name)
-            r.trainer = trainer  # restore unsaved field
-            return r
+            r.state = load_state(save_name)
         except Exception as e:
             logger.warning(
                 f'No saved training state ({e}) found, using default state...')
-            return desired_class(trainer)  # create a default instance
-
-    def __getstate__(self):
-        """Used by jsonpickle to get the object used for serialization
-        """
-        # per https://stackoverflow.com/questions/18147435/how-to-exclude-specific-fields-on-serialization-with-jsonpickle
-        state = self.__dict__.copy()
-        del state['trainer']  # We do not want this serialized
-        return state
-
-    def __setstate__(self, state):
-        """Used by jsonpickle to unpickle from a saved state object"""
-        self.__dict__.update(state)
+        return r
 
     def do_feeding(self):
         """Do a feeding
@@ -78,8 +73,8 @@ class TrainingRule:
         self.save_image(is_success=True, store_annotated=True)
 
         self.trainer.feeder.feed()
-        self.fed_today += 1
-        self.last_feed_datetime = now
+        self.state.fed_today += 1
+        self.state.last_feed_datetime = now
 
         # wait a few seconds after food dispensed to see if we can store a photo of the target eating
         if not self.trainer.is_simulated:
@@ -89,28 +84,28 @@ class TrainingRule:
         self.save_image(is_success=False, summary="eating")
         self.trainer.share_social("Fed my cat")
 
-        save_state(save_name, self)  # save to disk so we don't miss feedings if we restart
+        save_state(save_name, self.state)  # save to disk so we don't miss feedings if we restart
 
     def run_once(self):
         """Do idle processing for this rule - mostly by calling evaluate_scene()"""
 
         now = datetime.now()  # time + date
         now_time = now.time()  # time of day
-        if now_time < self.last_time:
+        if now_time < self.state.last_time:
             # We crossed midnight since last run
-            logger.debug(f'Did { self.fed_today } feedings yesterday')
-            self.fed_today = 0
-        self.last_time = now_time
+            logger.debug(f'Did { self.state.fed_today } feedings yesterday')
+            self.state.fed_today = 0
+        self.state.last_time = now_time
 
         if not self.evaluate_scene():
             # We 'failed' on this camera frame.  The vast majority of frames will be failures
             # but it is useful to save a few of them for future training purposes - let's do one every four hours?
-            if not self.last_failure_datetime or now >= self.last_failure_datetime + timedelta(seconds=self.failure_capture_interval):
-                self.last_failure_datetime = now
+            if not self.state.last_failure_datetime or now >= self.state.last_failure_datetime + timedelta(seconds=self.state.failure_capture_interval):
+                self.state.last_failure_datetime = now
                 self.save_image(is_success=False)
 
-        if not self.last_live_frame or now >= self.last_live_frame + timedelta(seconds=self.live_frame_capture_interval):
-            self.last_live_frame = now
+        if not self.state.last_live_frame or now >= self.state.last_live_frame + timedelta(seconds=self.state.live_frame_capture_interval):
+            self.state.last_live_frame = now
             filepath = os.path.join(
                 tempfile.gettempdir(), "petminion_live.png")
             self.store_annotated(filepath)
@@ -214,7 +209,8 @@ class ScheduledFeederRule(TrainingRule):
                          ScheduledFeeding(time(16, 00), 1),
                          ScheduledFeeding(time(17, 45), 2)]
 
-    def is_feeding_allowed(self):
+    @property
+    def num_allowed(self):
         """
         Check if feeding is allowed based on the current time and feeding schedule.
 
@@ -224,22 +220,22 @@ class ScheduledFeederRule(TrainingRule):
         # find all previously allowed feedings for today
         now = datetime.now()
 
-        num_allowed = 0
+        n = 0
         for f in self.schedule:
             if now.time() >= f.when:
-                num_allowed += f.num_feedings
+                n += f.num_feedings
 
-        if num_allowed <= self.fed_today:
+        if n <= self.state.fed_today:
             logger.debug(
-                f'Feeding not allowed. Already fed { self.fed_today } out of { num_allowed } feedings')
-            return False
+                f'Feeding not allowed. Already fed { self.state.fed_today } out of { n } feedings')
+            return 0
 
-        if self.last_feed_datetime and now < self.last_feed_datetime + timedelta(seconds=self.min_feed_interval):
+        if self.state.last_feed_datetime and now < self.state.last_feed_datetime + timedelta(seconds=self.state.min_feed_interval):
             logger.warning(
-                f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.min_feed_interval) }')
-            return False
+                f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.state.min_feed_interval) }')
+            return 0
 
-        return True
+        return n - self.state.fed_today
 
 
 class SimpleFeederRule(ScheduledFeederRule):
@@ -270,7 +266,7 @@ class SimpleFeederRule(ScheduledFeederRule):
             bool: True if the target is detected, False otherwise.
         """
         if self.is_detected(self.target):
-            if self.is_feeding_allowed():
+            if self.num_allowed:
                 logger.debug(
                     f'A feeding is allowed and we just saw a { self.target }')
                 self.do_feeding()
@@ -306,7 +302,7 @@ class CatTrainingRule0(TrainingRule):
 
         """
         super().__init__(trainer)
-        self.old_count = 0
+        self.state.old_count = 0
 
     def evaluate_scene(self) -> bool:
         """
@@ -319,16 +315,16 @@ class CatTrainingRule0(TrainingRule):
         # self.since_success > 60 * 5 FIXME place a limit on repeated feedings in a short time?
 
         # A new token appeared?
-        if count > self.old_count and self.is_detected("cat"):
+        if count > self.state.old_count and self.is_detected("cat"):
             self.do_feeding()
-            self.old_count = count
+            self.state.old_count = count
             return True
 
         # someone took away a token (cat kicked it out of camera) - FIXME use a more conservative match for this test?
-        if count < self.old_count:
+        if count < self.state.old_count:
             logger.warning(
                 'Token removed from target (cat is cheating? FIXME)')
-            self.old_count = count
+            self.state.old_count = count
             self.save_image(is_success=False, summary="cheating")
 
         return False

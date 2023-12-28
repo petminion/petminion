@@ -10,5 +10,9 @@
 			"path": "../../.local/state/petminion"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"testOnSave.enabled": true,
+		"testOnSave.testCommand": "poetry run pytest",
+		"testOnSave.languageId": "python"
+	}
 }
