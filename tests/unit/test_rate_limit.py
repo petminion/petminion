@@ -1,6 +1,6 @@
 import time
 
-from petminion.rate_limit import RateLimit
+from petminion.RateLimit import RateLimit
 
 
 def test_rate_limit():

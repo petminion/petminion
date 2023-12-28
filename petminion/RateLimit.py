@@ -22,16 +22,32 @@ class RateLimit:
         self.state_name = state_name
         self.state = load_state(state_name, SavedState(interval_secs))
 
-    def can_run(self) -> bool:
+    @property
+    def is_runnable(self) -> bool:
         """
-        Checks if a post can be made based on the last post time.
+        Checks if a post can be made based on the last post time.  
 
         Returns:
             bool: True if a post can be made, False otherwise.
         """
-        if time.time() - self.state.last_time >= self.state.interval_secs:
-            self.state.last_time = time.time()
-            save_state(self.state_name, self.state)
+        return time.time() - self.state.last_time >= self.state.interval_secs
+
+    def set_ran(self):
+        """
+        Marks that we just did a rate-limited action.
+        """
+        self.state.last_time = time.time()
+        save_state(self.state_name, self.state)
+
+    def can_run(self) -> bool:
+        """
+        Checks if a post can be made based on the last post time.  If we can run we also mark that we ran.
+
+        Returns:
+            bool: True if a post can be made, False otherwise.
+        """
+        if self.is_runnable:
+            self.set_ran()
             return True
         else:
             return False

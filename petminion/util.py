@@ -58,7 +58,11 @@ def load_state(file_base_name: str, default_value: any = None) -> any:
         logger.debug(f'Loading state from {path}')
         with open(path, "r") as f:
             json = f.read()
-            return jsonpickle.decode(json)
+            r = jsonpickle.decode(json)
+            if isinstance(r, dict):
+                # something changed in the representation so jsonpickle punted and gave us a dict
+                raise Exception("Serialization changed, saved contents ignored")
+            return r
     except Exception as e:
         if default_value:
             logger.warning(f'Failed to load state from {path}, using defaults...')

@@ -9,7 +9,7 @@ from .Feeder import *  # noqa: F403 must use * here because we find classnames a
 from .ImageRecognizer import ImageRecognizer
 from .MastodonClient import MastodonClient
 from .ProcessedImage import ProcessedImage
-from .rate_limit import RateLimit
+from .RateLimit import RateLimit
 from .RedditClient import RedditClient
 from .SocialMediaClient import SocialMediaClient
 from .TrainingRule import *  # noqa: F403 must use * here because we find classnames at runtime

@@ -11,6 +11,7 @@ import cv2
 
 from .ImageRecognizer import \
     ImageDetection  # noqa: F401 needed for find at runtime
+from .RateLimit import RateLimit
 from .util import load_state, save_state, user_data_dir
 
 logger = logging.getLogger()
@@ -29,15 +30,7 @@ class State():
 
     def __init__(self):
         self.fed_today = 0  # how many feedings have we done so far today
-        self.last_time = datetime.now().time()
-        self.last_feed_datetime = None
-        self.last_failure_datetime = None
-        self.last_live_frame = None
-
-        # Note, we have to use seconds for these intervals because timedelta is not properly serialized by jsonpickle
-        self.min_feed_interval = 10 * 60
-        self.failure_capture_interval = 4 * 60 * 60  # 4 hours
-        self.live_frame_capture_interval = 2
+        self.last_time = datetime.now().time()  # the last time our rule was run
 
 
 class TrainingRule:
@@ -47,6 +40,9 @@ class TrainingRule:
         """The normal constructor when created by the Trainer"""
         self.trainer = trainer
         self.state = State()
+        self.feed_interval_limit = RateLimit("feed_limit", 10 * 60)  # 10 minutes
+        self.failure_capture_limit = RateLimit("failure_capture_limit", 4 * 60 * 60)  # 4 hour
+        self.live_capture_limit = RateLimit("live_capture_limit", 5)  # every few seconds
 
     @staticmethod
     def create_from_save(trainer, desired_class) -> 'TrainingRule':
@@ -65,9 +61,6 @@ class TrainingRule:
         Use a cooldown to not allow feedings to close to each other.
         """
         now = datetime.now()
-        # if self.last_feed_datetime and now < self.last_feed_datetime + timedelta(seconds=self.min_feed_interval):
-        # raise FeedingNotAllowed(f'Too soon for this feeding, try again at { self.last_feed_time + self.min_feed_interval }')
-        # logger.warning(f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.min_feed_interval) }')
 
         # FIXME - we should also store success images occasionally (but not to frequently) when target is seen but feeding not currently allowed
         self.save_image(is_success=True, store_annotated=True)
@@ -89,23 +82,24 @@ class TrainingRule:
     def run_once(self):
         """Do idle processing for this rule - mostly by calling evaluate_scene()"""
 
+        # check for crossing midnight
         now = datetime.now()  # time + date
         now_time = now.time()  # time of day
-        if now_time < self.state.last_time:
+        old_time = self.state.last_time
+        self.state.last_time = now_time
+        if now_time < old_time:
             # We crossed midnight since last run
             logger.debug(f'Did { self.state.fed_today } feedings yesterday')
             self.state.fed_today = 0
-        self.state.last_time = now_time
+            save_state(save_name, self.state)  # make sure to update the serialized state
 
         if not self.evaluate_scene():
             # We 'failed' on this camera frame.  The vast majority of frames will be failures
             # but it is useful to save a few of them for future training purposes - let's do one every four hours?
-            if not self.state.last_failure_datetime or now >= self.state.last_failure_datetime + timedelta(seconds=self.state.failure_capture_interval):
-                self.state.last_failure_datetime = now
+            if self.failure_capture_limit.can_run():
                 self.save_image(is_success=False)
 
-        if not self.state.last_live_frame or now >= self.state.last_live_frame + timedelta(seconds=self.state.live_frame_capture_interval):
-            self.state.last_live_frame = now
+        if self.live_capture_limit.can_run():  # keep a live image every few seconds
             filepath = os.path.join(
                 tempfile.gettempdir(), "petminion_live.png")
             self.store_annotated(filepath)
@@ -230,11 +224,6 @@ class ScheduledFeederRule(TrainingRule):
                 f'Feeding not allowed. Already fed { self.state.fed_today } out of { n } feedings')
             return 0
 
-        if self.state.last_feed_datetime and now < self.state.last_feed_datetime + timedelta(seconds=self.state.min_feed_interval):
-            logger.warning(
-                f'Too soon for this feeding, try again at { self.last_feed_datetime + timedelta(seconds=self.state.min_feed_interval) }')
-            return 0
-
         return n - self.state.fed_today
 
 
@@ -267,12 +256,15 @@ class SimpleFeederRule(ScheduledFeederRule):
         """
         if self.is_detected(self.target):
             if self.num_allowed:
-                logger.debug(
-                    f'A feeding is allowed and we just saw a { self.target }')
-                self.do_feeding()
+                if not self.feed_interval_limit.can_run():
+                    logger.warning('Too soon for this feeding, try again later')
+                else:
+                    logger.debug(
+                        f'A feeding is allowed and we just saw a { self.target }')
+                    self.do_feeding()
 
-            # claim success because we just saw the target (even though we weren't allowed to feed)
-            return True
+                    # claim success because we just saw the target (even though we weren't allowed to feed)
+                    return True
 
         return False
 
