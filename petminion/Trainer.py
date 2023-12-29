@@ -75,7 +75,7 @@ class Trainer:
         self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()  # noqa: F405
         self.image = None
 
-    def capture_image(self):
+    def capture_image(self) -> None:
         """Grab a new image from the camera"""
         self.image = ProcessedImage(self.recognizer, self.camera.read_image())
 
@@ -86,14 +86,14 @@ class Trainer:
         else:
             logger.warning("Skipping social media post due to rate limit")
 
-    def run_once(self):
+    def run_once(self) -> None:
         """Run one iteration of the training rules"""
         self.capture_image()
         self.rule.run_once()
         # sleep for 100ms, because if we are on a low-end rPI the image processing (if allowed to run nonstop) will fully consume the CPU (starving critical things like zigbee)
         systime.sleep(0.100)
 
-    def run(self):
+    def run(self) -> None:
         """Run forever, the app is normally terminated by SIGTERM"""
         logger.info(
             "Watching camera (use --debug for progress info. press ctrl-C to exit)...")

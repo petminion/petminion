@@ -17,6 +17,16 @@
 		"editor.codeActionsOnSave": {
 			"source.fixAll": "always",
 			"source.organizeImports": "explicit"
-		}
+		},
+		"testOnSave.exitCodeFail": "1-999",
+		"testOnSave.exitCodeError": "",
+		"python.analysis.enablePytestExtra": true,
+		"python.analysis.autoFormatStrings": true,
+		"python.analysis.autoImportCompletions": true,
+		"python.analysis.completeFunctionParens": true,
+		"python.analysis.inlayHints.functionReturnTypes": true,
+		"python.analysis.inlayHints.callArgumentNames": "off",
+		"python.analysis.inlayHints.pytestParameters": true,
+		"python.analysis.typeCheckingMode": "basic"
 	}
 }
