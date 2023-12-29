@@ -1,11 +1,13 @@
+import logging
+import os
+import urllib.request
+from typing import NamedTuple
+
+import numpy
 from imageai.Classification import ImageClassification
 from imageai.Detection import ObjectDetection
-from typing import NamedTuple
-import urllib.request
-import os
-import logging
-import numpy
-from .util import user_cache_dir, app_config
+
+from .util import app_config, user_cache_dir
 
 logger = logging.getLogger()
 
@@ -108,9 +110,9 @@ class ImageRecognizer:
             output_type="array"
         )
 
-        for eachObject in detections:
-            logger.debug(
-                f'Detection: { eachObject["name"] } : { eachObject["percentage_probability"] } : { eachObject["box_points"] }')
+        # for eachObject in detections:
+        #    logger.debug(
+        #        f'Detection: { eachObject["name"] } : { eachObject["percentage_probability"] } : { eachObject["box_points"] }')
 
         # Convert to our typed representation
         d = list(map(lambda x: ImageDetection(

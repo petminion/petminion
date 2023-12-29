@@ -37,9 +37,10 @@ class MastodonClient(SocialMediaClient):
             api_base_url=app_config.config.get(s, 'InstanceUrl')
         )
 
-    def post_image(self, subreddit: str, title: str, image: numpy.ndarray) -> None:
+    def post_image(self, title: str, image: numpy.ndarray) -> None:
         """Given an image array, post that image to mastodon"""
 
+        logger.info("Posting image to mastodon")
         with tempfile.NamedTemporaryFile(suffix=".jpg", delete=True) as temp_file:
             cv2.imwrite(temp_file.name, image)
             media = self.client.media_post(temp_file.name, mime_type='image/jpeg')

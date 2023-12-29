@@ -33,9 +33,10 @@ class RedditClient(SocialMediaClient):
                 f"No reddit config file (~/.config/praw.ini) { section_name } found, disabling reddit posts")
             raise e
 
-    def post_image(self, subreddit: str, title: str, image: numpy.ndarray) -> None:
+    def post_image(self, title: str, image: numpy.ndarray) -> None:
         """Given an image array, post that image to the specified subreddit"""
 
+        subreddit = "petminion_test"
         if not self.reddit:
             return  # No reddit connection
 
