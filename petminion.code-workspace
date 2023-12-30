@@ -1,13 +1,16 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": ".",
+			"name": "main project"
 		},
 		{
-			"path": "../../.config/petminion"
+			"path": "../../.config/petminion",
+			"name": "config"
 		},
 		{
-			"path": "../../.local/state/petminion"
+			"path": "../../.local/state/petminion",
+			"name": "state"
 		}
 	],
 	"settings": {
