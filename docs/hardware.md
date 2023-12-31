@@ -39,3 +39,27 @@ https://home.miot-spec.com/s/feeder
 Projects:
 https://github.com/rytilahti/python-miio/issues/1047
 https://github.com/rytilahti/python-miio
+
+A competeting 'standard' is Tuya devices:
+https://github.com/rospogrigio/localtuya/issues/1082
+https://github.com/codetheweb/tuyapi?tab=readme-ov-file
+https://github.com/jasonacox/tinytuya
+
+per https://github.com/codetheweb/tuyapi/blob/master/docs/SETUP.md
+socks at https://iot.tuya.com/
+
+(minionenv) kevinh@kdesktop:~/development/petminion$ python -m tinytuya scan
+
+TinyTuya (Tuya device scanner) [1.13.1]
+
+Scanning on UDP ports 6666 and 6667 and 7000 for devices for 18 seconds...
+
+Unknown v3.3 Device   Product ID = keyexttaytt7m4se  [Valid Broadcast]:
+    Address = 192.168.101.122   Device ID = 11181704483fda40398f (len:20)  Local Key =   Version = 3.3  Type = default, MAC = 48:3f:da:40:39:8f
+    No Stats for 192.168.101.122: DEVICE KEY required to poll for status
+Unknown v3.3 Device   Product ID = keyexttaytt7m4se  [Valid Broadcast]:
+    Address = 192.168.101.170   Device ID = 4876527440f52004f0b8 (len:20)  Local Key =   Version = 3.3  Type = default, MAC = 40:f5:20:04:f0:b8
+    No Stats for 192.168.101.170: DEVICE KEY required to poll for status
+Unknown v3.3 Device   Product ID = keydpkw438xwpdtm  [Valid Broadcast]:
+    Address = 192.168.101.6   Device ID = ebc9bb9b439ffacb1buuez (len:22)  Local Key =   Version = 3.3  Type = default, MAC = 
+    No Stats for 192.168.101.6: DEVICE KEY required to poll for status
