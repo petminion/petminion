@@ -18,6 +18,7 @@
     "ndarray",
     "petminion",
     "platformdirs",
+    "squareish",
     "systime"
   ],
   "editor.codeActionsOnSave": {

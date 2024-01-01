@@ -1,8 +1,31 @@
 
+import time
+
 import cv2
 import numpy as np
 
 labels = {'text': 'unset'}
+
+h = 10  # Parameter regulating filter strength for luminance component.
+# Bigger h value perfectly removes noise but also removes image details, smaller h value preserves details but also preserves some noise
+# 10 seems to work well
+hColor = 10  # The same as h but for color components. For most images value equals 10 will be enough to remove colored noise and do not distort colors
+
+
+class NoiseEliminator:
+    def __init__(self):
+        self.old_frames = []
+
+    def filter_frame(self, frame):
+        self.old_frames.append(frame)
+        if len(self.old_frames) > 3:
+            self.old_frames.pop(0)
+
+        time_window_size = len(self.old_frames) - 1
+        time_window_size = time_window_size // 2 * 2 + 1  # Round down to the next lower odd number (window sizes must be odd)
+        middle_index = time_window_size // 2
+        frame = cv2.fastNlMeansDenoisingColoredMulti(self.old_frames, middle_index, time_window_size, None, h, hColor, 7, 21)
+        return frame
 
 
 def detect_red_circles():
@@ -10,6 +33,7 @@ def detect_red_circles():
 
     # Open the camera
     cap = cv2.VideoCapture("/dev/camera")
+    denoise = NoiseEliminator()
 
     window_name = "Camera Feed"
     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
@@ -29,14 +53,23 @@ def detect_red_circles():
         # Read a frame from the camera
         ret, frame = cap.read()
 
+        # Easy single frame denoising
+        # if this isn't enough make a class that keeps the last 5 frames and uses https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html
+        # multiframe.
+        # frame = cv2.fastNlMeansDenoisingColored(frame, None, h, hColor, 7, 21)
+        frame = denoise.filter_frame(frame)
+
         # Convert the frame to the HSV color space
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         # Define the lower and upper bounds for the red color - this needs to be done in two sections because red 'straddles' the 0/180 line
-        center_hue = 80
-        hue_width = 15
+        center_hue = 80  # green
+        hue_width = 20
+        # center_hue = 0  # red
+        # hue_width = 10
+
         v_min = 0
-        v_width = 255
+        v_width = 180
         lower = np.array([center_hue, 60, v_min])
         upper = np.array([center_hue + hue_width, 255, v_min + v_width])
         mask = cv2.inRange(hsv, lower, upper)
@@ -50,8 +83,8 @@ def detect_red_circles():
             mask = cv2.bitwise_or(mask, mask2)
 
         # Apply a series of morphological operations to remove noise
-        # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        # mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (6, 6))
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
 
         # Find contours of the red circles
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -66,13 +99,17 @@ def detect_red_circles():
             # Calculate the area of the contour
             area = cv2.contourArea(contour)
 
-            # If the area is above a certain threshold, consider it as a ball
-            if area > 100:
-                # Get the bounding box of the contour
-                x, y, w, h = cv2.boundingRect(contour)
+            x, y, w, h = cv2.boundingRect(contour)
 
-                # Draw the contour on the frame with red lines
-                cv2.drawContours(frame, [contour], 0, (0, 0, 255), 2)
+            # Draw the contour on the frame with red lines
+            cv2.drawContours(frame, [contour], 0, (0, 0, 255), 2)
+
+            # If the % filled is above a certain threshold, consider it as a ball
+            fill_ratio = 0.6
+            filled = area > w * h * fill_ratio
+            squareish = abs((w / h) - 1.0) < 0.3
+            big_enough = w > 4
+            if filled and squareish and big_enough:
 
                 # Draw the bounding box on the frame
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
