@@ -60,14 +60,11 @@ class TrainingRule:
         """Do a feeding
         Use a cooldown to not allow feedings to close to each other.
         """
-        now = datetime.now()
-
         # FIXME - we should also store success images occasionally (but not to frequently) when target is seen but feeding not currently allowed
         self.save_image(is_success=True, store_annotated=True)
 
         self.trainer.feeder.feed(num_feedings)
         self.state.fed_today += num_feedings
-        self.state.last_feed_datetime = now
 
         # wait a few seconds after food dispensed to see if we can store a photo of the target eating
         if not self.trainer.is_simulated:
@@ -198,10 +195,10 @@ class ScheduledFeederRule(TrainingRule):
         super().__init__(trainer)
 
         # FIXME - pull schedule from some sort of json file?
-        self.schedule = [ScheduledFeeding(time(7, 00), 3),
-                         ScheduledFeeding(time(14, 00), 1),
-                         ScheduledFeeding(time(16, 00), 1),
-                         ScheduledFeeding(time(17, 45), 2)]
+        self.schedule = load_state("schedule", [ScheduledFeeding(time(7, 00), 2),
+                                                ScheduledFeeding(time(14, 00), 1),
+                                                ScheduledFeeding(time(16, 00), 1),
+                                                ScheduledFeeding(time(17, 45), 2)])
 
     @property
     def num_allowed(self):
