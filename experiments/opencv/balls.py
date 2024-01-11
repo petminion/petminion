@@ -63,7 +63,7 @@ def detect_red_circles():
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         # Define the lower and upper bounds for the red color - this needs to be done in two sections because red 'straddles' the 0/180 line
-        center_hue = 80  # green
+        center_hue = 85  # green
         hue_width = 20
         # center_hue = 0  # red
         # hue_width = 10
@@ -93,6 +93,8 @@ def detect_red_circles():
         bounding_boxes = []
 
         print(f"Found {len(contours)} contours")
+
+        # fixme, keep the last N frames of bounding boxes.  only count balls that were in most of the last n frames.
 
         # Iterate over the contours
         for contour in contours:

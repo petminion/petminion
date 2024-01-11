@@ -3,7 +3,7 @@
 # Not a keyboard!
 # SUBSYSTEM=="usb", DRIVER=="libinput", ATTRS{idVendor}=="0c45", ATTRS{idProduct}=="636b", ATTR{authorized}="0"
 
-0c45:636b
+# 0c45:636b
 # these are udev rules so that the camera gets a stable /dev/camera device node (rather than a sometimes changing videoN node)
 # use E: ID_V4L_CAPABILITIES=:capture: to detect cameras? based on looking at "udevadm info /dev/video3"
 # not needed: GROUP="plugdev", MODE="0666"
