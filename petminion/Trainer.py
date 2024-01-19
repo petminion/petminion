@@ -82,7 +82,7 @@ class Trainer:
     def share_social(self, title: str) -> None:
         """Share the current image to social media with the given title"""
         if self.social_rate.can_run():
-            self.social.post_image(title, self.image.image)
+            self.social.post_image(title, self.image.raw_image)
         else:
             logger.warning("Skipping social media post due to rate limit")
 

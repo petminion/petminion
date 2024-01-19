@@ -38,8 +38,8 @@ class CV2Camera(Camera):
         cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('U', 'Y', 'V', 'Y'))  # type: ignore
         # we can get a much higher frame rate if we use H264, but opencv doesn't automatically decompress it
         # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))
-        # cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)
-        # cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
+        cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+        cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
         width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
@@ -57,6 +57,8 @@ class CV2Camera(Camera):
         logger.info(
             f"Camera width={ width }, height={height}, exposure={exp}")
 
+        if width != 1920:
+            logger.warning("Requested resolution of 1920x1080 not available, problems might occur...")
         # check access
         if (not cam.isOpened() or width == 0):
             raise ConnectionError("Can't access camera")

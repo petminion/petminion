@@ -99,7 +99,7 @@ class TrainingRule:
         if self.live_capture_limit.can_run():  # keep a live image every few seconds
             filepath = os.path.join(
                 tempfile.gettempdir(), "petminion_live.png")
-            self.store_annotated(filepath)
+            self.store_raw_image(filepath)
 
     def evaluate_scene(self) -> bool:
         """Evaluate the current scene
@@ -121,6 +121,10 @@ class TrainingRule:
 
     def is_detected(self, name: str):
         return self.count_detections(name) > 0
+
+    def store_raw_image(self, filepath):
+        """Store the current annotated frame in a file"""
+        cv2.imwrite(filepath, self.trainer.image.raw_image)
 
     def store_annotated(self, filepath):
         """Store the current annotated frame in a file"""

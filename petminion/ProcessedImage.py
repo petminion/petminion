@@ -25,6 +25,7 @@ class ProcessedImage:
             # Resize the frame to 640x480
             dest_size = (640, 480)
             image = cv2.resize(image, dest_size, interpolation=cv2.INTER_LANCZOS4)
+        self.raw_image = raw_image
         self.image = image
         self.__annotated = None
 
