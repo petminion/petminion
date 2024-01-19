@@ -34,7 +34,7 @@ hue_width = 15
 # center_hue = 0  # red
 # hue_width = 10
 
-s_min = 200
+s_min = 190
 s_max = 240
 v_min = 0
 v_width = 180
@@ -95,8 +95,8 @@ def count_balls(frame: np.ndarray) -> tuple[int, np.ndarray]:
         # If the % filled is above a certain threshold, consider it as a ball
         fill_ratio = 0.4
         filled = area > w * h * fill_ratio
-        squareish = abs((w / h) - 1.0) < 0.6  # if close to zero, it's a square
-        big_enough = True  # w > 4
+        squareish = abs((w / h) - 1.0) < 0.4  # if close to zero, it's a square
+        big_enough = w > 8
         if filled and squareish and big_enough:
 
             # Draw the bounding box on the frame
@@ -112,6 +112,13 @@ def count_balls(frame: np.ndarray) -> tuple[int, np.ndarray]:
 def test_balls() -> None:
     # Open the camera
     cap = cv2.VideoCapture("/dev/camera", cv2.CAP_V4L2)
+
+    wb_auto = False  # we want to avoid constantly changing our white balance
+    if wb_auto:
+        cap.set(cv2.CAP_PROP_AUTO_WB, 1)  # Turn on/off auto white balance adjustment
+    else:
+        cap.set(cv2.CAP_PROP_AUTO_WB, 0)
+        cap.set(cv2.CAP_PROP_WB_TEMPERATURE, 3222)  # from crude testing in my living room
 
     window_name = "Camera Feed"
     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)

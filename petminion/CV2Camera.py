@@ -28,6 +28,13 @@ class CV2Camera(Camera):
         # also possibly CAP_GSTREAMER might work better than V4L2 TBD!
         self.cam = cam = cv2.VideoCapture("/dev/camera", cv2.CAP_V4L2)
 
+        wb_auto = False  # we want to avoid constantly changing our white balance
+        if wb_auto:
+            cam.set(cv2.CAP_PROP_AUTO_WB, 1)  # Turn on/off auto white balance adjustment
+        else:
+            cam.set(cv2.CAP_PROP_AUTO_WB, 0)
+            cam.set(cv2.CAP_PROP_WB_TEMPERATURE, 3222)  # from crude testing in my living room
+
         # cam.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('U','Y','V','Y'))
         # cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)
         # cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
