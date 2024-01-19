@@ -24,7 +24,9 @@ class CV2Camera(Camera):
         # variable according to that
         # cam_port = 0
         # we no longer use port numbers, instead we use linux udev rules to assign a consistent name
-        self.cam = cam = cv2.VideoCapture("/dev/camera")
+        # we manually specify V4L2 as the backend because ANY tries to parse the filename for a # pattern if the device is not found.
+        # also possibly CAP_GSTREAMER might work better than V4L2 TBD!
+        self.cam = cam = cv2.VideoCapture("/dev/camera", cv2.CAP_V4L2)
 
         # cam.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('U','Y','V','Y'))
         # cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)

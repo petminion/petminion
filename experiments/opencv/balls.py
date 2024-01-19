@@ -28,96 +28,107 @@ class NoiseEliminator:
         return frame
 
 
-def detect_red_circles():
-    global labels
+# Define the lower and upper bounds for the red color - this needs to be done in two sections because red 'straddles' the 0/180 line
+center_hue = 90  # green
+hue_width = 15
+# center_hue = 0  # red
+# hue_width = 10
 
+s_min = 200
+s_max = 240
+v_min = 0
+v_width = 180
+
+denoise = NoiseEliminator()
+
+hsv = None  # global for debugging access
+
+
+def count_balls(frame: np.ndarray) -> tuple[int, np.ndarray]:
+    global hsv
+
+    # Easy single frame denoising
+    # if this isn't enough make a class that keeps the last 5 frames and uses https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html
+    # multiframe.
+    # frame = cv2.fastNlMeansDenoisingColored(frame, None, h, hColor, 7, 21)
+    frame = denoise.filter_frame(frame)
+
+    # Convert the frame to the HSV color space
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    lower = np.array([center_hue, s_min, v_min])
+    upper = np.array([center_hue + hue_width, s_max, v_min + v_width])
+    mask = cv2.inRange(hsv, lower, upper)
+
+    if center_hue < 10:  # red straddles the 0/180 line, so we need to handle it differently
+        lower_red = np.array([175 - center_hue, s_min, 50])
+        upper_red = np.array([180 - center_hue, s_max, 255])
+        mask2 = cv2.inRange(hsv, lower_red, upper_red)
+
+        # Combine the masks
+        mask = cv2.bitwise_or(mask, mask2)
+
+    # Apply a series of morphological operations to remove noise (not needed now that we are using denoising above)
+    # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (6, 6))
+    # mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+
+    # Find contours of the red circles
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Initialize a list to store the bounding boxes
+    bounding_boxes = []
+
+    # print(f"Found {len(contours)} contours")
+
+    # fixme, keep the last N frames of bounding boxes.  only count balls that were in most of the last n frames.
+
+    # Iterate over the contours
+    for contour in contours:
+        # Calculate the area of the contour
+        area = cv2.contourArea(contour)
+
+        x, y, w, h = cv2.boundingRect(contour)
+
+        # Draw the contour on the frame with red lines
+        cv2.drawContours(frame, [contour], 0, (0, 0, 255), 2)
+
+        # If the % filled is above a certain threshold, consider it as a ball
+        fill_ratio = 0.4
+        filled = area > w * h * fill_ratio
+        squareish = abs((w / h) - 1.0) < 0.6  # if close to zero, it's a square
+        big_enough = True  # w > 4
+        if filled and squareish and big_enough:
+
+            # Draw the bounding box on the frame
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+            # Add the bounding box to the list
+            bounding_boxes.append((x, y, w, h))
+
+    # Return the bounding boxes of the balls
+    return len(bounding_boxes), frame
+
+
+def test_balls() -> None:
     # Open the camera
-    cap = cv2.VideoCapture("/dev/camera")
-    denoise = NoiseEliminator()
+    cap = cv2.VideoCapture("/dev/camera", cv2.CAP_V4L2)
 
     window_name = "Camera Feed"
     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
     cv2.resizeWindow(window_name, 640, 480)
 
-    hsv = None
-
     def mouse_callback(event, x, y, flags, param):
-        global labels
-
         color = hsv[y, x]
         labels['text'] = f"HSV: {color}"
 
-    cv2.setMouseCallback(window_name, mouse_callback)
+    cv2.setMouseCallback(window_name, mouse_callback)  # type: ignore
 
     while True:
         # Read a frame from the camera
         ret, frame = cap.read()
 
-        # Easy single frame denoising
-        # if this isn't enough make a class that keeps the last 5 frames and uses https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html
-        # multiframe.
-        # frame = cv2.fastNlMeansDenoisingColored(frame, None, h, hColor, 7, 21)
-        frame = denoise.filter_frame(frame)
-
-        # Convert the frame to the HSV color space
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-        # Define the lower and upper bounds for the red color - this needs to be done in two sections because red 'straddles' the 0/180 line
-        center_hue = 85  # green
-        hue_width = 20
-        # center_hue = 0  # red
-        # hue_width = 10
-
-        v_min = 0
-        v_width = 180
-        lower = np.array([center_hue, 60, v_min])
-        upper = np.array([center_hue + hue_width, 255, v_min + v_width])
-        mask = cv2.inRange(hsv, lower, upper)
-
-        if center_hue < 10:  # red straddles the 0/180 line, so we need to handle it differently
-            lower_red = np.array([175 - center_hue, 60, 50])
-            upper_red = np.array([180 - center_hue, 255, 255])
-            mask2 = cv2.inRange(hsv, lower_red, upper_red)
-
-            # Combine the masks
-            mask = cv2.bitwise_or(mask, mask2)
-
-        # Apply a series of morphological operations to remove noise
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (6, 6))
-        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-
-        # Find contours of the red circles
-        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        # Initialize a list to store the bounding boxes
-        bounding_boxes = []
-
-        print(f"Found {len(contours)} contours")
-
-        # fixme, keep the last N frames of bounding boxes.  only count balls that were in most of the last n frames.
-
-        # Iterate over the contours
-        for contour in contours:
-            # Calculate the area of the contour
-            area = cv2.contourArea(contour)
-
-            x, y, w, h = cv2.boundingRect(contour)
-
-            # Draw the contour on the frame with red lines
-            cv2.drawContours(frame, [contour], 0, (0, 0, 255), 2)
-
-            # If the % filled is above a certain threshold, consider it as a ball
-            fill_ratio = 0.6
-            filled = area > w * h * fill_ratio
-            squareish = abs((w / h) - 1.0) < 0.3
-            big_enough = w > 4
-            if filled and squareish and big_enough:
-
-                # Draw the bounding box on the frame
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-                # Add the bounding box to the list
-                bounding_boxes.append((x, y, w, h))
+        count, frame = count_balls(frame)
+        print(f"Found {count} balls")
 
         # Display the HSV color of the pixel under the cursor
         cv2.putText(frame, labels['text'], (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
@@ -132,9 +143,6 @@ def detect_red_circles():
     cap.release()
     cv2.destroyAllWindows()
 
-    # Return the bounding boxes of the balls
-    return bounding_boxes
-
 
 # Call the function to start showing the camera feed
-detect_red_circles()
+test_balls()

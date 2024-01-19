@@ -8,6 +8,8 @@
   "python.defaultInterpreterPath": "${workspaceFolder}/minionenv/bin/python",
   "cSpell.words": [
     "aruco",
+    "denoise",
+    "Denoising",
     "fpdf",
     "imread",
     "imshow",

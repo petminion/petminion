@@ -30,6 +30,6 @@
 		"python.analysis.inlayHints.functionReturnTypes": true,
 		"python.analysis.inlayHints.callArgumentNames": "off",
 		"python.analysis.inlayHints.pytestParameters": true,
-		"python.analysis.typeCheckingMode": "basic"
+		"python.analysis.typeCheckingMode": "basic",
 	}
 }
