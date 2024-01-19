@@ -1,5 +1,6 @@
 import logging
 from tkinter import Image
+from typing import Optional
 
 import cv2
 import numpy as np
@@ -126,7 +127,7 @@ class BallRecognizer(Recognizer):
     def __init__(self):
         super().__init__()
 
-    def do_detection(self, image: np.ndarray) -> tuple[np.ndarray, list[ImageDetection]]:
+    def do_detection(self, image: np.ndarray) -> tuple[Optional[np.ndarray], list[ImageDetection]]:
         """
         Performs object detection on the given image.
 

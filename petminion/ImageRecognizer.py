@@ -1,6 +1,7 @@
 import logging
 import os
 import urllib.request
+from typing import Optional
 
 import numpy
 from imageai.Classification import ImageClassification
@@ -76,7 +77,7 @@ class ImageRecognizer(Recognizer):
         )
         classifier.loadModel()
 
-    def do_detection(self, image: numpy.ndarray) -> tuple[numpy.ndarray, list[ImageDetection]]:
+    def do_detection(self, image: numpy.ndarray) -> tuple[Optional[numpy.ndarray], list[ImageDetection]]:
         """
         Performs object detection on the given image.
 
