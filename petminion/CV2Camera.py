@@ -15,16 +15,17 @@ live_capture_limit = RateLimit("live_capture_limit", 5)  # every few seconds
 
 
 def show_image(image: numpy.ndarray) -> None:
-    if has_windows():
-        window_name = "Camera Feed"
+    if False and has_windows():  # FIXME hangs when calling any gui functions
+        window_name = "petminion"
         # cv2.startWindowThread()
-        # cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-        # cv2.resizeWindow(window_name, 640, 480)
-        cv2.imshow(window_name, image)
+        cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
+        cv2.resizeWindow(window_name, 640, 480)
+        if image:
+            cv2.imshow(window_name, image)
         cv2.waitKey(1)
     else:
         # no gui - at least save a live image every few seconds
-        if live_capture_limit.can_run():
+        if image is not None and live_capture_limit.can_run():
             filepath = os.path.join(
                 tempfile.gettempdir(), "petminion_live.png")
             cv2.imwrite(filepath, image)

@@ -1,7 +1,10 @@
 import configparser
 import logging
-import time as systime  # prevent name clash with datetime.time
+import time as systime
 
+from petminion import BallRecognizer  # prevent name clash with datetime.time
+
+from .BallRecognizer import BallRecognizer
 from .Camera import CameraDisconnectedError, SimCamera
 from .CV2Camera import CV2Camera  # noqa: F401 needed for find at runtime
 from .Feeder import *  # noqa: F403 must use * here because we find classnames at runtime
@@ -16,7 +19,7 @@ from .TrainingRule import *  # noqa: F403 must use * here because we find classn
 from .util import app_config
 
 logger = logging.getLogger()
-recognizers = [ImageRecognizer()]
+recognizers = [ImageRecognizer(), BallRecognizer()]
 
 
 def class_by_name(name):

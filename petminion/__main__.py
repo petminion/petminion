@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 
+from .CV2Camera import show_image
 from .Trainer import Trainer
 from .util import app_config, user_data_dir
 
@@ -52,6 +53,9 @@ def main():
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
     logger.info(f'Petminion running...')
+
+    # FIXME - trying to debug this
+    # show_image(None)
 
     if not os.path.exists("/dev/camera") and not args.simulate:
         if app_config.settings.getboolean('SimFallback'):

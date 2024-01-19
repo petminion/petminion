@@ -1,35 +1,15 @@
 import logging
 import os
 import urllib.request
-from typing import NamedTuple
 
 import numpy
 from imageai.Classification import ImageClassification
 from imageai.Detection import ObjectDetection
 
+from .Recognizer import ImageDetection, Recognizer
 from .util import app_config, user_cache_dir
 
 logger = logging.getLogger()
-
-
-class ImageDetection(NamedTuple):
-    """
-    Represents the result of an image detection.
-
-    Attributes:
-        name (str): The name of the detected object.
-        probability (float): The probability/confidence score of the detection.
-        x1 (int, optional): The x-coordinate of the top-left corner of the bounding box. Defaults to -1.
-        y1 (int, optional): The y-coordinate of the top-left corner of the bounding box. Defaults to -1.
-        x2 (int, optional): The x-coordinate of the bottom-right corner of the bounding box. Defaults to -1.
-        y2 (int, optional): The y-coordinate of the bottom-right corner of the bounding box. Defaults to -1.
-    """
-    name: str
-    probability: float
-    x1: int = -1
-    y1: int = -1
-    x2: int = -1
-    y2: int = -1
 
 
 def get_model_path(url, filename):
@@ -43,9 +23,11 @@ def get_model_path(url, filename):
     return path
 
 
-class ImageRecognizer:
+class ImageRecognizer(Recognizer):
     """
     A class that performs object detection and image classification using ImageAI library.
+
+    Inherits from Recognizer class.
 
     Attributes:
         detector: An instance of ObjectDetection class for object detection.
@@ -61,6 +43,8 @@ class ImageRecognizer:
         Initializes the ImageRecognizer class by loading the model files for object detection and image classification.
         The model files are downloaded if needed.
         """
+        super().__init__()
+
         # autodownload the model files if needed
         fast_and_small = app_config.settings['FastModel']
 

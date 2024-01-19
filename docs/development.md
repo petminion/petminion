@@ -83,6 +83,10 @@ mv id_petminion.pub .ssh/authorized_keys
 apt install git
 git clone https://github.com/petminion/petminion.git
 
+## How to get stack traces from a suspended process
+
+sudo gdb -batch -ex bt -p 84034
+
 ## Remote debugging/development on a Raspberry Pi
 
 * Install the "Remote - SSH" VS-Code extension (by Microsoft)

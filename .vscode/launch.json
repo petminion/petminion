@@ -7,7 +7,7 @@
             "request": "launch",
             "module": "petminion",
             "python": "${workspaceFolder}/minionenv/bin/python",
-            "justMyCode": true,
+            "justMyCode": false,
             "args": [
                 "--debug",
                 "--simulate"
@@ -19,7 +19,7 @@
             "request": "launch",
             "module": "petminion",
             "python": "${workspaceFolder}/minionenv/bin/python",
-            "justMyCode": true,
+            "justMyCode": false,
             "args": [
                 "--debug"
             ]
@@ -30,7 +30,7 @@
             "request": "launch",
             "program": "${file}",
             "python": "${workspaceFolder}/minionenv/bin/python",
-            "justMyCode": true
+            "justMyCode": false
         }
     ]
 }
