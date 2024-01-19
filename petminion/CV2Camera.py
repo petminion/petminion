@@ -35,7 +35,9 @@ class CV2Camera(Camera):
             cam.set(cv2.CAP_PROP_AUTO_WB, 0)
             cam.set(cv2.CAP_PROP_WB_TEMPERATURE, 3222)  # from crude testing in my living room
 
-        # cam.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('U','Y','V','Y'))
+        cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('U', 'Y', 'V', 'Y'))  # type: ignore
+        # we can get a much higher frame rate if we use H264, but opencv doesn't automatically decompress it
+        # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))
         # cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)
         # cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
         width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))

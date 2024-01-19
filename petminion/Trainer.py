@@ -16,6 +16,7 @@ from .TrainingRule import *  # noqa: F403 must use * here because we find classn
 from .util import app_config
 
 logger = logging.getLogger()
+recognizers = [ImageRecognizer()]
 
 
 def class_by_name(name):
@@ -54,7 +55,6 @@ class Trainer:
     def __init__(self, is_simulated: bool = False, force_clean: bool = False):
         self.is_simulated = is_simulated
         self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
-        self.recognizer = ImageRecognizer()
 
         self.social_rate = RateLimit("social_rate", 60 * 60 * 1)  # 1 post per hour
         self.social = SocialMediaClient()  # provide a stub implementation that does nothing
@@ -77,12 +77,12 @@ class Trainer:
 
     def capture_image(self) -> None:
         """Grab a new image from the camera"""
-        self.image = ProcessedImage(self.recognizer, self.camera.read_image())
+        self.image = ProcessedImage(recognizers, self.camera.read_image())
 
     def share_social(self, title: str) -> None:
         """Share the current image to social media with the given title"""
         if self.social_rate.can_run():
-            self.social.post_image(title, self.image.annotated)
+            self.social.post_image(title, self.image.image)
         else:
             logger.warning("Skipping social media post due to rate limit")
 

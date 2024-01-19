@@ -31,6 +31,493 @@ You can find supported boards and install images (here)[https://dietpi.com/#down
 
 The following hardware is not yet supported, but possibly interesting someday...
 
+### Cameras
+
+How to get supported camera resolutions/settings:
+
+```
+kevinh@kdesktop:~/development/petminion$ v4l2-ctl -d /dev/camera --list-formats-ext --all 
+Driver Info:
+	Driver name      : uvcvideo
+	Card type        : HD Pro Webcam C920
+	Bus info         : usb-0000:0a:00.3-3
+	Driver version   : 6.5.7
+	Capabilities     : 0x84a00001
+		Video Capture
+		Metadata Capture
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04200001
+		Video Capture
+		Streaming
+		Extended Pix Format
+Media Driver Info:
+	Driver name      : uvcvideo
+	Model            : HD Pro Webcam C920
+	Serial           : B61DEDAF
+	Bus info         : usb-0000:0a:00.3-3
+	Media version    : 6.5.7
+	Hardware revision: 0x00000011 (17)
+	Driver version   : 6.5.7
+Interface Info:
+	ID               : 0x03000002
+	Type             : V4L Video
+Entity Info:
+	ID               : 0x00000001 (1)
+	Name             : HD Pro Webcam C920
+	Function         : V4L2 I/O
+	Flags            : default
+	Pad 0x01000007   : 0: Sink
+	  Link 0x0200001f: from remote pad 0x100000a of entity 'Processing 3' (Video Pixel Formatter): Data, Enabled, Immutable
+Priority: 2
+Video input : 0 (Camera 1: ok)
+Format Video Capture:
+	Width/Height      : 640/480
+	Pixel Format      : 'YUYV' (YUYV 4:2:2)
+	Field             : None
+	Bytes per Line    : 1280
+	Size Image        : 614400
+	Colorspace        : sRGB
+	Transfer Function : Rec. 709
+	YCbCr/HSV Encoding: ITU-R 601
+	Quantization      : Default (maps to Limited Range)
+	Flags             : 
+Crop Capability Video Capture:
+	Bounds      : Left 0, Top 0, Width 640, Height 480
+	Default     : Left 0, Top 0, Width 640, Height 480
+	Pixel Aspect: 1/1
+Selection Video Capture: crop_default, Left 0, Top 0, Width 640, Height 480, Flags: 
+Selection Video Capture: crop_bounds, Left 0, Top 0, Width 640, Height 480, Flags: 
+Streaming Parameters Video Capture:
+	Capabilities     : timeperframe
+	Frames per second: 30.000 (30/1)
+	Read buffers     : 0
+
+User Controls
+
+                     brightness 0x00980900 (int)    : min=0 max=255 step=1 default=128 value=128
+                       contrast 0x00980901 (int)    : min=0 max=255 step=1 default=128 value=128
+                     saturation 0x00980902 (int)    : min=0 max=255 step=1 default=128 value=128
+        white_balance_automatic 0x0098090c (bool)   : default=1 value=0
+                           gain 0x00980913 (int)    : min=0 max=255 step=1 default=0 value=17
+           power_line_frequency 0x00980918 (menu)   : min=0 max=2 default=2 value=2 (60 Hz)
+				0: Disabled
+				1: 50 Hz
+				2: 60 Hz
+      white_balance_temperature 0x0098091a (int)    : min=2000 max=6500 step=1 default=4000 value=3222
+                      sharpness 0x0098091b (int)    : min=0 max=255 step=1 default=128 value=128
+         backlight_compensation 0x0098091c (int)    : min=0 max=1 step=1 default=0 value=0
+
+Camera Controls
+
+                  auto_exposure 0x009a0901 (menu)   : min=0 max=3 default=3 value=3 (Aperture Priority Mode)
+				1: Manual Mode
+				3: Aperture Priority Mode
+         exposure_time_absolute 0x009a0902 (int)    : min=3 max=2047 step=1 default=250 value=333 flags=inactive
+     exposure_dynamic_framerate 0x009a0903 (bool)   : default=0 value=1
+                   pan_absolute 0x009a0908 (int)    : min=-36000 max=36000 step=3600 default=0 value=0
+                  tilt_absolute 0x009a0909 (int)    : min=-36000 max=36000 step=3600 default=0 value=0
+                 focus_absolute 0x009a090a (int)    : min=0 max=250 step=5 default=0 value=0 flags=inactive
+     focus_automatic_continuous 0x009a090c (bool)   : default=1 value=1
+                  zoom_absolute 0x009a090d (int)    : min=100 max=500 step=1 default=100 value=100
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
+
+	[0]: 'YUYV' (YUYV 4:2:2)
+		Size: Discrete 640x480
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 160x90
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 160x120
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 176x144
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 320x180
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 320x240
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 352x288
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 432x240
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 640x360
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 800x448
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 800x600
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 864x480
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 960x720
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1024x576
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1280x720
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1600x896
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1920x1080
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 2304x1296
+			Interval: Discrete 0.500s (2.000 fps)
+		Size: Discrete 2304x1536
+			Interval: Discrete 0.500s (2.000 fps)
+	[1]: 'H264' (H.264, compressed)
+		Size: Discrete 640x480
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 160x90
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 160x120
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 176x144
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 320x180
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 320x240
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 352x288
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 432x240
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 640x360
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 800x448
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 800x600
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 864x480
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 960x720
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1024x576
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1280x720
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1600x896
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1920x1080
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+	[2]: 'MJPG' (Motion-JPEG, compressed)
+		Size: Discrete 640x480
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 160x90
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 160x120
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 176x144
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 320x180
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 320x240
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 352x288
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 432x240
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 640x360
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 800x448
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 800x600
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 864x480
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 960x720
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1024x576
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1280x720
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1600x896
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+		Size: Discrete 1920x1080
+			Interval: Discrete 0.033s (30.000 fps)
+			Interval: Discrete 0.042s (24.000 fps)
+			Interval: Discrete 0.050s (20.000 fps)
+			Interval: Discrete 0.067s (15.000 fps)
+			Interval: Discrete 0.100s (10.000 fps)
+			Interval: Discrete 0.133s (7.500 fps)
+			Interval: Discrete 0.200s (5.000 fps)
+
+```
 ### Feeders
 
 https://home.miot-spec.com/s/mmgg.feeder.fi1

@@ -113,6 +113,14 @@ def test_balls() -> None:
     # Open the camera
     cap = cv2.VideoCapture("/dev/camera", cv2.CAP_V4L2)
 
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('U', 'Y', 'V', 'Y'))
+    # we can get a much higher frame rate if we use H264, but opencv doesn't automatically decompress it
+    # cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))
+
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+
+    dest_size = (640, 480)
     wb_auto = False  # we want to avoid constantly changing our white balance
     if wb_auto:
         cap.set(cv2.CAP_PROP_AUTO_WB, 1)  # Turn on/off auto white balance adjustment
@@ -133,6 +141,13 @@ def test_balls() -> None:
     while True:
         # Read a frame from the camera
         ret, frame = cap.read()
+
+        w = frame.shape[1]  # Set w to the width of the frame
+        if (w != 640):
+            # Resize the frame to 640x480
+            frame = cv2.resize(frame, dest_size, interpolation=cv2.INTER_LANCZOS4)
+
+        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         count, frame = count_balls(frame)
         print(f"Found {count} balls")

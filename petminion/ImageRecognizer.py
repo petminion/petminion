@@ -100,7 +100,7 @@ class ImageRecognizer:
             image: A numpy array representing the image.
 
         Returns:
-            A tuple containing the annotated image and a list of ImageDetection objects.
+            A tuple containing the annotated image (or None if no detections found) and a list of ImageDetection objects.
         """
         # too verbose
         # logger.debug("Doing detection...")
@@ -120,6 +120,9 @@ class ImageRecognizer:
             x["box_points"][0], x["box_points"][1],
             x["box_points"][2], x["box_points"][3]
         ), detections))
+
+        if not len(d):
+            annotated = None  # if no annotations found
         return annotated, d
 
     def do_classification(self, image: numpy.ndarray) -> list[ImageDetection]:
