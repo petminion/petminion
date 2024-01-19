@@ -9,10 +9,11 @@ from typing import NamedTuple
 
 import cv2
 
+from .CV2Camera import show_image
 from .ImageRecognizer import \
     ImageDetection  # noqa: F401 needed for find at runtime
 from .RateLimit import RateLimit
-from .util import load_state, save_state, user_data_dir
+from .util import has_windows, load_state, save_state, user_data_dir
 
 logger = logging.getLogger()
 
@@ -42,7 +43,6 @@ class TrainingRule:
         self.state = State()
         self.feed_interval_limit = RateLimit("feed_limit", 10 * 60)  # 10 minutes
         self.failure_capture_limit = RateLimit("failure_capture_limit", 4 * 60 * 60)  # 4 hour
-        self.live_capture_limit = RateLimit("live_capture_limit", 5)  # every few seconds
 
     @staticmethod
     def create_from_save(trainer, desired_class) -> 'TrainingRule':
@@ -96,10 +96,9 @@ class TrainingRule:
             if self.failure_capture_limit.can_run():
                 self.save_image(is_success=False)
 
-        if self.live_capture_limit.can_run():  # keep a live image every few seconds
-            filepath = os.path.join(
-                tempfile.gettempdir(), "petminion_live.png")
-            self.store_raw_image(filepath)
+        # if we have windows, show the annotated image in the gui
+        debug_image = self.trainer.image.annotated if self.trainer.image.annotated is not None else self.trainer.image.image
+        show_image(debug_image)
 
     def evaluate_scene(self) -> bool:
         """Evaluate the current scene
@@ -121,10 +120,6 @@ class TrainingRule:
 
     def is_detected(self, name: str):
         return self.count_detections(name) > 0
-
-    def store_raw_image(self, filepath):
-        """Store the current annotated frame in a file"""
-        cv2.imwrite(filepath, self.trainer.image.raw_image)
 
     def store_annotated(self, filepath):
         """Store the current annotated frame in a file"""

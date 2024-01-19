@@ -1,11 +1,33 @@
 import logging
+import os
+import tempfile
 
 import cv2
 import numpy
 
 from .Camera import Camera, CameraDisconnectedError
+from .RateLimit import RateLimit
+from .util import has_windows
 
 logger = logging.getLogger()
+
+live_capture_limit = RateLimit("live_capture_limit", 5)  # every few seconds
+
+
+def show_image(image: numpy.ndarray) -> None:
+    if has_windows():
+        window_name = "Camera Feed"
+        # cv2.startWindowThread()
+        # cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+        # cv2.resizeWindow(window_name, 640, 480)
+        cv2.imshow(window_name, image)
+        cv2.waitKey(1)
+    else:
+        # no gui - at least save a live image every few seconds
+        if live_capture_limit.can_run():
+            filepath = os.path.join(
+                tempfile.gettempdir(), "petminion_live.png")
+            cv2.imwrite(filepath, image)
 
 
 class CV2Camera(Camera):
@@ -47,7 +69,7 @@ class CV2Camera(Camera):
         # a logitech c920 supports between-2 to -11.  Might need to go lower if bluring still occurs. -8 is definitely
         # sharper at preventing bluring, but a bit too dark in the morning.
         # Must be set _after_ setting width and height
-        cam.set(cv2.CAP_PROP_EXPOSURE, -6)
+        # cam.set(cv2.CAP_PROP_EXPOSURE, -6)
         exp = int(cam.get(cv2.CAP_PROP_EXPOSURE))
 
         # FIXME - might need to turn off autofocus if shortening exposures is not enough to make things sharp

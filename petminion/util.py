@@ -10,22 +10,27 @@ app_author = "geeksville"
 logger = logging.getLogger()
 
 
-def user_data_dir():
+def has_windows() -> bool:
+    """Return true if we are running on a system with XWindows"""
+    return os.environ.get("DISPLAY", None) is not None
+
+
+def user_data_dir() -> str:
     """Get our data directory"""
     return platformdirs.user_data_dir(app_name, app_author, ensure_exists=True)
 
 
-def user_cache_dir():
+def user_cache_dir() -> str:
     """Get our cache directory"""
     return platformdirs.user_cache_dir(app_name, app_author, ensure_exists=True)
 
 
-def user_config_dir():
+def user_config_dir() -> str:
     """Get our config directory"""
     return platformdirs.user_config_dir(app_name, app_author, ensure_exists=True)
 
 
-def user_state_dir():
+def user_state_dir() -> str:
     """Get our state directory"""
     return platformdirs.user_state_dir(app_name, app_author, ensure_exists=True)
 
@@ -74,7 +79,7 @@ def load_state(file_base_name: str, default_value: any = None) -> any:
 class AppConfig:
     """Provides read/write access to application config file"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initializes an instance of MyClass.
 
@@ -96,7 +101,7 @@ class AppConfig:
             # always reset the defaults because they might have changed in development
             self.set_defaults()
 
-    def set_defaults(self):
+    def set_defaults(self) -> None:
         """
         Sets the default configuration values for the PetMinion class.
 
@@ -120,11 +125,11 @@ class AppConfig:
         }
 
     @property
-    def settings(self):
+    def settings(self) -> configparser.SectionProxy:
         """Return the first customized set of settings"""
         return self.config['settings']
 
-    def save(self):
+    def save(self) -> None:
         """Store a (possibly modified config) to the filesystem"""
         with open(self.filename, 'w') as f:
             self.config.write(f)

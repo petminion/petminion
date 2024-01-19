@@ -21,7 +21,8 @@
     "petminion",
     "platformdirs",
     "squareish",
-    "systime"
+    "systime",
+    "xwindows"
   ],
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
