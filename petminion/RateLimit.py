@@ -25,6 +25,10 @@ class RateLimit:
     def interval_secs(self) -> float:
         return self.state.interval_secs
 
+    @interval_secs.setter
+    def interval_secs(self, value: float):
+        self.state.interval_secs = value
+
     @property
     def is_runnable(self) -> bool:
         """

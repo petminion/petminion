@@ -2,8 +2,8 @@
 import json
 import logging
 import os
-import tempfile
 import time as systime  # prevent name clash with datetime.time
+from dataclasses import dataclass
 from datetime import datetime, time
 from typing import NamedTuple
 
@@ -26,12 +26,11 @@ class FeedingNotAllowed(Exception):
 save_name = "rule-v2"
 
 
+@dataclass
 class State():
     """A class representing the serializable state of a TrainingRule"""
-
-    def __init__(self):
-        self.fed_today = 0  # how many feedings have we done so far today
-        self.last_time = datetime.now().time()  # the last time our rule was run
+    fed_today = 0  # how many feedings have we done so far today
+    last_time = datetime.now().time()  # the last time our rule was run
 
 
 class TrainingRule:
@@ -56,6 +55,11 @@ class TrainingRule:
                 f'No saved training state ({e}) found, using default state...')
         return r
 
+    @property
+    def status(self):
+        """Returns a string representing the current status of the rule."""
+        return f'Fed { self.state.fed_today } feedings today'
+
     def do_feeding(self, num_feedings: int = 1) -> None:
         """Do a feeding
         Use a cooldown to not allow feedings to close to each other.
@@ -72,7 +76,7 @@ class TrainingRule:
             systime.sleep(60)
         self.trainer.capture_image()
         self.save_image(is_success=False, summary="eating")
-        self.trainer.share_social("Fed my cat")
+        self.trainer.share_social(self.status)
 
         save_state(save_name, self.state)  # save to disk so we don't miss feedings if we restart
 
@@ -200,7 +204,12 @@ class ScheduledFeederRule(TrainingRule):
                                                 ScheduledFeeding(time(17, 45), 2)])
 
     @property
-    def num_allowed(self):
+    def status(self) -> str:
+        """Returns a string representing the current status of the rule."""
+        return f'Fed { self.state.fed_today } out of { self.num_allowed } feedings today'
+
+    @property
+    def num_allowed(self) -> int:
         """
         Check if feeding is allowed based on the current time and feeding schedule.
 
@@ -243,6 +252,23 @@ class SimpleFeederRule(ScheduledFeederRule):
 
         self.target = target
 
+    def is_feeding_allowed(self) -> bool:
+        """
+        Check if feeding is allowed based on the current time and feeding schedule.
+
+        Returns:
+            bool: True if feeding is allowed, False otherwise.
+        """
+        if self.is_detected(self.target):
+            num_allowed = self.num_allowed
+            if num_allowed:
+                if not self.feed_interval_limit.can_run():
+                    logger.warning(f'Too soon for this { num_allowed } feedings, try again later')
+                else:
+                    return True
+
+        return False
+
     def evaluate_scene(self) -> bool:
         """
         Evaluates the scene and performs feeding if the target is detected and feeding is allowed.
@@ -250,36 +276,37 @@ class SimpleFeederRule(ScheduledFeederRule):
         Returns:
             bool: True if the target is detected, False otherwise.
         """
-        if self.is_detected(self.target):
-            num_allowed = self.num_allowed
+        if self.is_feeding_allowed():
+            to_feed = 1  # assume one feeding
+            if self.feed_interval_limit.interval_secs == 0.0:
+                # There is no minimum interval, therefore we should just feed all eligible feedings now
+                to_feed = num_allowed
 
-            if num_allowed:
-                if not self.feed_interval_limit.can_run():
-                    logger.warning(f'Too soon for this { num_allowed } feedings, try again later')
-                else:
+            logger.debug(
+                f'A { to_feed } feeding is allowed and we just saw a { self.target }')
 
-                    to_feed = 1  # assume one feeding
-                    if self.feed_interval_limit.interval_secs == 0.0:
-                        # There is no minimum interval, therefore we should just feed all eligible feedings now
-                        to_feed = num_allowed
+            self.do_feeding(to_feed)
 
-                    logger.debug(
-                        f'A { to_feed } feeding is allowed and we just saw a { self.target }')
-
-                    self.do_feeding(to_feed)
-
-                    # claim success because we just saw the target (even though we weren't allowed to feed)
-                    return True
+            # claim success because we just saw the target (even though we weren't allowed to feed)
+            return True
 
         return False
 
 
-class CatTrainingRule0(TrainingRule):
+@dataclass
+class TokenState(State):
+    """A class representing the serializable state of a TrainingRule"""
+    old_count = 0  # how many tokens were detected last time we ran
+
+
+class TokenTrainer(SimpleFeederRule):
     """
-    Rule for training a cat.
+    Rule for training an animal based on delivery of colored balls.
 
     This rule checks if a new token has appeared and if the cat is detected. If both conditions are met,
     it performs a feeding. If a token is removed from the target, it logs a warning and saves an image.
+
+    If no tokens are delivered by the deadline, let the animal feed even without a token..
 
     Attributes:
         trainer (Trainer): The trainer object associated with this rule.
@@ -299,28 +326,29 @@ class CatTrainingRule0(TrainingRule):
 
         """
         super().__init__(trainer)
-        self.state.old_count = 0
+        self.state = TokenState()
+        self.feed_interval_limit.interval_secs = 60  # allow rapid feedings if balls are available
 
-    def evaluate_scene(self) -> bool:
-        """
-        Evaluates the scene and determines if a feeding should be performed based on the detected objects.
+    @property
+    def status(self):
+        """Returns a string representing the current status of the rule."""
+        return f'Fed { self.state.fed_today } of { self.num_allowed } feedings today ( { self.state.old_count } tokens)'
 
-        Returns:
-            bool: True if a feeding is performed, False otherwise.
-        """
-        count = self.count_detections("spring")
-        # self.since_success > 60 * 5 FIXME place a limit on repeated feedings in a short time?
+    def is_feeding_allowed(self) -> bool:
 
-        # A new token appeared?
-        if count > self.state.old_count and self.is_detected("cat"):
-            self.do_feeding()
-            self.state.old_count = count
-            return True
+        # If we haven't yet reached the scheduled time, we require a new token for feedings.  Otherwise we allow feedings without a token
+        count = self.count_detections("ball")
+        if count > self.state.old_count:
+            a = super().is_feeding_allowed()
+            if a:
+                logger.info("Saw a new token and feeding allowed!")
+                self.state.old_count = count  # any time we approve a feeding we store the # of seen tokens as the new baseline for 'no rewards yet'
+                return True
 
         # someone took away a token (cat kicked it out of camera) - FIXME use a more conservative match for this test?
         if count < self.state.old_count:
             logger.warning(
-                'Token removed from target (cat is cheating? FIXME)')
+                f'Token removed from target ({self.target} is cheating? FIXME)')
             self.state.old_count = count
             self.save_image(is_success=False, summary="cheating")
 

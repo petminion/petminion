@@ -225,6 +225,20 @@ files = [
 ]
 
 [[package]]
+name = "freezegun"
+version = "1.4.0"
+description = "Let your Python tests travel through time"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "freezegun-1.4.0-py3-none-any.whl", hash = "sha256:55e0fc3c84ebf0a96a5aa23ff8b53d70246479e9a68863f1fcac5a3e52f19dd6"},
+    {file = "freezegun-1.4.0.tar.gz", hash = "sha256:10939b0ba0ff5adaecf3b06a5c2f73071d9678e507c5eaedb23c761d56ac774b"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.7"
+
+[[package]]
 name = "fsspec"
 version = "2023.12.2"
 description = "File-system specification"
@@ -1380,4 +1394,4 @@ docs = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "cff54212c1eb5bad69d54aaca2fdfc571191cde06a795ce3ac714b4262656855"
+content-hash = "2c4427d948011c6e99f820c0cf6c5a5184a7ef22417cacf176ce0e7a275c35d7"

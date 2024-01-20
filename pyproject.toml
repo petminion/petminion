@@ -81,6 +81,7 @@ sphinx-rtd-theme = "^2.0.0"
 sphinxcontrib-napoleon = "^0.7"
 flake8 = "^6.1.0"
 pytest = "^7.4.3"
+freezegun = "^1.4.0"
 
 [tool.poetry.extras]
 docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-napoleon"]
