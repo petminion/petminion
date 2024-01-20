@@ -44,4 +44,4 @@ class MastodonClient(SocialMediaClient):
         with tempfile.NamedTemporaryFile(suffix=".jpg", delete=True) as temp_file:
             cv2.imwrite(temp_file.name, image)
             media = self.client.media_post(temp_file.name, mime_type='image/jpeg')
-            self.client.status_post(status=title, media_ids=[media['id']])
+            self.client.status_post(status=title, visibility='unlisted', media_ids=[media['id']])

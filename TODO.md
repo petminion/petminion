@@ -23,7 +23,8 @@
 - use regexes for alias handling
 - DONE switch Meer feeding over to use the camera based feeder
 - make opencv based ball detector (eventually support region detection based on colored gaffers tape)
-- make unit tests for image detector and ball detector
+- DONE make unit tests for image detector and ball detector
+- make integration test work better https://github.com/spulec/freezegun 
 - use color match card https://pyimagesearch.com/2021/02/15/automatic-color-correction-with-opencv-and-python/
 - DONE grab frames at a higher resolution but then downsample them for machine-vision purposes.  Use the higher res pictures for video/social media purposes
 - Make social media post include info on # feedings, cat seen, and # balls
