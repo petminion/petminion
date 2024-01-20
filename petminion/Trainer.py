@@ -55,7 +55,7 @@ class Trainer:
         run: Runs the trainer continuously until terminated.
     """
 
-    def __init__(self, is_simulated: bool = False, force_clean: bool = False):
+    def __init__(self, is_simulated: bool = False):
         self.is_simulated = is_simulated
         self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
 
@@ -73,7 +73,7 @@ class Trainer:
 
         rule_class = class_by_name("TrainingRule")
         self.rule = TrainingRule.create_from_save(  # noqa: F405
-            self, rule_class) if not force_clean else rule_class(self)
+            self, rule_class)
 
         self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()  # noqa: F405
         self.image = None

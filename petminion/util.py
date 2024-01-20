@@ -44,6 +44,11 @@ def save_state(file_base_name: str, data: any) -> None:
         f.write(json)
 
 
+# set to true to disable state loading during unit tests
+global state_loading_disabled
+state_loading_disabled = False
+
+
 def load_state(file_base_name: str, default_value: any = None) -> any:
     """
     Load an object's state using jsonpickle.
@@ -59,6 +64,12 @@ def load_state(file_base_name: str, default_value: any = None) -> any:
         Exception: If loading the state fails and no default value is provided.
     """
     try:
+        if state_loading_disabled:
+            logger.debug(f'State loading disabled for {file_base_name}')
+            if default_value:
+                return default_value
+            raise Exception("State loading disabled for unit tests")
+
         path = os.path.join(user_state_dir(), file_base_name + ".json")
         logger.debug(f'Loading state from {path}')
         with open(path, "r") as f:

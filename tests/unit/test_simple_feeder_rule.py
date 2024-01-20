@@ -9,7 +9,7 @@ from petminion.Trainer import Trainer
 
 @pytest.fixture
 def trainer():
-    return Trainer(is_simulated=True, force_clean=True)
+    return Trainer(is_simulated=True)
 
 
 def test_simple_feeder(trainer) -> None:

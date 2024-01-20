@@ -1,4 +1,5 @@
 import time
+from functools import cached_property
 
 from .util import load_state, save_state
 
@@ -19,7 +20,14 @@ class RateLimit:
         Initializes the RateLimit object. 
         """
         self.state_name = state_name
-        self.state = load_state(state_name, SavedState(interval_secs))
+        self.__interval_secs = interval_secs
+
+    @cached_property
+    def state(self) -> SavedState:
+        """We use a cached property so the actual load of state doesn't happen until _after_ any globals are created.  This allows
+        unit tests to disable state loading before the globals are created.
+        """
+        return load_state(self.state_name, SavedState(self.__interval_secs))
 
     @property
     def interval_secs(self) -> float:
