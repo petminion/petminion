@@ -31,6 +31,20 @@
             "program": "${file}",
             "python": "${workspaceFolder}/minionenv/bin/python",
             "justMyCode": false
+        },
+        {
+            "name": "Pantone experiment",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/experiments/pantone/pantone.py",
+            "python": "${workspaceFolder}/minionenv/bin/python",
+            "args": [
+                "--reference",
+                "${workspaceFolder}/tests/image/ref-pantone.jpg",
+                "--input",
+                "${workspaceFolder}/tests/image/test-pantone.jpg",
+                "--view"
+            ]
         }
     ]
 }
