@@ -104,9 +104,9 @@ class AppConfig:
         self.config = config = configparser.ConfigParser()
 
         self.set_defaults()
-        config['settings'] = {}
+        config['settings'] = {}  # default 'settings' if not found in file
         if not os.path.exists(filename):
-            self.save()
+            self.save()  # use defaults to init the file on the disk
         else:
             config.read(filename)
             # always reset the defaults because they might have changed in development

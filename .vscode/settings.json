@@ -15,14 +15,17 @@
     "imread",
     "imshow",
     "imwrite",
+    "integtest",
     "jsonpickle",
     "mosquitto",
     "MQTT",
     "ndarray",
     "petminion",
     "platformdirs",
+    "simsocialmedia",
     "squareish",
     "systime",
+    "trainingrule",
     "xwindows"
   ],
   "editor.codeActionsOnSave": {
