@@ -55,9 +55,9 @@ class Trainer:
         run: Runs the trainer continuously until terminated.
     """
 
-    def __init__(self, is_simulated: bool = False):
+    def __init__(self, is_simulated: bool = False, repeat_forever: bool = False):
         self.is_simulated = is_simulated
-        self.camera = SimCamera() if is_simulated else class_by_name("Camera")()
+        self.camera = SimCamera(repeat_forever) if is_simulated else class_by_name("Camera")()
 
         self.social_rate = RateLimit("social_rate", 60 * 60 * 1)  # 1 post per hour
         self.social = SocialMediaClient()  # provide a stub implementation that does nothing

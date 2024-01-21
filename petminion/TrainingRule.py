@@ -208,13 +208,16 @@ class ScheduledFeederRule(TrainingRule):
         """Returns a string representing the current status of the rule."""
         return f'Fed { self.state.fed_today } out of { self.num_allowed } feedings today'
 
-    @property
-    def num_allowed(self) -> int:
+    def num_allowed(self, early_also: bool = False) -> int:
         """
         Check if feeding is allowed based on the current time and feeding schedule.
 
+        Args:
+            early_also (bool, optional): Flag to indicate whether early feedings should also be considered.
+                Defaults to False.
+
         Returns:
-            bool: True if feeding is allowed, False otherwise.
+            int: The number of feedings permitted at this time.
         """
         # find all previously allowed feedings for today
         now = datetime.now()
@@ -223,6 +226,10 @@ class ScheduledFeederRule(TrainingRule):
         for f in self.schedule:
             if now.time() >= f.when:
                 n += f.num_feedings
+            else:
+                if early_also:
+                    n += f.num_feedings  # if we are allowing early feedings we also allow the N feedings from the next entry
+                break  # Don't examine any more entries
 
         if n <= self.state.fed_today:
             logger.debug(
@@ -260,10 +267,10 @@ class SimpleFeederRule(ScheduledFeederRule):
             bool: True if feeding is allowed, False otherwise.
         """
         if self.is_detected(self.target):
-            num_allowed = self.num_allowed
-            if num_allowed:
+            n = self.num_allowed()
+            if n:
                 if not self.feed_interval_limit.can_run():
-                    logger.warning(f'Too soon for this { num_allowed } feedings, try again later')
+                    logger.warning(f'Too soon for this { n } feedings, try again later')
                 else:
                     return True
 
@@ -280,7 +287,7 @@ class SimpleFeederRule(ScheduledFeederRule):
             to_feed = 1  # assume one feeding
             if self.feed_interval_limit.interval_secs == 0.0:
                 # There is no minimum interval, therefore we should just feed all eligible feedings now
-                to_feed = num_allowed
+                to_feed = self.num_allowed()
 
             logger.debug(
                 f'A { to_feed } feeding is allowed and we just saw a { self.target }')
@@ -332,16 +339,21 @@ class TokenTrainer(SimpleFeederRule):
     @property
     def status(self):
         """Returns a string representing the current status of the rule."""
-        return f'Fed { self.state.fed_today } of { self.num_allowed } feedings today ( { self.state.old_count } tokens)'
+        return f'Fed { self.state.fed_today } of { self.num_allowed() } feedings today ( { self.state.old_count } tokens)'
 
     def is_feeding_allowed(self) -> bool:
-
         # If we haven't yet reached the scheduled time, we require a new token for feedings.  Otherwise we allow feedings without a token
         count = self.count_detections("ball")
-        if count > self.state.old_count:
-            a = super().is_feeding_allowed()
-            if a:
-                logger.info("Saw a new token and feeding allowed!")
+        token_based_feeding_allowed = (count > self.state.old_count) and self.num_allowed(early_also=True)
+        free_feeding_allowed = self.num_allowed(early_also=False)  # we allow feedings without a token if the time limit is reached
+        if token_based_feeding_allowed or free_feeding_allowed:
+            if not self.feed_interval_limit.can_run():
+                logger.warning(f'Too soon for this feeding, try again later')
+            else:
+                if token_based_feeding_allowed:
+                    logger.info("Saw a new token and feeding allowed!")
+                else:
+                    logger.warning("Time limit reached, emergency feeding allowed!")
                 self.state.old_count = count  # any time we approve a feeding we store the # of seen tokens as the new baseline for 'no rewards yet'
                 return True
 

@@ -39,7 +39,7 @@ def test_simple_feeder_rule(config_for_testing) -> None:
             trainingrule = SimpleFeederRule
             """))
 
-        trainer = Trainer(is_simulated=True)
+        trainer = Trainer(is_simulated=True, repeat_forever=True)
 
         def tick(delta=datetime.timedelta(seconds=1)):
             ft.tick(delta)
@@ -85,7 +85,7 @@ def test_token_trainer_rule(config_for_testing) -> None:
             trainingrule = TokenTrainer
             """))
 
-        trainer = Trainer(is_simulated=True)
+        trainer = Trainer(is_simulated=True, repeat_forever=True)
 
         def tick(delta=datetime.timedelta(seconds=1)):
             ft.tick(delta)
@@ -94,26 +94,34 @@ def test_token_trainer_rule(config_for_testing) -> None:
         with patch.object(Feeder.Feeder, 'feed') as mock_feeder:
             # Simulate a cat being detected
             with patch_detections(["cat"]):
+                tick()
+
+                # verify feeding didn't happen (because too early and no ball seen)
+                mock_feeder.assert_not_called()
+
                 with patch_balls(["ball"]):
                     tick()
 
-                    # verify feeding didn't happen (because too early)
-                    mock_feeder.assert_not_called()
-
-                    tick(datetime.timedelta(minutes=61))
-                    # verify feeding happened (because right time and cat visible)
+                    # now we see a ball so we should feed
                     mock_feeder.assert_called_once()
                     mock_feeder.reset_mock()
 
-                    # now add a second ball to the scene
-                    with patch_balls(["ball", "ball"]):
-                        tick()
+                # now add a second ball to the scene
+                with patch_balls(["ball", "ball"]):
+                    tick()
 
-                        # verify feeding didn't happen (too soon)
-                        mock_feeder.assert_not_called()
-                        mock_feeder.reset_mock()
+                    # verify feeding didn't happen (too soon)
+                    mock_feeder.assert_not_called()
+                    mock_feeder.reset_mock()
 
-                        # wait 3 mins and now it should feed again (after the 1 min timeout)
-                        tick(datetime.timedelta(minutes=3))
+                    # wait 3 mins and now it should feed again (after the 1 min timeout)
+                    tick(datetime.timedelta(minutes=3))
 
-                        mock_feeder.assert_called_once()
+                    mock_feeder.assert_called_once()
+                    mock_feeder.reset_mock()
+
+                # balls now removed from scene
+                tick(datetime.timedelta(hours=12))
+                # verify emergency feeding happened (because right time and cat visible)
+                mock_feeder.assert_called_once()
+                mock_feeder.reset_mock()

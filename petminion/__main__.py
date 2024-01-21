@@ -65,7 +65,7 @@ def main():
             logger.error('No camera detected, aborting...')
             sys.exit(1)  # Exit with error code 1
 
-    t = Trainer(is_simulated=args.simulate, force_clean=args.simulate)
+    t = Trainer(is_simulated=args.simulate)
 
     if args.test:
         pass
