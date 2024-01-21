@@ -25,6 +25,9 @@ class NoiseEliminator:
         if len(self.old_frames) > 3:
             self.old_frames.pop(0)
 
+        if len(self.old_frames) < 3:
+            return frame  # Haven't read enough frames to do real deoising
+
         time_window_size = len(self.old_frames) - 1
         time_window_size = time_window_size // 2 * 2 + 1  # Round down to the next lower odd number (window sizes must be odd)
         middle_index = time_window_size // 2

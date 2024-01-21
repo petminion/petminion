@@ -12,7 +12,7 @@ def recognizer():
     return BallRecognizer()
 
 
-def test_detector(recognizer, test_image_dir) -> None:
+def test_ball_detector(recognizer, test_image_dir) -> None:
     # Read the image using OpenCV
     path = os.path.join(test_image_dir, 'cat.jpg')
     img = cv2.imread(path)

@@ -20,7 +20,7 @@ def test_classifier(recognizer, test_image_dir) -> None:
     assert result[0].name == 'Egyptian cat'
 
 
-def test_detector(recognizer, test_image_dir) -> None:
+def test_image_detector(recognizer, test_image_dir) -> None:
     # Read the image using OpenCV
     path = os.path.join(test_image_dir, 'cat.jpg')
     img = cv2.imread(path)
