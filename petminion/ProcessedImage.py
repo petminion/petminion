@@ -1,3 +1,4 @@
+import typing
 from functools import cached_property
 
 import cv2
@@ -30,9 +31,9 @@ class ProcessedImage:
         self.__annotated = None
 
     @property
-    def annotated(self) -> numpy.ndarray:
+    def annotated(self) -> typing.Optional[numpy.ndarray]:
         """
-        Returns the annotated image with visualized detections.
+        Returns the annotated image with visualized detections. (or None if no annotations available)
         """
         self.detections  # implicitly will update __annotated
         return self.__annotated

@@ -26,6 +26,7 @@
 - DONE make unit tests for image detector and ball detector
 - make integration test work better https://github.com/spulec/freezegun 
 - use color match card https://pyimagesearch.com/2021/02/15/automatic-color-correction-with-opencv-and-python/
+- confirm we are not running the classifer - only the detector
 - DONE grab frames at a higher resolution but then downsample them for machine-vision purposes.  Use the higher res pictures for video/social media purposes
 - Make social media post include info on # feedings, cat seen, and # balls
 - finish cat training rule 0

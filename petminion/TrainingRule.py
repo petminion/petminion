@@ -157,7 +157,7 @@ class TrainingRule:
         cv2.imwrite(img_name, self.trainer.image.image)
 
         # store annotated image if any detections were found
-        if store_annotated and self.trainer.image.detections:
+        if store_annotated and self.trainer.image.annotated:
             self.store_annotated(os.path.join(
                 image_dir, f"{filename}-annotated.png"))
 

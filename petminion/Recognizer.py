@@ -19,7 +19,7 @@ class ImageDetection(NamedTuple):
         y2 (int, optional): The y-coordinate of the bottom-right corner of the bounding box. Defaults to -1.
     """
     name: str
-    probability: float
+    probability: float = 1.0
     x1: int = -1
     y1: int = -1
     x2: int = -1
