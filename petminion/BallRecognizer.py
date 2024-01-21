@@ -21,7 +21,10 @@ class NoiseEliminator:
         self.old_frames = []
 
     def filter_frame(self, frame):
-        self.old_frames.append(frame)
+        # if resolution changes we have to reset the old frames
+        if len(self.old_frames) and self.old_frames[0].shape != frame.shape:
+            self.old_frames = []
+
         if len(self.old_frames) > 3:
             self.old_frames.pop(0)
 
