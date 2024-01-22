@@ -51,12 +51,12 @@ def show_image(image: numpy.ndarray, window_name="petminion") -> None:
         if cv2.waitKey(1) == ord('q'):
             cv2.destroyAllWindows()
             raise KeyboardInterrupt
-    else:
-        # no gui - at least save a live image every few seconds
-        if image is not None and live_capture_limit.can_run():
-            filepath = os.path.join(
-                tempfile.gettempdir(), window_name + ".jpg")
-            cv2.imwrite(filepath, image)
+
+    # no gui - at least save a live image every few seconds
+    if image is not None and live_capture_limit.can_run():
+        filepath = os.path.join(
+            tempfile.gettempdir(), window_name + ".jpg")
+        cv2.imwrite(filepath, image)
 
 
 class CV2Camera(Camera):

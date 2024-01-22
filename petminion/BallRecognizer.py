@@ -39,13 +39,13 @@ class NoiseEliminator:
 
 
 # Define the lower and upper bounds for the red color - this needs to be done in two sections because red 'straddles' the 0/180 line
-center_hue = 90  # green
+center_hue = 80  # green
 hue_width = 15
 # center_hue = 0  # red
 # hue_width = 10
 
 s_min = 190
-s_max = 240
+s_max = 255
 v_min = 0
 v_width = 180
 
@@ -96,10 +96,10 @@ def find_balls(frame: np.ndarray) -> list[ImageDetection]:
         x, y, w, h = cv2.boundingRect(contour)
 
         # Draw the contour on the frame with red lines
-        cv2.drawContours(frame, [contour], 0, (0, 0, 255), 2)
+        # cv2.drawContours(frame, [contour], 0, (0, 0, 255), 2)
 
         # If the % filled is above a certain threshold, consider it as a ball
-        fill_ratio = 0.4
+        fill_ratio = 0.5
         filled = area > w * h * fill_ratio
         squareish = abs((w / h) - 1.0) < 0.4  # if close to zero, it's a square
         big_enough = w > 8
