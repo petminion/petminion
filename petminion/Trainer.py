@@ -6,6 +6,7 @@ from petminion import BallRecognizer  # prevent name clash with datetime.time
 
 from .BallRecognizer import BallRecognizer
 from .Camera import CameraDisconnectedError, SimCamera
+from .ColorCorrector import ColorCorrector
 from .CV2Camera import CV2Camera  # noqa: F401 needed for find at runtime
 from .Feeder import *  # noqa: F403 must use * here because we find classnames at runtime
 # Not yet ready: from .PiCamera import PiCamera
@@ -78,9 +79,28 @@ class Trainer:
         self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()  # noqa: F405
         self.image = None
 
+        self.color_corrector = ColorCorrector()
+        self.corrector_check_rate = RateLimit("corrector_check_rate", 60)  # 1 check per minute
+
     def capture_image(self) -> None:
         """Grab a new image from the camera"""
-        self.image = ProcessedImage(recognizers, self.camera.read_image())
+        img = self.camera.read_image()
+
+        def check_for_card() -> None:
+            if self.color_corrector.look_for_card(img):
+                logger.info("Found color card, saving calibration data...")
+                self.color_corrector.save_state()
+
+        if self.color_corrector.is_ready:
+            # occasionally we should still look for new color corrector cards...
+            if self.corrector_check_rate.can_run():
+                check_for_card()
+
+            img = self.color_corrector.correct_image(img)
+        else:
+            check_for_card()
+
+        self.image = ProcessedImage(recognizers, img)
 
     def share_social(self, title: str) -> None:
         """Share the current image to social media with the given title"""

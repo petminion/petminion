@@ -154,6 +154,13 @@ class ColorCorrector():
             self.ref_image = cv2.imread(str(ref_path.absolute()))
             self.ref_card = find_color_card(self.ref_image)
 
+    @property
+    def is_ready(self) -> bool:
+        """
+        Returns true if we have a color card and are ready to do color correction.
+        """
+        return self.interpb is not None
+
     def look_for_card(self, image: np.ndarray) -> bool:
         """
         Looks for a color card in an image.  If found, uses that to update cur_lighting_card.
