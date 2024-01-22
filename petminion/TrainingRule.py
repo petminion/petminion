@@ -365,8 +365,8 @@ class TokenTrainer(SimpleFeederRule):
         # someone took away a token (cat kicked it out of camera) - possibly harmless if a ball is temporarily behind another ball
         if count < self.state.old_count:
             logger.warning(
-                f'Token removed from target ({self.target} is cheating? FIXME)')
-            # self.state.old_count = count
+                f'Token removed from target ({self.target} is cheating?)')
+            self.state.old_count = count
             self.save_image(is_success=False, summary="cheating")
 
         return False
