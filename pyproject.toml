@@ -75,6 +75,7 @@ fpdf = "^1.7.2"
 mastodon-py = "^1.8.1"
 imutils = "^0.5.4"
 scipy = "^1.12.0"
+av = "^11.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
