@@ -1,4 +1,16 @@
+import importlib
+from importlib.resources import as_file, files
+import cv2
+from cv2.typing import MatLike
+import imutils
+import numpy as np
+from imutils.perspective import four_point_transform
+from . import resources
+import logging
+
 """
+**HEAVILY** based on:
+
 Image White Balancing using CV2 and COlor Correction Cards with ArUCo Markers
 Author: https://pyimagesearch.com/2021/02/15/automatic-color-correction-with-opencv-and-python/
 
@@ -6,22 +18,13 @@ Modify Stephan Krol
 G-Mail: Stephan.Krol.83[at]
 Website: https://CouchBoss.de
 
-from https://github.com/dazzafact/image_color_correction
+via https://github.com/dazzafact/image_color_correction
 """
 
-
-import argparse
-import os.path as pathfile
-import sys
-from os.path import exists
-
-import cv2
-import imutils
-import numpy as np
-from imutils.perspective import four_point_transform
+logger = logging.getLogger()
 
 
-def find_color_card(image):
+def find_color_card(image) -> MatLike:
     # load the ArUCo dictionary, grab the ArUCo parameters, and
     # detect the markers in the input image
     arucoDict = cv2.aruco.DICT_ARUCO_ORIGINAL
@@ -32,7 +35,7 @@ def find_color_card(image):
     (corners, ids, _) = detector.detectMarkers(image)
 
     if ids is None:
-        return None  # no markers found
+        raise Exception('No markers found')
 
     # try to extract the coordinates of the color correction card
     # otherwise, we've found the four ArUco markers, so we can
@@ -73,14 +76,14 @@ def find_color_card(image):
     return card
 
 
-def _match_cumulative_cdf_mod(source, template, full):
+def _match_cumulative_cdf_mod(source: MatLike, template: MatLike):
     """
     Return modified full image array so that the cumulative density function of
     source array matches the cumulative density function of the template.
     """
-    src_values, src_unique_indices, src_counts = np.unique(source.ravel(),
-                                                           return_inverse=True,
-                                                           return_counts=True)
+    src_values, _, src_counts = np.unique(source.ravel(),
+                                          return_inverse=True,
+                                          return_counts=True)
     tmpl_values, tmpl_counts = np.unique(template.ravel(), return_counts=True)
 
     # calculate normalized quantiles for each array
@@ -123,7 +126,12 @@ def _match_cumulative_cdf_mod(source, template, full):
             prev_value = interpb[i]
             prev_index = i
 
+    return interpb
+
+
+def _fix_colors(interpb, full: np.ndarray):
     # finally transform pixel values in full image using interpb interpolation values.
+    # FIXME use fast matrix numpy operations to do this instead of loops
     wid = full.shape[1]
     hei = full.shape[0]
     ret2 = np.zeros((hei, wid))
@@ -133,7 +141,7 @@ def _match_cumulative_cdf_mod(source, template, full):
     return ret2
 
 
-def match_histograms_mod(inputCard, referenceCard, fullImage):
+def match_histograms_mod(inputCard: MatLike, referenceCard: MatLike, fullImage: np.ndarray) -> np.ndarray:
     """
         Return modified full image, by using histogram equalizatin on input and
          reference cards and applying that transformation on fullImage.
@@ -149,109 +157,38 @@ def match_histograms_mod(inputCard, referenceCard, fullImage):
     return matched
 
 
-# construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-r", "--reference", required=True,
-                help="path to the input reference image")
-ap.add_argument("-w", "--width0", required=False,
-                help="Image Size")
-ap.add_argument("-v", "--view", required=False, default=False, action='store_true',
-                help="Image Preview?")
-ap.add_argument("-o", "--output", required=False, default=False,
-                help="Image Output Path")
-ap.add_argument("-i", "--input", required=True,
-                help="path to the input image to apply color correction to")
-args = vars(ap.parse_args())
+class ColorCorrector():
+    def __init__(self):
+        with as_file(files(resources).joinpath("ref-pantone.jpg")) as ref_path:
+            self.ref_image = cv2.imread(str(ref_path.absolute()))
+            self.ref_card = find_color_card(self.ref_image)
 
-# load the reference image and input images from disk
-print("[INFO] loading images...")
-# raw = cv2.imread(args["reference"])
-# img1 = cv2.imread(args["input"])
-file_exists = pathfile.isfile(args["reference"])
+    def look_for_card(self, image: np.ndarray) -> bool:
+        """
+        Looks for a color card in an image.  If found, uses that to update cur_lighting_card.
 
-if not file_exists:
-    print('[WARNING] Referenz File not exisits ' + str(args["reference"]))
-    sys.exit()
+        Args:
+            image (np.ndarray): The input image.
 
+        Returns:
+            true if a color card was found, false otherwise.
+        """
+        try:
+            self.cur_lighting_card = find_color_card(image)
+            # FIXME save to file for future use
+            return True
+        except Exception as e:
+            logger.debug(f'No color card found: {e}')
+            return False
 
-raw = cv2.imread(args["reference"])
-img1 = cv2.imread(args["input"])
+    def correct_image(self, image: np.ndarray) -> np.ndarray:
+        """
+        Corrects the colors of an image.
 
-height, width0, channels = raw.shape
-height2, width1, channels = img1.shape
+        Args:
+            image (np.ndarray): The input image.
 
-
-# resize the reference and input images
-
-newWidth = width0 // 3
-countStep = 400
-goOn = False
-while goOn == False and newWidth <= width0:
-
-    raw_ = raw  # imutils.resize(raw, newWidth)
-    img1_ = img1  # imutils.resize(img1, newWidth)
-
-    print("[INFO] Finding color matching cards width " + repr(newWidth) + "px")
-    rawCard = find_color_card(raw_)
-    imageCard = find_color_card(img1_)
-
-    if rawCard is None or imageCard is None:
-        oldW = newWidth
-        newWidth += countStep
-        print("[INFO] Could not find color with width " + repr(oldW) + "px. Try width:" + repr(newWidth) + "px")
-        continue
-    else:
-        goOn = True
-        break
-
-if (goOn is False):
-    print("[WARNING] Could not find color matching cards in both images. Try a highter/better Resolution")
-
-    sys.exit()
-
-if args['view']:
-    cv2.imshow("Reference", raw_)
-    cv2.imshow("Input", img1_)
-# show the color matching card in the reference image and input image,
-# respectively
-if args['view']:
-    cv2.imshow("Reference Color Card", rawCard)
-    cv2.imshow("Input Color Card", imageCard)
-# apply histogram matching from the color matching card in the
-# reference image to the color matching card in the input image
-print("[INFO] matching images...")
-
-# imageCard2 = exposure.match_histograms(img1, ref,
-# inputCard = exposure.match_histograms(inputCard, referenceCard, multichannel=True)
-
-if args["width0"]:
-    width = int(args["width0"])
-    if width > 1:
-        print('resize Final: ' + repr(width))
-        img1 = imutils.resize(img1, width)
-
-result2 = match_histograms_mod(imageCard, rawCard, img1)
-
-
-# show our input color matching card after histogram matching
-# cv2.imshow("Input Color Card After Matching", inputCard)
-
-
-if args['view']:
-    cv2.imshow("Input Color Card After Matching", result2)
-
-if args['output']:
-    file_ok = exists(args['output'].lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')))
-
-    if file_ok:
-        cv2.imwrite(args['output'], result2)
-        print("[SUCCESSUL] Your Image was written to: " + args['output'] + "")
-    else:
-        print("[WARNING] Sorry, But this is no valid Image Name " + args['output'] + "\nPlease Change Parameter!")
-
-if args['view']:
-    cv2.waitKey(0)
-
-if not args['view']:
-    if not args['output']:
-        print('[EMPTY] You Need at least one Parameter "--view" or "--output".')
+        Returns:
+            np.ndarray: The corrected image.
+        """
+        return None

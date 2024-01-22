@@ -24,11 +24,12 @@
 - DONE switch Meer feeding over to use the camera based feeder
 - make opencv based ball detector (eventually support region detection based on colored gaffers tape)
 - DONE make unit tests for image detector and ball detector
-- make integration test work better https://github.com/spulec/freezegun 
+- DONE make integration test work better https://github.com/spulec/freezegun 
 - use color match card https://pyimagesearch.com/2021/02/15/automatic-color-correction-with-opencv-and-python/
-- confirm we are not running the classifer - only the detector
+- DONE confirm we are not running the classifer - only the detector
 - DONE grab frames at a higher resolution but then downsample them for machine-vision purposes.  Use the higher res pictures for video/social media purposes
 - Make social media post include info on # feedings, cat seen, and # balls
+- make video as cat walks towards feeder.  start video once we've decided a feeding is deserved... [https://stackoverflow.com/questions/48817441/opencv-encoding-to-h264 ](https://github.com/PyAV-Org/PyAV/issues/471)
 - finish cat training rule 0
 - DONE make simcamera actually useful
 - DONE have live camera dump success and occasional failure images to directories (for training & sim camera use)

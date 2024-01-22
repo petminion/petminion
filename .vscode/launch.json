@@ -40,7 +40,7 @@
             "python": "${workspaceFolder}/minionenv/bin/python",
             "args": [
                 "--reference",
-                "${workspaceFolder}/tests/image/ref-pantone.jpg",
+                "${workspaceFolder}/petminion/resources/ref-pantone.jpg",
                 "--input",
                 "${workspaceFolder}/tests/image/test-pantone.jpg",
                 "--view"
