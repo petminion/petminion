@@ -54,7 +54,7 @@ def main():
     logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
     logger.info(f'Petminion running...')
 
-    # FIXME - trying to debug this
+    # apparently to avoid hanging in namedWindow we need to create one window very early before imageai comes in
     show_image(None)
 
     if not os.path.exists("/dev/camera") and not args.simulate:

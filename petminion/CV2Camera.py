@@ -15,10 +15,17 @@ live_capture_limit = RateLimit("live_capture_limit", 5)  # every few seconds
 
 _started = False
 
+hsv = None
+labels = {'text': 'unset'}
+
+
+def mouse_callback(event, x, y, flags, param):
+    color = hsv[y, x]
+    labels['text'] = f"HSV: {color}"
+
 
 def show_image(image: numpy.ndarray, window_name="petminion") -> None:
-    if has_windows():  # FIXME hangs when calling any gui functions
-
+    if has_windows():
         global _started
         if not _started:
             _started = True
@@ -30,8 +37,20 @@ def show_image(image: numpy.ndarray, window_name="petminion") -> None:
         if image is not None:
             cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
             # cv2.resizeWindow(window_name, 640, 480)
+
+            cv2.setMouseCallback(window_name, mouse_callback)  # type: ignore
+
+            # update hsv values
+            global hsv
+            hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+            # Display the HSV color of the pixel under the cursor
+            cv2.putText(image, labels['text'], (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
             cv2.imshow(window_name, image)
-        cv2.waitKey(1)
+
+        if cv2.waitKey(1) == ord('q'):
+            cv2.destroyAllWindows()
+            raise KeyboardInterrupt
     else:
         # no gui - at least save a live image every few seconds
         if image is not None and live_capture_limit.can_run():

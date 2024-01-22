@@ -8,7 +8,6 @@ from .BallRecognizer import BallRecognizer
 from .Camera import CameraDisconnectedError, SimCamera
 from .ColorCorrector import ColorCorrector
 from .CV2Camera import CV2Camera  # noqa: F401 needed for find at runtime
-from .CV2Camera import show_image
 from .Feeder import *  # noqa: F403 must use * here because we find classnames at runtime
 # Not yet ready: from .PiCamera import PiCamera
 from .ImageRecognizer import ImageRecognizer
