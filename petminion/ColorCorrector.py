@@ -1,12 +1,14 @@
 import importlib
+import logging
 from importlib.resources import as_file, files
+
 import cv2
-from cv2.typing import MatLike
 import imutils
 import numpy as np
+from cv2.typing import MatLike
 from imutils.perspective import four_point_transform
+
 from . import resources
-import logging
 
 """
 **HEAVILY** based on:
@@ -126,22 +128,19 @@ def _match_cumulative_cdf_mod(source: MatLike, template: MatLike):
             prev_value = interpb[i]
             prev_index = i
 
-    return interpb
+    return np.array(interpb)
 
 
 def _fix_colors(interpb, full: np.ndarray):
     # finally transform pixel values in full image using interpb interpolation values.
-    # FIXME use fast matrix numpy operations to do this instead of loops
-    wid = full.shape[1]
-    hei = full.shape[0]
-    ret2 = np.zeros((hei, wid))
-    for i in range(0, hei):
-        for j in range(0, wid):
-            ret2[i][j] = interpb[full[i][j]]
-    return ret2
+    def f(x):
+        return interpb[x]
+    ret = f(full)  # we use a lambda so that this function can be applied quickly in parallel
+
+    return ret
 
 
-def match_histograms_mod(inputCard: MatLike, referenceCard: MatLike, fullImage: np.ndarray) -> np.ndarray:
+def match_histograms_mod(inputCard: MatLike, interpb: MatLike, fullImage: np.ndarray) -> np.ndarray:
     """
         Return modified full image, by using histogram equalizatin on input and
          reference cards and applying that transformation on fullImage.
@@ -151,14 +150,15 @@ def match_histograms_mod(inputCard: MatLike, referenceCard: MatLike, fullImage: 
                          'of channels.')
     matched = np.empty(fullImage.shape, dtype=fullImage.dtype)
     for channel in range(inputCard.shape[-1]):
-        matched_channel = _match_cumulative_cdf_mod(inputCard[..., channel], referenceCard[..., channel],
-                                                    fullImage[..., channel])
+        matched_channel = _fix_colors(interpb[channel], fullImage[..., channel])
         matched[..., channel] = matched_channel
     return matched
 
 
 class ColorCorrector():
     def __init__(self):
+        self.interpb = None  # assume we can't do color correction
+
         with as_file(files(resources).joinpath("ref-pantone.jpg")) as ref_path:
             self.ref_image = cv2.imread(str(ref_path.absolute()))
             self.ref_card = find_color_card(self.ref_image)
@@ -176,6 +176,13 @@ class ColorCorrector():
         try:
             self.cur_lighting_card = find_color_card(image)
             # FIXME save to file for future use
+
+            interpb = []
+            # generate the color correction arrays
+            for channel in range(self.ref_card.shape[-1]):
+                interp = _match_cumulative_cdf_mod(self.cur_lighting_card[..., channel], self.ref_card[..., channel])
+                interpb.append(interp)
+            self.interpb = interpb
             return True
         except Exception as e:
             logger.debug(f'No color card found: {e}')
@@ -183,7 +190,7 @@ class ColorCorrector():
 
     def correct_image(self, image: np.ndarray) -> np.ndarray:
         """
-        Corrects the colors of an image.
+        Return modified full image, by using histogram equalizatin on input and reference cards and applying that transformation on fullImage.
 
         Args:
             image (np.ndarray): The input image.
@@ -191,4 +198,16 @@ class ColorCorrector():
         Returns:
             np.ndarray: The corrected image.
         """
-        return None
+
+        if self.interpb is None:
+            logger.warning('Not doing color correction until we see a color-calibration card')
+            return image
+        else:
+            if self.ref_card.ndim != self.cur_lighting_card.ndim:
+                raise ValueError('Image and reference must have the same number '
+                                 'of channels.')
+            matched = np.empty(image.shape, dtype=image.dtype)
+            for channel in range(self.ref_card.shape[-1]):
+                matched_channel = _fix_colors(self.interpb[channel], image[..., channel])
+                matched[..., channel] = matched_channel
+            return matched

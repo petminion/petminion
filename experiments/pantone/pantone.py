@@ -123,14 +123,21 @@ def _match_cumulative_cdf_mod(source, template, full):
             prev_value = interpb[i]
             prev_index = i
 
+    interpb = np.array(interpb)  # for speed
+
     # finally transform pixel values in full image using interpb interpolation values.
-    wid = full.shape[1]
-    hei = full.shape[0]
-    ret2 = np.zeros((hei, wid))
-    for i in range(0, hei):
-        for j in range(0, wid):
-            ret2[i][j] = interpb[full[i][j]]
-    return ret2
+    # wid = full.shape[1]
+    # hei = full.shape[0]
+    # ret2 = np.zeros((hei, wid))
+    # for i in range(0, hei):
+    #    for j in range(0, wid):
+    #        ret2[i][j] = interpb[full[i][j]]
+
+    def f(x):
+        return interpb[x]
+    ret = f(full)  # we use a lambda so that this function can be applied quickly in parallel
+
+    return ret
 
 
 def match_histograms_mod(inputCard, referenceCard, fullImage):
