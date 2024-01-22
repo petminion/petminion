@@ -65,6 +65,7 @@ def load_state(file_base_name: str, default_value: any = unset) -> any:
     Raises:
         Exception: If loading the state fails and no default value is provided.
     """
+    path = os.path.join(user_state_dir(), file_base_name + ".json")
     try:
         if state_loading_disabled:
             logger.debug(f'State loading disabled for {file_base_name}')
@@ -72,7 +73,6 @@ def load_state(file_base_name: str, default_value: any = unset) -> any:
                 return default_value
             raise Exception("State loading disabled for unit tests")
 
-        path = os.path.join(user_state_dir(), file_base_name + ".json")
         logger.debug(f'Loading state from {path}')
         with open(path, "r") as f:
             json = f.read()
