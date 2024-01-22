@@ -56,11 +56,21 @@ target (str): The target to detect.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="petminion.SimpleFeederRule.is_feeding_allowed">
+<span class="sig-name descname"><span class="pre">is_feeding_allowed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#petminion.SimpleFeederRule.is_feeding_allowed" title="Link to this definition">¶</a></dt>
+<dd><p>Check if feeding is allowed based on the current time and feeding schedule.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>bool: True if feeding is allowed, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="petminion.Trainer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">petminion.</span></span><span class="sig-name descname"><span class="pre">Trainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_simulated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_clean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#petminion.Trainer" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">petminion.</span></span><span class="sig-name descname"><span class="pre">Trainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_simulated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repeat_forever</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#petminion.Trainer" title="Link to this definition">¶</a></dt>
 <dd><p>Class representing a trainer for pet minions.</p>
 <p>The Trainer class is responsible for capturing images from a camera, running training rules,
 and sharing images to social media. It provides methods to run the trainer once or run it
@@ -155,6 +165,12 @@ details (str, optional): If provided this long string will be stored in filename
 store_annotated (bool, optional): If true, also store the annotated image in filename-annotated.png.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="petminion.TrainingRule.status">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#petminion.TrainingRule.status" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a string representing the current status of the rule.</p>
 </dd></dl>
 
 <dl class="py method">
