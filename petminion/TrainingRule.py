@@ -49,7 +49,12 @@ class TrainingRule:
 
         r = desired_class(trainer)  # create a default instance
         try:
-            r.state = load_state(save_name)
+            old_type = type(r.state)
+            s = load_state(save_name)
+            if type(s) != old_type:
+                logger.warning('Serialized state changed type, ignoring...')
+            else:
+                r.state = s
         except Exception as e:
             logger.warning(
                 f'No saved training state ({e}) found, using default state...')
