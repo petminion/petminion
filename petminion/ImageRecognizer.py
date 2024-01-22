@@ -4,8 +4,6 @@ import urllib.request
 from typing import Optional
 
 import numpy
-from imageai.Classification import ImageClassification
-from imageai.Detection import ObjectDetection
 
 from .Recognizer import ImageDetection, Recognizer
 from .util import app_config, user_cache_dir
@@ -48,6 +46,11 @@ class ImageRecognizer(Recognizer):
 
         # autodownload the model files if needed
         fast_and_small = app_config.settings['FastModel']
+
+        # Note: we do the imports here rather than at the top of the file, because we don't want to run imageai code before
+        # __main even starts running...
+        from imageai.Classification import ImageClassification
+        from imageai.Detection import ObjectDetection
 
         self.detector = detector = ObjectDetection()
         if fast_and_small:

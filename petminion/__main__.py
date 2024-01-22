@@ -55,7 +55,7 @@ def main():
     logger.info(f'Petminion running...')
 
     # FIXME - trying to debug this
-    # show_image(None)
+    show_image(None)
 
     if not os.path.exists("/dev/camera") and not args.simulate:
         if app_config.settings.getboolean('SimFallback'):

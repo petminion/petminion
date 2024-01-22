@@ -8,6 +8,7 @@ from .BallRecognizer import BallRecognizer
 from .Camera import CameraDisconnectedError, SimCamera
 from .ColorCorrector import ColorCorrector
 from .CV2Camera import CV2Camera  # noqa: F401 needed for find at runtime
+from .CV2Camera import show_image
 from .Feeder import *  # noqa: F403 must use * here because we find classnames at runtime
 # Not yet ready: from .PiCamera import PiCamera
 from .ImageRecognizer import ImageRecognizer
@@ -20,7 +21,6 @@ from .TrainingRule import *  # noqa: F403 must use * here because we find classn
 from .util import app_config
 
 logger = logging.getLogger()
-recognizers = [ImageRecognizer(), BallRecognizer()]
 
 
 def class_by_name(name):
@@ -79,6 +79,7 @@ class Trainer:
         self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()  # noqa: F405
         self.image = None
 
+        self.recognizers = [ImageRecognizer(), BallRecognizer()]  # FIXME, perhaps this should be part of the rule instead?
         self.color_corrector = ColorCorrector()
         self.corrector_check_rate = RateLimit("corrector_check_rate", 60)  # 1 check per minute
 
@@ -97,10 +98,11 @@ class Trainer:
                 check_for_card()
 
             img = self.color_corrector.correct_image(img)
+            # show_image(img, "live")
         else:
             check_for_card()
 
-        self.image = ProcessedImage(recognizers, img)
+        self.image = ProcessedImage(self.recognizers, img)
 
     def share_social(self, title: str) -> None:
         """Share the current image to social media with the given title"""

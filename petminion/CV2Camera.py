@@ -13,21 +13,30 @@ logger = logging.getLogger()
 
 live_capture_limit = RateLimit("live_capture_limit", 5)  # every few seconds
 
+_started = False
 
-def show_image(image: numpy.ndarray) -> None:
-    if False and has_windows():  # FIXME hangs when calling any gui functions
-        window_name = "petminion"
-        # cv2.startWindowThread()
-        cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
-        cv2.resizeWindow(window_name, 640, 480)
-        if image:
+
+def show_image(image: numpy.ndarray, window_name="petminion") -> None:
+    if has_windows():  # FIXME hangs when calling any gui functions
+
+        global _started
+        if not _started:
+            _started = True
+            cv2.startWindowThread()
+            # FIXME, apparently to avoid hanging in namedWindow we need to create one window very early before imageai comes in
+            # and somehow messes up event handling.  This is a hack, but it works.
+            cv2.namedWindow("placeholder", cv2.WINDOW_AUTOSIZE)
+
+        if image is not None:
+            cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
+            # cv2.resizeWindow(window_name, 640, 480)
             cv2.imshow(window_name, image)
         cv2.waitKey(1)
     else:
         # no gui - at least save a live image every few seconds
         if image is not None and live_capture_limit.can_run():
             filepath = os.path.join(
-                tempfile.gettempdir(), "petminion_live.png")
+                tempfile.gettempdir(), window_name + ".jpg")
             cv2.imwrite(filepath, image)
 
 
