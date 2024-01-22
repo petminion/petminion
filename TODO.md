@@ -31,6 +31,7 @@
 - Make social media post include info on # feedings, cat seen, and # balls
 - make video as cat walks towards feeder.  start video once we've decided a feeding is deserved... [https://stackoverflow.com/questions/48817441/opencv-encoding-to-h264 ](https://github.com/PyAV-Org/PyAV/issues/471)
 - finish cat training rule 0
+- use flask for a small web server https://pyimagesearch.com/2019/09/02/opencv-stream-video-to-web-browser-html-page/
 - DONE make simcamera actually useful
 - DONE have live camera dump success and occasional failure images to directories (for training & sim camera use)
 - add blackout periods to rules, to prevent any feeding or image processing during those periods 

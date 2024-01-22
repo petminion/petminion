@@ -1,5 +1,6 @@
 import importlib
 import logging
+import os
 from importlib.resources import as_file, files
 
 import cv2
@@ -9,6 +10,7 @@ from cv2.typing import MatLike
 from imutils.perspective import four_point_transform
 
 from . import resources
+from .util import load_state, save_state, user_state_dir
 
 """
 **HEAVILY** based on:
@@ -140,24 +142,13 @@ def _fix_colors(interpb, full: np.ndarray):
     return ret
 
 
-def match_histograms_mod(inputCard: MatLike, interpb: MatLike, fullImage: np.ndarray) -> np.ndarray:
-    """
-        Return modified full image, by using histogram equalizatin on input and
-         reference cards and applying that transformation on fullImage.
-    """
-    if inputCard.ndim != referenceCard.ndim:
-        raise ValueError('Image and reference must have the same number '
-                         'of channels.')
-    matched = np.empty(fullImage.shape, dtype=fullImage.dtype)
-    for channel in range(inputCard.shape[-1]):
-        matched_channel = _fix_colors(interpb[channel], fullImage[..., channel])
-        matched[..., channel] = matched_channel
-    return matched
+state_name = 'color_corrector'
 
 
 class ColorCorrector():
     def __init__(self):
-        self.interpb = None  # assume we can't do color correction
+        self.interpb = load_state(state_name, None)  # assume we can't do color correction
+        self.cur_lighting_card = None
 
         with as_file(files(resources).joinpath("ref-pantone.jpg")) as ref_path:
             self.ref_image = cv2.imread(str(ref_path.absolute()))
@@ -174,19 +165,28 @@ class ColorCorrector():
             true if a color card was found, false otherwise.
         """
         try:
-            self.cur_lighting_card = find_color_card(image)
-            # FIXME save to file for future use
+            self.cur_lighting_card = cur_lighting_card = find_color_card(image)
 
             interpb = []
             # generate the color correction arrays
             for channel in range(self.ref_card.shape[-1]):
-                interp = _match_cumulative_cdf_mod(self.cur_lighting_card[..., channel], self.ref_card[..., channel])
+                interp = _match_cumulative_cdf_mod(cur_lighting_card[..., channel], self.ref_card[..., channel])
                 interpb.append(interp)
             self.interpb = interpb
             return True
         except Exception as e:
             logger.debug(f'No color card found: {e}')
             return False
+
+    def save_state(self):
+        """
+        Saves the current state to disk.
+        """
+        if self.interpb is not None:
+            save_state(state_name, self.interpb)
+
+        if self.cur_lighting_card is not None:
+            cv2.imwrite(os.path.join(user_state_dir(), 'cur_lighting_card.jpg'), self.cur_lighting_card)
 
     def correct_image(self, image: np.ndarray) -> np.ndarray:
         """
@@ -203,11 +203,8 @@ class ColorCorrector():
             logger.warning('Not doing color correction until we see a color-calibration card')
             return image
         else:
-            if self.ref_card.ndim != self.cur_lighting_card.ndim:
-                raise ValueError('Image and reference must have the same number '
-                                 'of channels.')
             matched = np.empty(image.shape, dtype=image.dtype)
-            for channel in range(self.ref_card.shape[-1]):
+            for channel in range(image.shape[-1]):
                 matched_channel = _fix_colors(self.interpb[channel], image[..., channel])
                 matched[..., channel] = matched_channel
             return matched

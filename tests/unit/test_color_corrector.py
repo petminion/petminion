@@ -13,7 +13,8 @@ def test_color_corrector(test_image_dir) -> None:
 
     path = os.path.join(test_image_dir, 'test-pantone.jpg')
     img = cv2.imread(path)
-    c.look_for_card(img)
+    assert c.look_for_card(img)
+    # c.save_state()
 
     c.correct_image(img)  # Just test that we somehow process an image, using our test file
     assert True

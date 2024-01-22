@@ -48,8 +48,10 @@ def save_state(file_base_name: str, data: any) -> None:
 global state_loading_disabled
 state_loading_disabled = False
 
+unset = "unset"  # used to indicate a state value is unset, we do this because None is a valid value for some states
 
-def load_state(file_base_name: str, default_value: any = None) -> any:
+
+def load_state(file_base_name: str, default_value: any = unset) -> any:
     """
     Load an object's state using jsonpickle.
 
@@ -80,7 +82,7 @@ def load_state(file_base_name: str, default_value: any = None) -> any:
                 raise Exception("Serialization changed, saved contents ignored")
             return r
     except Exception as e:
-        if default_value:
+        if unset != default_value:
             logger.warning(f'Failed to load state from {path}, using defaults...')
             return default_value
         else:
