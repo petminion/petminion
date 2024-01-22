@@ -80,7 +80,7 @@ class ImageRecognizer(Recognizer):
         )
         classifier.loadModel()
 
-    def do_detection(self, image: numpy.ndarray) -> tuple[Optional[numpy.ndarray], list[ImageDetection]]:
+    def do_detection(self, image: numpy.ndarray) -> list[ImageDetection]:
         """
         Performs object detection on the given image.
 
@@ -109,9 +109,7 @@ class ImageRecognizer(Recognizer):
             x["box_points"][2], x["box_points"][3]
         ), detections))
 
-        if not len(d):
-            annotated = None  # if no annotations found
-        return annotated, d
+        return d
 
     def do_classification(self, image: numpy.ndarray) -> list[ImageDetection]:
         """

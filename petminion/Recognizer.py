@@ -45,7 +45,7 @@ class Recognizer:
         """
         pass
 
-    def do_detection(self, image: numpy.ndarray) -> tuple[Optional[numpy.ndarray], list[ImageDetection]]:
+    def do_detection(self, image: numpy.ndarray) -> list[ImageDetection]:
         """
         Performs object detection on the given image.
 

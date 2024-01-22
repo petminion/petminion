@@ -52,7 +52,7 @@ v_width = 180
 denoise = NoiseEliminator()
 
 
-def find_balls(frame: np.ndarray) -> tuple[np.ndarray, list[ImageDetection]]:
+def find_balls(frame: np.ndarray) -> list[ImageDetection]:
     # Easy single frame denoising
     # if this isn't enough make a class that keeps the last 5 frames and uses https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html
     # multiframe.
@@ -105,14 +105,11 @@ def find_balls(frame: np.ndarray) -> tuple[np.ndarray, list[ImageDetection]]:
         big_enough = w > 8
         if filled and squareish and big_enough:
 
-            # Draw the bounding box on the frame
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
             # Add the bounding box to the list
             bounding_boxes.append(ImageDetection("ball", 1.0, x, y, x + w, y + h))
 
     # Return the bounding boxes of the balls
-    return frame, bounding_boxes
+    return bounding_boxes
 
 
 class BallRecognizer(Recognizer):
@@ -133,7 +130,7 @@ class BallRecognizer(Recognizer):
     def __init__(self):
         super().__init__()
 
-    def do_detection(self, image: np.ndarray) -> tuple[Optional[np.ndarray], list[ImageDetection]]:
+    def do_detection(self, image: np.ndarray) -> list[ImageDetection]:
         """
         Performs object detection on the given image.
 
@@ -145,8 +142,6 @@ class BallRecognizer(Recognizer):
         """
         # too verbose
         # logger.debug("Doing detection...")
-        annotated, d = find_balls(image)
+        d = find_balls(image)
 
-        if not len(d):
-            annotated = None  # if no annotations found
-        return annotated, d
+        return d

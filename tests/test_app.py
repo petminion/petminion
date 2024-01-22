@@ -15,13 +15,13 @@ from petminion.Recognizer import ImageDetection
 def patch_detections(seen_names: list[str]) -> Any:
     """Simulate the named objects being seen."""
     detections = [ImageDetection(name) for name in seen_names]
-    return patch.object(ImageRecognizer.ImageRecognizer, 'do_detection', return_value=(None, detections))
+    return patch.object(ImageRecognizer.ImageRecognizer, 'do_detection', return_value=detections)
 
 
 def patch_balls(seen_names: list[str]) -> Any:
     """Simulate the named objects being seen."""
     detections = [ImageDetection(name) for name in seen_names]
-    return patch.object(BallRecognizer.BallRecognizer, 'do_detection', return_value=(None, detections))
+    return patch.object(BallRecognizer.BallRecognizer, 'do_detection', return_value=detections)
 
 
 @pytest.mark.integtest

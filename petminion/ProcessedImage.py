@@ -28,15 +28,18 @@ class ProcessedImage:
             image = cv2.resize(image, dest_size, interpolation=cv2.INTER_LANCZOS4)
         self.raw_image = raw_image
         self.image = image
-        self.__annotated = None
 
     @property
     def annotated(self) -> typing.Optional[numpy.ndarray]:
         """
         Returns the annotated image with visualized detections. (or None if no annotations available)
         """
-        self.detections  # implicitly will update __annotated
-        return self.__annotated
+        a = self.image.copy()
+        for d in self.detections:  # implicitly will update __annotated
+            # Draw the bounding box on the frame
+            cv2.rectangle(a, (d.x1, d.y1), (d.x2, d.y2), (0, 255, 0), 2)
+            cv2.putText(a, d.name, (d.x1, d.y1), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        return a
 
     @cached_property
     def classifications(self) -> list[ImageDetection]:
@@ -53,19 +56,9 @@ class ProcessedImage:
         """
         Returns a list of ImageDetection objects representing the object detections in the image.
         """
-        annotations = []
         detections = []
         for recognizer in self.__recognizers:
-            a, d = recognizer.do_detection(self.image)
-            if a is not None:
-                annotations.append(a)
+            d = recognizer.do_detection(self.image)
             detections.extend(d)
 
-        # update the annotated image
-        self.__annotated = None  # assume failure
-        if len(annotations):
-            # FIXME Implement merging logic here
-            self.__annotated = annotations[0]
         return detections
-        self.__annotated = a
-        return d
