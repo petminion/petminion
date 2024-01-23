@@ -1,4 +1,5 @@
 import logging
+import os
 import tempfile
 from typing import Optional
 
@@ -42,6 +43,9 @@ class MastodonClient(SocialMediaClient):
         """Upload media+thumbnail and return the media id"""
 
         logger.info(f"Uploading {filename} to mastodon")
+
+        if os.path.getsize(filename) > 40 * 1024 * 1024:
+            raise Exception("Video file size exceeds Mastodon 40MB limit")
 
         # not needed - can be detected from filename , mime_type='image/jpeg'
         media = self.client.media_post(filename, thumbnail=thumbnail)
