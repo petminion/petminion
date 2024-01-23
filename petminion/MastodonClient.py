@@ -1,11 +1,12 @@
 import logging
 import os
 import tempfile
+import time
 from typing import Optional
 
 import cv2
 import numpy
-from mastodon import Mastodon
+from mastodon import Mastodon, errors
 
 from .SocialMediaClient import SocialMediaClient
 from .util import app_config
@@ -67,7 +68,21 @@ class MastodonClient(SocialMediaClient):
 
     def post_status(self, title: str, media_ids: list[str] = []) -> None:
         """Post a status to mastodon"""
-        self.client.status_post(status=title, visibility='unlisted', media_ids=media_ids)
+        for attempt in range(3):
+            try:
+                self.client.status_post(status=title, visibility='unlisted', media_ids=media_ids)
+                return  # success
+            except errors.MastodonAPIError as e:
+                # mastodon exception args are generated as follows
+                # raise ex_type('Mastodon API returned error', response_object.status_code, response_object.reason, error_msg)
+
+                error_code = e.args[1]
+                if error_code == 422:
+                    logger.warning(f"Mastodon told us to wait: {e}")
+                    time.sleep(5)
+                    # Try again after a bit of delay...
+                else:
+                    raise e
 
     def post_image(self, title: str, image: numpy.ndarray) -> None:
         """Given an image array, post that image to mastodon"""

@@ -205,7 +205,7 @@ class ScheduledFeederRule(TrainingRule):
     @property
     def status(self) -> str:
         """Returns a string representing the current status of the rule."""
-        return f'Fed { self.state.fed_today } out of { self.num_allowed } feedings today'
+        return f'Fed { self.state.fed_today } out of { self.num_allowed() } feedings today'
 
     def num_allowed(self, early_also: bool = False) -> int:
         """

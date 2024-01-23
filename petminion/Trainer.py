@@ -108,7 +108,7 @@ class Trainer:
 
         self.image = ProcessedImage(self.recognizers, img)
 
-    def start_social(self, status_text: str, capture_seconds=60) -> None:
+    def start_social(self, status_text: str, capture_seconds=64) -> None:
         """The pet just did something interesting, start a social media movie - posting capture_seconds later"""
         if not self.social_rate.can_run():
             logger.warning("Skipping social media post due to rate limit")
@@ -124,12 +124,12 @@ class Trainer:
                 t.set_ran()  # a crude way to turn this into a general alarm/timer class
                 self.social_timer = t
 
-                self.social_frame_interval = SimpleLimit(5)  # capture a frame every 5 seconds
-
+                self.social_frame_interval = SimpleLimit(4)  # capture a frame every 4 seconds
                 self.social_first_image = self.image.raw_image
                 self.social_status = status_text
 
-                self.social_writer = VideoWriter(tempfile.mktemp(suffix=".mp4"))
+                # we claim 4 fps, which for 64 seconds at 4 seconds per frame means the gif will be 4 seconds of viewing time
+                self.social_writer = VideoWriter(tempfile.mktemp(suffix=".mp4"), 4)
 
     def update_social(self) -> None:
         """Update a social media movie and possibly post it"""

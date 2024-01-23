@@ -15,7 +15,7 @@ class VideoWriter:
 
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, frame_rate=24):
         """
         Initializes a VideoWriter object.
 
@@ -25,7 +25,7 @@ class VideoWriter:
         """
         self.filename = filename
         self.output = output = av.open(filename, 'w')
-        self.stream = stream = output.add_stream('h264', 24)
+        self.stream = stream = output.add_stream('h264', frame_rate)
         stream.bit_rate = 2000000  # 8000000, 2mbps is a low bitrate per https://www.videoproc.com/media-converter/bitrate-setting-for-h264.htm
 
     def add_frame(self, frame: np.ndarray):
