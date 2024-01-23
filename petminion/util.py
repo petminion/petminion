@@ -9,10 +9,12 @@ app_name = "petminion"
 app_author = "geeksville"
 logger = logging.getLogger()
 
+windows_allowed = True
+
 
 def has_windows() -> bool:
     """Return true if we are running on a system with XWindows"""
-    return os.environ.get("DISPLAY", None) is not None
+    return windows_allowed and (os.environ.get("DISPLAY", None) is not None)
 
 
 def user_data_dir() -> str:

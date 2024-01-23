@@ -4,6 +4,7 @@ import textwrap
 import pytest
 
 from petminion import util
+from petminion.CV2Camera import show_image
 
 
 @pytest.fixture(scope='session')
@@ -16,6 +17,9 @@ def config_for_testing() -> None:
     """override the config file with our test settings"""
 
     util.state_loading_disabled = True  # make tests not use saved state files
+
+    # show_image(None)  # init debug window very early otherwise it might hang later
+    util.windows_allowed = False
 
     testing_config = textwrap.dedent("""
         [settings]

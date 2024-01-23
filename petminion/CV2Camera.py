@@ -1,6 +1,7 @@
 import logging
 import os
 import tempfile
+from typing import Optional
 
 import cv2
 import numpy
@@ -24,7 +25,7 @@ def mouse_callback(event, x, y, flags, param):
     labels['text'] = f"HSV: {color}"
 
 
-def show_image(image: numpy.ndarray, window_name="petminion") -> None:
+def show_image(image: Optional[numpy.ndarray] = None, window_name: str = "petminion") -> None:
     if has_windows():
         global _started
         if not _started:

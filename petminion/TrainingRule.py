@@ -349,9 +349,10 @@ class TokenTrainer(SimpleFeederRule):
     def is_feeding_allowed(self) -> bool:
         # If we haven't yet reached the scheduled time, we require a new token for feedings.  Otherwise we allow feedings without a token
         count = self.count_detections("ball")
+        saw_pet = self.is_detected(self.target)
         token_based_feeding_allowed = (count > self.state.old_count) and self.num_allowed(early_also=True)
         free_feeding_allowed = self.num_allowed(early_also=False)  # we allow feedings without a token if the time limit is reached
-        if token_based_feeding_allowed or free_feeding_allowed:
+        if saw_pet and (token_based_feeding_allowed or free_feeding_allowed):
             if not self.feed_interval_limit.can_run():
                 logger.warning(f'Too soon for this feeding, try again later')
             else:
