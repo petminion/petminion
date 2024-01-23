@@ -124,20 +124,20 @@ class Trainer:
                 t.set_ran()  # a crude way to turn this into a general alarm/timer class
                 self.social_timer = t
 
+                self.social_frame_interval = SimpleLimit(5)  # capture a frame every 5 seconds
+
                 self.social_first_image = self.image.raw_image
                 self.social_status = status_text
 
                 self.social_writer = VideoWriter(tempfile.mktemp(suffix=".mp4"))
-                # self.trainer.capture_image()
-                # self.save_image(is_success=False, summary="eating")
-                # self.trainer.share_social(self.status)
 
     def update_social(self) -> None:
         """Update a social media movie and possibly post it"""
 
         # if a social media post is in progress, add the current image to the video
         if self.social_timer:
-            self.social_writer.add_frame(self.image.raw_image)
+            if self.social_frame_interval.can_run():
+                self.social_writer.add_frame(self.image.raw_image)
 
             # we ran out of time, post the video
             if self.social_timer.can_run():
@@ -145,7 +145,9 @@ class Trainer:
 
                 self.social_writer.close()
 
-                media_id = self.social.upload_media_with_thumbnail(self.social_writer.filename, self.social_first_image)
+                # thumbnails are not allowed for mastondon videos!
+                # media_id = self.social.upload_media_with_thumbnail(self.social_writer.filename, self.social_first_image)
+                media_id = self.social.upload_media(self.social_writer.filename)
                 self.social.post_status(self.social_status, [media_id])
 
                 os.remove(self.social_writer.filename)  # Delete the video file

@@ -37,6 +37,7 @@ def test_simple_feeder_rule(config_for_testing) -> None:
         util.app_config.config.read_string(textwrap.dedent("""
             [settings]
             trainingrule = SimpleFeederRule
+            #simsocialmedia = True
             """))
 
         trainer = Trainer(is_simulated=True, repeat_forever=True)

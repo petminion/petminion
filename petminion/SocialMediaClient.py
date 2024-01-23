@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 import numpy
 
@@ -12,8 +13,13 @@ class SocialMediaClient:
         """Given an image array, post that image to social media"""
         logger.warning("Social Media posts are disabled - not posting")
 
+    def upload_media(self, filename: str, thumbnail: Optional[str] = None) -> str:
+        logger.warning("Social Media posts are disabled - not posting")
+        return "fake media id"
+
     def upload_media_with_thumbnail(self, filename: str, thumbnail: numpy.ndarray) -> str:
         logger.warning("Social Media posts are disabled - not posting")
+        return "fake media id"
 
     def upload_image(self, image: numpy.ndarray) -> str:
         logger.warning("Social Media posts are disabled - not posting")
