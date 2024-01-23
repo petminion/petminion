@@ -7,12 +7,12 @@ import cv2
 import numpy
 
 from .Camera import Camera, CameraDisconnectedError
-from .RateLimit import RateLimit
+from .RateLimit import RateLimit, SimpleLimit
 from .util import has_windows
 
 logger = logging.getLogger()
 
-live_capture_limit = RateLimit("live_capture_limit", 5)  # every few seconds
+live_capture_limit = SimpleLimit(5)  # every few seconds
 
 _started = False
 

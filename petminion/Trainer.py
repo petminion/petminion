@@ -1,8 +1,11 @@
 import configparser
 import logging
+import os
+import tempfile
 import time as systime
+from typing import Optional
 
-from petminion import BallRecognizer  # prevent name clash with datetime.time
+from petminion import BallRecognizer
 
 from .BallRecognizer import BallRecognizer
 from .Camera import CameraDisconnectedError, SimCamera
@@ -13,11 +16,12 @@ from .Feeder import *  # noqa: F403 must use * here because we find classnames a
 from .ImageRecognizer import ImageRecognizer
 from .MastodonClient import MastodonClient
 from .ProcessedImage import ProcessedImage
-from .RateLimit import RateLimit
+from .RateLimit import RateLimit, SimpleLimit
 from .RedditClient import RedditClient
 from .SocialMediaClient import SocialMediaClient
 from .TrainingRule import *  # noqa: F403 must use * here because we find classnames at runtime
 from .util import app_config
+from .VideoWriter import VideoWriter  # prevent name clash with datetime.time
 
 logger = logging.getLogger()
 
@@ -60,6 +64,7 @@ class Trainer:
         self.camera = SimCamera(repeat_forever) if is_simulated else class_by_name("Camera")()
 
         self.social_rate = RateLimit("social_rate", 60 * 60 * 1)  # 1 post per hour
+        self.social_timer = None
         self.social = SocialMediaClient()  # provide a stub implementation that does nothing
         if not is_simulated or app_config.settings.getboolean('SimSocialMedia'):
             try:
@@ -76,11 +81,11 @@ class Trainer:
             self, rule_class)
 
         self.feeder = Feeder() if is_simulated else class_by_name("Feeder")()  # noqa: F405
-        self.image = None
+        self.image: Optional[ProcessedImage] = None
 
         self.recognizers = [ImageRecognizer(), BallRecognizer()]  # FIXME, perhaps this should be part of the rule instead?
         self.color_corrector = ColorCorrector()
-        self.corrector_check_rate = RateLimit("corrector_check_rate", 60)  # 1 check per minute
+        self.corrector_check_rate = SimpleLimit(60)  # 1 check per minute
 
     def capture_image(self) -> None:
         """Grab a new image from the camera"""
@@ -103,16 +108,52 @@ class Trainer:
 
         self.image = ProcessedImage(self.recognizers, img)
 
-    def share_social(self, title: str) -> None:
-        """Share the current image to social media with the given title"""
-        if self.social_rate.can_run():
-            self.social.post_image(title, self.image.raw_image)
-        else:
+    def start_social(self, status_text: str, capture_seconds=60) -> None:
+        """The pet just did something interesting, start a social media movie - posting capture_seconds later"""
+        if not self.social_rate.can_run():
             logger.warning("Skipping social media post due to rate limit")
+        else:
+            if self.social_timer:
+                logger.warning("Skipping social media post - already in progress")
+            else:
+                # if running in simulation cut the length of videos quite short
+                if self.is_simulated:
+                    capture_seconds = 3
+
+                t = SimpleLimit(capture_seconds)
+                t.set_ran()  # a crude way to turn this into a general alarm/timer class
+                self.social_timer = t
+
+                self.social_first_image = self.image.raw_image
+                self.social_status = status_text
+
+                self.social_writer = VideoWriter(tempfile.mktemp(suffix=".mp4"))
+                # self.trainer.capture_image()
+                # self.save_image(is_success=False, summary="eating")
+                # self.trainer.share_social(self.status)
+
+    def update_social(self) -> None:
+        """Update a social media movie and possibly post it"""
+
+        # if a social media post is in progress, add the current image to the video
+        if self.social_timer:
+            self.social_writer.add_frame(self.image.raw_image)
+
+            # we ran out of time, post the video
+            if self.social_timer.can_run():
+                self.social_timer = None  # stop the timer
+
+                self.social_writer.close()
+
+                media_id = self.social.upload_media_with_thumbnail(self.social_writer.filename, self.social_first_image)
+                self.social.post_status(self.social_status, [media_id])
+
+                os.remove(self.social_writer.filename)  # Delete the video file
 
     def run_once(self) -> None:
         """Run one iteration of the training rules"""
         self.capture_image()
+        self.update_social()
         self.rule.run_once()
         # sleep for 100ms, because if we are on a low-end rPI the image processing (if allowed to run nonstop) will fully consume the CPU (starving critical things like zigbee)
         systime.sleep(0.100)

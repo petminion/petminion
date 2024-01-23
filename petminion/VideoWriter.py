@@ -23,6 +23,7 @@ class VideoWriter:
             filename (str): The name of the output video file. such as foo.mp4
 
         """
+        self.filename = filename
         self.output = output = av.open(filename, 'w')
         self.stream = stream = output.add_stream('h264', 24)
         stream.bit_rate = 2000000  # 8000000, 2mbps is a low bitrate per https://www.videoproc.com/media-converter/bitrate-setting-for-h264.htm
@@ -39,12 +40,18 @@ class VideoWriter:
         packet = self.stream.encode(f)
         self.output.mux(packet)
 
+    def close(self):
+        """
+        Closes the video file.
+        """
+        packet = self.stream.encode(None)
+        self.output.mux(packet)
+        self.output.close()
+
     def __enter__(self):
         return self
 
     def __exit__(self, *args):
         """For use with with statements."""
         # flush
-        packet = self.stream.encode(None)
-        self.output.mux(packet)
-        self.output.close()
+        self.close()

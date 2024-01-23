@@ -9,7 +9,7 @@ app_name = "petminion"
 app_author = "geeksville"
 logger = logging.getLogger()
 
-windows_allowed = True
+windows_allowed = False  # FIXME still busted
 
 
 def has_windows() -> bool:

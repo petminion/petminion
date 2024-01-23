@@ -10,24 +10,23 @@ class SavedState:
         self.last_time = 0.0
 
 
-class RateLimit:
+class SimpleLimit:
     """
-    A class to implement rate limiting functionality.
+    A class to implement rate limiting functionality. No serialization is supported for this basic class.
     """
 
-    def __init__(self, state_name: str, interval_secs: float):
+    def __init__(self, interval_secs: float):
         """
-        Initializes the RateLimit object. 
+        Initializes the SimpleLimit object. 
         """
-        self.state_name = state_name
-        self.__interval_secs = interval_secs
+        self._interval_secs = interval_secs
 
     @cached_property
     def state(self) -> SavedState:
         """We use a cached property so the actual load of state doesn't happen until _after_ any globals are created.  This allows
         unit tests to disable state loading before the globals are created.
         """
-        return load_state(self.state_name, SavedState(self.__interval_secs))
+        return SavedState(self._interval_secs)
 
     @property
     def interval_secs(self) -> float:
@@ -52,7 +51,6 @@ class RateLimit:
         Marks that we just did a rate-limited action.
         """
         self.state.last_time = time.time()
-        save_state(self.state_name, self.state)
 
     def can_run(self) -> bool:
         """
@@ -66,3 +64,31 @@ class RateLimit:
             return True
         else:
             return False
+
+
+class RateLimit(SimpleLimit):
+    """
+    A class to implement rate limiting functionality. We serialize state to disk so limits are respected across restarts.
+    """
+
+    def __init__(self, state_name: str, interval_secs: float):
+        """
+        Initializes the RateLimit object. 
+        """
+        super().__init__(interval_secs)
+        self.state_name = state_name
+
+    # override to add serialization
+    @cached_property
+    def state(self) -> SavedState:
+        """We use a cached property so the actual load of state doesn't happen until _after_ any globals are created.  This allows
+        unit tests to disable state loading before the globals are created.
+        """
+        return load_state(self.state_name, SavedState(self._interval_secs))
+
+    def set_ran(self):
+        """
+        Marks that we just did a rate-limited action.
+        """
+        super().set_ran()
+        save_state(self.state_name, self.state)

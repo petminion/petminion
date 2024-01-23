@@ -12,7 +12,7 @@ import cv2
 from .CV2Camera import show_image
 from .ImageRecognizer import \
     ImageDetection  # noqa: F401 needed for find at runtime
-from .RateLimit import RateLimit
+from .RateLimit import RateLimit, SimpleLimit
 from .util import has_windows, load_state, save_state, user_data_dir
 
 logger = logging.getLogger()
@@ -75,13 +75,7 @@ class TrainingRule:
         self.trainer.feeder.feed(num_feedings)
         self.state.fed_today += num_feedings
 
-        # wait a few seconds after food dispensed to see if we can store a photo of the target eating
-        if not self.trainer.is_simulated:
-            # don't sleep if running in the sim (to be developer friendly)
-            systime.sleep(60)
-        self.trainer.capture_image()
-        self.save_image(is_success=False, summary="eating")
-        self.trainer.share_social(self.status)
+        self.trainer.start_social(self.status)
 
         save_state(save_name, self.state)  # save to disk so we don't miss feedings if we restart
 
