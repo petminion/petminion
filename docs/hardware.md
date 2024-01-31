@@ -535,6 +535,13 @@ https://github.com/jasonacox/tinytuya
 per https://github.com/codetheweb/tuyapi/blob/master/docs/SETUP.md
 socks at https://iot.tuya.com/
 
+
+Feeder measurements:
+My old commercial feeder = 7g/feeding. 
+Aguara feeder with stock impeller = 8g/feeding
+Aquara feeder with my v1 3d printed impeller = 4.78g/feeding (someday make a new impeller version which is a bit wider for even less food/feeding) per https://docs.google.com/spreadsheets/d/14z09F9y1xWxu5tH9Yl0AIMuO5a2YUTZKGnbvbNu1zNU/edit#gid=535174529 
+my 3d printed impeller: https://cad.onshape.com/documents/6c80f1a38f414b281bf51de1/w/c1a1af4b0b17edcc42508058/e/53416f115451280451759ce5?renderMode=0&uiState=65baaaaee426d53e2ad1c98c 
+
 (minionenv) kevinh@kdesktop:~/development/petminion$ python -m tinytuya scan
 
 TinyTuya (Tuya device scanner) [1.13.1]

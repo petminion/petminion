@@ -197,10 +197,12 @@ class ScheduledFeederRule(TrainingRule):
         super().__init__(trainer)
 
         # FIXME - pull schedule from some sort of json file?
-        self.schedule = load_state("schedule", [ScheduledFeeding(time(7, 00), 2),
-                                                ScheduledFeeding(time(14, 00), 1),
-                                                ScheduledFeeding(time(16, 00), 1),
-                                                ScheduledFeeding(time(17, 45), 2)])
+        # using stock feeder it is 8g/feeding so 6 feedings is 48g/day
+        # using new feeder impeller it is 4.78g/feeding so 10 feedings is 48g/day
+        self.schedule = load_state("schedule", [ScheduledFeeding(time(7, 00), 3),
+                                                ScheduledFeeding(time(14, 00), 2),
+                                                ScheduledFeeding(time(16, 00), 2),
+                                                ScheduledFeeding(time(17, 45), 3)])
 
     @property
     def status(self) -> str:
