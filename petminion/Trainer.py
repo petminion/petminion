@@ -124,7 +124,7 @@ class Trainer:
                 t.set_ran()  # a crude way to turn this into a general alarm/timer class
                 self.social_timer = t
 
-                self.social_frame_interval = SimpleLimit(4)  # capture a frame every 4 seconds
+                self.social_frame_interval = SimpleLimit(2)  # capture a frame every 2 seconds
                 self.social_first_image = self.image.raw_image
                 self.social_status = status_text
 
