@@ -28,9 +28,13 @@
 - DONE use color match card https://pyimagesearch.com/2021/02/15/automatic-color-correction-with-opencv-and-python/
 - DONE confirm we are not running the classifer - only the detector
 - DONE grab frames at a higher resolution but then downsample them for machine-vision purposes.  Use the higher res pictures for video/social media purposes
-- Make social media post include info on # feedings, cat seen, and # balls
-- make video as cat walks towards feeder.  start video once we've decided a feeding is deserved... [https://stackoverflow.com/questions/48817441/opencv-encoding-to-h264 ](https://github.com/PyAV-Org/PyAV/issues/471)
-- finish cat training rule 0
+- DONE Make social media post include info on # feedings, cat seen, and # balls
+- DONE make video as cat walks towards feeder.  start video once we've decided a feeding is deserved... [https://stackoverflow.com/questions/48817441/opencv-encoding-to-h264 ](https://github.com/PyAV-Org/PyAV/issues/471)
+- DONE finish cat training rule 0
+- move rules to their own submodule
+- fix html doc gen
+- find a better app messaging solution than mastodon - https://support.pushover.net/i44-example-code-and-pushover-libraries#python-image + https://www.freecodecamp.org/news/how-to-convert-video-files-to-gif-in-python/
+- do new pypi release
 - use flask for a small web server https://pyimagesearch.com/2019/09/02/opencv-stream-video-to-web-browser-html-page/
 - DONE make simcamera actually useful
 - DONE have live camera dump success and occasional failure images to directories (for training & sim camera use)
@@ -44,6 +48,7 @@
 - merge detector and classifier responses?
 - use minium score for considered matches
 - map detections through an aliases table.  Use uppercase words for aliases (CAT, CROW etc).  Use a BLACKLIST alias for detections we never want to see (have an aliases dictionary that maps from grackle, bluejay, crow etc...)
+- generate an alert push if no feedings happened in a day
 - keep unexpected recognizer words in a log file 
 - add method documentation for all the key methods
 - Use a should_trigger() method in the rules to allow multiple rules to be candidates at once
