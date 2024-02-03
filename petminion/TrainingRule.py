@@ -335,7 +335,7 @@ class TokenTrainer(SimpleFeederRule):
         """
         super().__init__(trainer)
         self.state = TokenState()
-        self.feed_interval_limit.interval_secs = 60  # allow rapid feedings if balls are available
+        self.feed_interval_limit.interval_secs = 5 * 60  # allow rapid feedings if balls are available
 
     @property
     def status(self):
