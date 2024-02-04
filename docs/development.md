@@ -303,3 +303,9 @@ and https://www.thecrowbox.com/ nice design - see youtube below
 https://thecrowbox.com/wiki/doku.php?id=kit:overview_doc
 https://www.youtube.com/watch?v=jcp_FWfYtLY
 oh! still alive! https://groups.google.com/g/CrowBoxKit?pli=1
+
+## Releasing new builds on Pypi
+
+If you are a developer releasing new petminion releases the procedure is as follows.
+
+* configure your pypi & testing server tokens per [https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org ](https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org)

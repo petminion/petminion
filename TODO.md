@@ -34,7 +34,7 @@
 - move rules to their own submodule
 - fix html doc gen
 - find a better app messaging solution than mastodon - https://support.pushover.net/i44-example-code-and-pushover-libraries#python-image + https://www.freecodecamp.org/news/how-to-convert-video-files-to-gif-in-python/
-- do new pypi release
+- HIGHPRI!!!! do new pypi release
 - use flask for a small web server https://pyimagesearch.com/2019/09/02/opencv-stream-video-to-web-browser-html-page/
 - DONE make simcamera actually useful
 - DONE have live camera dump success and occasional failure images to directories (for training & sim camera use)

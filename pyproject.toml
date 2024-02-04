@@ -1,35 +1,21 @@
 # This file is used to control packaging for distribution via pypi
 
-[project]
+[tool.poetry]
 name = "petminion"
-version = "0.0.2"
+version = "0.2.0"
 authors = [
-  { name="Kevin Hester", email="kevinh@geeksville.com" },
-]
+  "Kevin Hester <kevinh@geeksville.com>"
+  ]
 description = "An application/framework for automated training of animals"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/petminion/petminion"
+homepage = "https://petminion.org"
 readme = "README.md"
-# 3.5 is kinda old but needed to support the old python3 included on my google coral devboard
-requires-python = ">=3.9"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-    "Operating System :: OS Independent",
-]
 
-[tool.setuptools]
-include-package-data = true
-
-[tool.setuptools.packages.find]
-include = ["petminion*"]  # package names should match these glob patterns (["*"] by default)
-
-[tool.setuptools.package-data]
-# "*" = ["*.png"]
-
-[project.scripts]
+[tool.poetry.scripts]
 petminion = "petminion.__main__:main"
 
-[project.urls]
-"Homepage" = "https://github.com/geeksville/petminion"
+[tool.poetry.urls]
 "Bug Tracker" = "https://github.com/geeksville/petminion/issues"
 
 # recommended per https://docs.pytest.org/en/7.4.x/explanation/goodpractices.html#goodpractices
@@ -50,14 +36,6 @@ filterwarnings = [
 ]
 log_cli = "True"
 log_cli_level = "DEBUG"
-
-[tool.poetry]
-name = "petminion"
-version = "0.1.0"
-description = ""
-authors = ["geeksville <kevinh@geeksville.com>"]
-license = "GPL v3"
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
