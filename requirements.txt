@@ -1,10 +1,1 @@
-build 
-twine 
-cython 
-torch 
-torchvision 
 poetry
-tensorflow
-opencv-python
-flake8
-imageai

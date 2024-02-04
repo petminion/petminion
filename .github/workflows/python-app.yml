@@ -31,16 +31,16 @@ jobs:
     #- name: Configure poetry
     # run: |
     #    python -m poetry config virtualenvs.in-project true
-    - name: Install via pip (FIXME - move to poetry)
-      run: |
-        pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt; fi        
+    #- name: Install via pip (FIXME - move to poetry)
+    #  run: |
+    #    pip install --upgrade pip
+    #    if [ -f requirements.txt ]; then pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt; fi        
     - name: Install via poetry
       run: | 
         # This command will install all dependencies specified in your pyproject.toml file, including the dev dependencies. 
         # The --no-interaction option is used to prevent Poetry from prompting for input, which is necessary in a CI environment. 
         # The --no-root option is used to skip installing the package in the current directory (i.e., the package that's being built). 
-        poetry install --no-interaction 
+        poetry install --no-interaction --with dev
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
