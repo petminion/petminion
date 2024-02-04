@@ -309,3 +309,6 @@ oh! still alive! https://groups.google.com/g/CrowBoxKit?pli=1
 If you are a developer releasing new petminion releases the procedure is as follows.
 
 * configure your pypi & testing server tokens per [https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org ](https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org)
+* run bin/publish-test.sh to publish to test.pypi.org
+* run bin/publish-production.sh to publish to pypi.org
+* 
