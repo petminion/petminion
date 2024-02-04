@@ -28,16 +28,36 @@ This framework is written in python and intended to be run on something like a r
 To install, run the following command on any machine which has a recent python version installed.  
 
 ```
-pipx install petminion
+$ pipx install petminion
+  installed package petminion 0.2.0, installed using Python 3.11.6
+  These apps are now globally available
+    - petminion
+done! ✨ 🌟 ✨
 ```
 
 This tool is mostly written for linux, but if you find problems on other platforms please open a github issue and we'll try to figure out what's wrong.
 
 ## Running
 
-Run 'petminion' from your command line and it should hopefully do something.
-(FIXME add more details)
+Run 'petminion' from your command line and it should hopefully do something (FIXME).  Here's approximately how it should look.
 
+```
+$ petminion
+09:58:07 INFO  Petminion running...
+09:58:07 INFO  Camera width=1920, height=1080, exposure=157
+09:58:07 WARNI No reddit config file (~/.config/praw.ini) petminion found, disabling reddit posts
+09:58:07 WARNI RedditClient not available - reddit posting disabled
+/home/kevinh/.local/pipx/venvs/petminion/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/home/kevinh/.local/pipx/venvs/petminion/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=None`.
+  warnings.warn(msg)
+/home/kevinh/.local/pipx/venvs/petminion/lib/python3.11/site-packages/torchvision/models/inception.py:43: FutureWarning: The default weight initialization of inception_v3 will be changed in future releases of torchvision. If you wish to keep the old behavior (which leads to long initialization times due to scipy/scipy#11299), please set init_weights=True.
+  warnings.warn(
+/home/kevinh/.local/pipx/venvs/petminion/lib/python3.11/site-packages/torch/cuda/__init__.py:138: UserWarning: CUDA initialization: CUDA unknown error - this may be due to an incorrectly set up environment, e.g. changing env variable CUDA_VISIBLE_DEVICES after program start. Setting the available devices to be zero. (Triggered internally at ../c10/cuda/CUDAFunctions.cpp:108.)
+  return torch._C._cuda_getDeviceCount() > 0
+09:58:10 INFO  Watching camera (use --debug for progress info. press ctrl-C to exit)...
+
+```
 ## Development Schedule
 
 I'll be writing the first version in Winter of 2023 (in this github) and then iterating with my cat and black winged test subjects through the winter and spring.
