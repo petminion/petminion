@@ -115,8 +115,8 @@ def test_token_trainer_rule(config_for_testing) -> None:
                     mock_feeder.assert_not_called()
                     mock_feeder.reset_mock()
 
-                    # wait 3 mins and now it should feed again (after the 1 min timeout)
-                    tick(datetime.timedelta(minutes=3))
+                    # wait 7 mins and now it should feed again (after the 5 min timeout)
+                    tick(datetime.timedelta(minutes=7))
 
                     mock_feeder.assert_called_once()
                     mock_feeder.reset_mock()
