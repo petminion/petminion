@@ -14,11 +14,8 @@ Welcome to Petminion's documentation!
 
 .. automodule:: petminion
     :members:
+    :undoc-members:
+    :show-inheritance:
+    .. :private-members: # if you want to document __x attributes
+    .. :special-members: # if you want to document __xxx__ dunder methods
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
