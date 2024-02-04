@@ -25,10 +25,10 @@ But!
 
 This framework is written in python and intended to be run on something like a raspberry pi.  However, if you are just interested in trying it out it can even be run on a desktop (where the feeder hardware and/or camera is simulated).
 
-To install, run the following command on any machine which has a recent python version installed.  
+To install, run the following command on any machine which has a recent python version installed.  If your platform doesn't have "pipx" installed use "pip" instead. 
 
 ```
-$ pipx install petminion
+$ pipx install -f petminion
   installed package petminion 0.2.0, installed using Python 3.11.6
   These apps are now globally available
     - petminion
@@ -37,6 +37,10 @@ done! ✨ 🌟 ✨
 
 This tool is mostly written for linux, but if you find problems on other platforms please open a github issue and we'll try to figure out what's wrong.
 
+If you **are** using Windows you might need to run the following commands to correctly install a library we depend upon:
+```
+pip install torch==2.1.2+cpu -f https://download.pytorch.org/whl/torch_stable.html
+```
 ## Running
 
 Run 'petminion' from your command line and it should hopefully do something (FIXME).  Here's approximately how it should look.
