@@ -1,7 +1,11 @@
-import cv2
 import logging
 import os
+from importlib.resources import as_file, files
+
+import cv2
 import numpy
+
+from . import resources
 
 logger = logging.getLogger()
 
@@ -36,10 +40,10 @@ class SimCamera(Camera):
             repeat_forever (bool, optional): If false we will end the stream after the last test-image is consumed, if true we will loop back to the first image. 
             Defaults to False.
         """
-        my_dir = os.path.dirname(__file__)  # where this python file is located
-        self.img_dir = os.path.join(my_dir, "..", "tests", "image")
-        self.filenames = list(filter(lambda x: x.endswith(
-            ".jpg"), os.listdir(self.img_dir)))
+        # my_dir = os.path.dirname(__file__)  # where this python file is located
+        # self.img_dir = os.path.join(my_dir, "..", "tests", "image")
+        self.img_dir = files(resources).joinpath("simcamera")
+        self.filenames = list(filter(lambda x: x.endswith(".jpg"), os.listdir(self.img_dir)))
         self.next_name = iter(self.filenames)
         self.repeat_forever = repeat_forever
 

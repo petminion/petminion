@@ -1,0 +1,2 @@
+This directory contains a few fake images so the SimCamera can provide some frames.
+FIXME - eventually we should better structure sim camera and these frames so we can provide known good/bad frames instead of just a loop.
