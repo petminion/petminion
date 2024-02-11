@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install required apt packages
+      run: sudo apt-get install -y gifsicle
     - uses: actions/checkout@v4
     - name: Set up Python 3.11
       uses: actions/setup-python@v5

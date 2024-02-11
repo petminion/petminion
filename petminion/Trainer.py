@@ -21,7 +21,7 @@ from .RedditClient import RedditClient
 from .SocialMediaClient import SocialMediaClient
 from .TrainingRule import *  # noqa: F403 must use * here because we find classnames at runtime
 from .util import app_config
-from .VideoWriter import VideoWriter  # prevent name clash with datetime.time
+from .VideoWriter import MP4Writer  # prevent name clash with datetime.time
 
 logger = logging.getLogger()
 
@@ -129,7 +129,7 @@ class Trainer:
                 self.social_status = status_text
 
                 # we claim 4 fps, which for 64 seconds at 4 seconds per frame means the gif will be 4 seconds of viewing time
-                self.social_writer = VideoWriter(tempfile.mktemp(suffix=".mp4"), 4)
+                self.social_writer = MP4Writer(tempfile.mktemp(suffix=".mp4"), 4)
 
     def update_social(self) -> None:
         """Update a social media movie and possibly post it"""

@@ -55,6 +55,8 @@ imutils = "^0.5.4"
 scipy = "^1.12.0"
 av = "^11.0.0"
 requests = "^2.31.0"
+imageio = "^2.33.1"
+pygifsicle = "^1.0.7"
 
 
 [tool.poetry.group.dev.dependencies]
