@@ -28,6 +28,7 @@ addopts = [
 markers = [
     # "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integtest: integration test",
+    "social: tests which will perform social media posts"
 ]
 filterwarnings = [
     "error",

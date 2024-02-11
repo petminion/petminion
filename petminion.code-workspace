@@ -15,7 +15,7 @@
 	],
 	"settings": {
 		"testOnSave.enabled": true,
-		"testOnSave.testCommand": "poetry run pytest",
+		"testOnSave.testCommand": "poetry run pytest -m \"not social\"",
 		"testOnSave.languageId": "python",
 		"editor.codeActionsOnSave": {
 			"source.fixAll": "always",

@@ -25,7 +25,6 @@ class PushoverClient:
 
     def upload_media(self, filename: str, thumbnail: Optional[str] = None) -> str:
         """upload media for use in post_status()"""
-        logger.warning("Social Media posts are disabled - not posting")
         return filename  # We just use the provided filename as the media id
 
     def post_status(self, title: str, media_ids: list[str] = []) -> None:
