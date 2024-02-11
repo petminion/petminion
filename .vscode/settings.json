@@ -38,7 +38,9 @@
   "python.testing.pytestArgs": [
     "tests",
     "-m",
-    "not social"
+    "not social",
+    "-r",
+    "fEP" // Show stdout for failed and passed tests
   ],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,

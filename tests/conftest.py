@@ -1,5 +1,8 @@
+import contextlib
+import logging
 import os
 import textwrap
+from http.client import HTTPConnection
 
 import pytest
 
@@ -29,3 +32,15 @@ def config_for_testing() -> None:
         feeder = Feeder
     """)
     util.app_config.config.read_string(testing_config)
+
+
+@pytest.fixture(scope='session')
+def debug_requests_on():
+    '''Switches on logging for the HTTP requests module.'''
+    HTTPConnection.debuglevel = 1  # 2 to also include POST body
+
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.DEBUG)
+    requests_log = logging.getLogger("requests.packages.urllib3")
+    requests_log.setLevel(logging.DEBUG)
+    requests_log.propagate = True

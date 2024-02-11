@@ -5,8 +5,6 @@ import tempfile
 import time as systime
 from typing import Optional
 
-from petminion import BallRecognizer
-
 from .BallRecognizer import BallRecognizer
 from .Camera import CameraDisconnectedError, SimCamera
 from .ColorCorrector import ColorCorrector
@@ -16,12 +14,13 @@ from .Feeder import *  # noqa: F403 must use * here because we find classnames a
 from .ImageRecognizer import ImageRecognizer
 from .MastodonClient import MastodonClient
 from .ProcessedImage import ProcessedImage
+from .PushoverClient import PushoverClient
 from .RateLimit import RateLimit, SimpleLimit
 from .RedditClient import RedditClient
 from .SocialMediaClient import SocialMediaClient
 from .TrainingRule import *  # noqa: F403 must use * here because we find classnames at runtime
 from .util import app_config
-from .VideoWriter import MP4Writer  # prevent name clash with datetime.time
+from .VideoWriter import GIFWriter, MP4Writer
 
 logger = logging.getLogger()
 
@@ -65,6 +64,7 @@ class Trainer:
 
         self.social_rate = RateLimit("social_rate", 60 * 60 * 1)  # 1 post per hour
         self.social_timer = None
+        self.pushover = None
         self.social = SocialMediaClient()  # provide a stub implementation that does nothing
         if not is_simulated or app_config.settings.getboolean('SimSocialMedia'):
             try:
@@ -74,7 +74,12 @@ class Trainer:
             try:
                 self.social = MastodonClient()
             except configparser.Error:
-                logger.warning("MastodonClient not available - reddit posting disabled")
+                logger.warning("MastodonClient not available - mastodon posting disabled")
+
+        try:
+            self.pushover = PushoverClient()
+        except configparser.Error:
+            logger.warning("PushoverClient not available - pushover posting disabled")
 
         rule_class = class_by_name("TrainingRule")
         self.rule = TrainingRule.create_from_save(  # noqa: F405
@@ -110,26 +115,24 @@ class Trainer:
 
     def start_social(self, status_text: str, capture_seconds=64) -> None:
         """The pet just did something interesting, start a social media movie - posting capture_seconds later"""
-        if not self.social_rate.can_run():
-            logger.warning("Skipping social media post due to rate limit")
+        if self.social_timer:
+            logger.warning("Skipping social media post - already in progress")
         else:
-            if self.social_timer:
-                logger.warning("Skipping social media post - already in progress")
-            else:
-                # if running in simulation cut the length of videos quite short
-                if self.is_simulated:
-                    capture_seconds = 3
+            # if running in simulation cut the length of videos quite short
+            if self.is_simulated:
+                capture_seconds = 3
 
-                t = SimpleLimit(capture_seconds)
-                t.set_ran()  # a crude way to turn this into a general alarm/timer class
-                self.social_timer = t
+            t = SimpleLimit(capture_seconds)
+            t.set_ran()  # a crude way to turn this into a general alarm/timer class
+            self.social_timer = t
 
-                self.social_frame_interval = SimpleLimit(2)  # capture a frame every 2 seconds
-                self.social_first_image = self.image.raw_image
-                self.social_status = status_text
+            self.social_frame_interval = SimpleLimit(2)  # capture a frame every 2 seconds
+            self.social_first_image = self.image.raw_image
+            self.social_status = status_text
 
-                # we claim 4 fps, which for 64 seconds at 4 seconds per frame means the gif will be 4 seconds of viewing time
-                self.social_writer = MP4Writer(tempfile.mktemp(suffix=".mp4"), 4)
+            # we claim 4 fps, which for 64 seconds at 4 seconds per frame means the gif will be 4 seconds of viewing time
+            self.social_writer = MP4Writer(tempfile.mktemp(suffix=".mp4"), 4)
+            self.gif_writer = GIFWriter(tempfile.mktemp(suffix=".gif"))
 
     def update_social(self) -> None:
         """Update a social media movie and possibly post it"""
@@ -138,19 +141,28 @@ class Trainer:
         if self.social_timer:
             if self.social_frame_interval.can_run():
                 self.social_writer.add_frame(self.image.raw_image)
+                self.gif_writer.add_frame(self.image.raw_image)
 
             # we ran out of time, post the video
             if self.social_timer.can_run():
                 self.social_timer = None  # stop the timer
 
                 self.social_writer.close()
+                self.gif_writer.close()
 
-                # thumbnails are not allowed for mastondon videos!
-                # media_id = self.social.upload_media_with_thumbnail(self.social_writer.filename, self.social_first_image)
-                media_id = self.social.upload_media(self.social_writer.filename)
-                self.social.post_status(self.social_status, [media_id])
+                if self.pushover:
+                    self.pushover.post_status(self.social_status, [self.gif_writer.filename])
+
+                if not self.social_rate.can_run():
+                    logger.warning("Skipping social media post due to rate limit")
+                else:
+                    # thumbnails are not allowed for mastondon videos!
+                    # media_id = self.social.upload_media_with_thumbnail(self.social_writer.filename, self.social_first_image)
+                    media_id = self.social.upload_media(self.social_writer.filename)
+                    self.social.post_status(self.social_status, [media_id])
 
                 os.remove(self.social_writer.filename)  # Delete the video file
+                os.remove(self.gif_writer.filename)  # Delete the gif file
 
     def run_once(self) -> None:
         """Run one iteration of the training rules"""

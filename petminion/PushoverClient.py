@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Optional
 
 import requests
@@ -33,12 +34,18 @@ class PushoverClient:
         data = {
             "token": self.api_token,
             "user": self.user_key,
-            "title": "Petminion event",
+            "title": "Petminion",
             "message": title}
 
-        # FIXME, for now we assume only one attachment
+        files = None
         if len(media_ids) > 0:
-            data["files"] = {"attachment": ("attachment.gif", open(media_ids[0], "rb"), "image/gif")}
+            filename = media_ids[0]
+            # FIXME, for now we assume only one attachment
 
-        r = requests.post("https://api.pushover.net/1/messages.json", data)
+            if os.path.getsize(filename) > 2.5 * 1024 * 1024:
+                logger.warning(f"Image file size exceeds Pushover limit, skipping attachment")
+            else:
+                files = {"attachment": ("attachment.gif", open(filename, "rb"), "image/gif")}
+
+        r = requests.post("https://api.pushover.net/1/messages.json", data, files=files)
         logger.info(f"Pushover.net replied {r.text}")
