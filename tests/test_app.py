@@ -24,6 +24,7 @@ def patch_balls(seen_names: list[str]) -> Any:
     return patch.object(BallRecognizer.BallRecognizer, 'do_detection', return_value=detections)
 
 
+# debug_requests_on disabled for now
 @pytest.mark.integtest
 def test_simple_feeder_rule(config_for_testing) -> None:
     """A basic test of the entire app (using simulated data)

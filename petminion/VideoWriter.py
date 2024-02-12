@@ -141,4 +141,5 @@ class GIFWriter(VideoWriter):
         Closes the video file.
         """
         self.output.close()
-        pygifsicle.optimize(self.filename)
+        pygifsicle.optimize(self.filename, colors=16, options=["--lossy=70", "-O3", "--use-colormap", "web",
+                                                               "--resize-width", "320"])

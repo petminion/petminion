@@ -43,7 +43,7 @@ class PushoverClient:
             # FIXME, for now we assume only one attachment
 
             if os.path.getsize(filename) > 2.5 * 1024 * 1024:
-                logger.warning(f"Image file size exceeds Pushover limit, skipping attachment")
+                logger.warning("Image file size exceeds Pushover limit, skipping attachment")
             else:
                 files = {"attachment": ("attachment.gif", open(filename, "rb"), "image/gif")}
 

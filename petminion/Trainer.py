@@ -76,10 +76,11 @@ class Trainer:
             except configparser.Error:
                 logger.warning("MastodonClient not available - mastodon posting disabled")
 
-        try:
-            self.pushover = PushoverClient()
-        except configparser.Error:
-            logger.warning("PushoverClient not available - pushover posting disabled")
+            # only enable pushover if we are not simulating
+            try:
+                self.pushover = PushoverClient()
+            except configparser.Error:
+                logger.warning("PushoverClient not available - pushover posting disabled")
 
         rule_class = class_by_name("TrainingRule")
         self.rule = TrainingRule.create_from_save(  # noqa: F405
@@ -162,7 +163,8 @@ class Trainer:
                     self.social.post_status(self.social_status, [media_id])
 
                 os.remove(self.social_writer.filename)  # Delete the video file
-                os.remove(self.gif_writer.filename)  # Delete the gif file
+                # FIXME we temporarily keep the gif files around for debugging
+                # os.remove(self.gif_writer.filename)  # Delete the gif file
 
     def run_once(self) -> None:
         """Run one iteration of the training rules"""
