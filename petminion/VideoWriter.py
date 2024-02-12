@@ -142,5 +142,6 @@ class GIFWriter(VideoWriter):
         """
         self.output.close()
         # if you really need gifs even smaller add: colors=16 and options "--use-colormap", "web",
-        pygifsicle.optimize(self.filename, colors=64, options=["--lossy=70", "-O3",
+        # we use -l to loop
+        pygifsicle.optimize(self.filename, colors=64, options=["--lossy=70", "-O3", "-l",
                                                                "--resize-width", "320"])
