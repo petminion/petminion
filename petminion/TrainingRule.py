@@ -233,8 +233,7 @@ class ScheduledFeederRule(TrainingRule):
                 break  # Don't examine any more entries
 
         if n <= self.state.fed_today:
-            logger.debug(
-                f'Feeding not allowed. Already fed { self.state.fed_today } out of { n } feedings')
+            # logger.debug(f'Feeding not allowed. Already fed { self.state.fed_today } out of { n } feedings')
             return 0
 
         return n - self.state.fed_today
@@ -346,18 +345,23 @@ class TokenTrainer(SimpleFeederRule):
         # If we haven't yet reached the scheduled time, we require a new token for feedings.  Otherwise we allow feedings without a token
         count = self.count_detections("ball")
         saw_pet = self.is_detected(self.target)
-        token_based_feeding_allowed = (count > self.state.old_count) and self.num_allowed(early_also=True)
+        num_allowed_early = self.num_allowed(early_also=True)
+        token_based_feeding_allowed = (count > self.state.old_count) and num_allowed_early
         free_feeding_allowed = self.num_allowed(early_also=False)  # we allow feedings without a token if the time limit is reached
-        if saw_pet and (token_based_feeding_allowed or free_feeding_allowed):
-            if not self.feed_interval_limit.can_run():
-                logger.warning(f'Too soon for this feeding, try again later')
-            else:
-                if token_based_feeding_allowed:
-                    logger.info("Saw a new token and feeding allowed!")
+        if saw_pet:
+            if token_based_feeding_allowed or free_feeding_allowed:
+                if not self.feed_interval_limit.can_run():
+                    logger.warning(f'Too soon for this feeding, try again later')
                 else:
-                    logger.warning("Time limit reached, emergency feeding allowed!")
-                self.state.old_count = count  # any time we approve a feeding we store the # of seen tokens as the new baseline for 'no rewards yet'
-                return True
+                    if token_based_feeding_allowed:
+                        logger.info("Saw a new token and feeding allowed!")
+                    else:
+                        logger.warning("Time limit reached, emergency feeding allowed!")
+                    self.state.old_count = count  # any time we approve a feeding we store the # of seen tokens as the new baseline for 'no rewards yet'
+                    return True
+            else:
+                logger.warning(
+                    f'Saw animal but ({ num_allowed_early } feedings allowed early, { free_feeding_allowed } feedings allowed late)')
 
         # someone took away a token (cat kicked it out of camera) - possibly harmless if a ball is temporarily behind another ball
         if count < self.state.old_count:
