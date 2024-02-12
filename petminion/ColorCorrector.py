@@ -28,6 +28,16 @@ via https://github.com/dazzafact/image_color_correction
 logger = logging.getLogger()
 
 
+class CardNotFoundException(Exception):
+    """Raised when we don't see a color card"""
+    pass
+
+
+class CardReadException(Exception):
+    """Raised when color card not fully formed"""
+    pass
+
+
 def find_color_card(image) -> MatLike:
     # load the ArUCo dictionary, grab the ArUCo parameters, and
     # detect the markers in the input image
@@ -39,7 +49,7 @@ def find_color_card(image) -> MatLike:
     (corners, ids, _) = detector.detectMarkers(image)
 
     if ids is None:
-        raise Exception('No markers found')
+        raise CardNotFoundException('No markers found')
 
     # try to extract the coordinates of the color correction card
     # otherwise, we've found the four ArUco markers, so we can
@@ -49,25 +59,25 @@ def find_color_card(image) -> MatLike:
     # extract the top-left marker
     i = np.squeeze(np.where(ids == 923))
     if not i.size:
-        raise Exception('Top-left marker not found')
+        raise CardReadException('Top-left marker not found')
     topLeft = np.squeeze(corners[i])[0]
 
     # extract the top-right marker
     i = np.squeeze(np.where(ids == 1001))
     if not i.size:
-        raise Exception('Top-right marker not found')
+        raise CardReadException('Top-right marker not found')
     topRight = np.squeeze(corners[i])[1]
 
     # extract the bottom-right marker
     i = np.squeeze(np.where(ids == 241))
     if not i.size:
-        raise Exception('Bottom-right marker not found')
+        raise CardReadException('Bottom-right marker not found')
     bottomRight = np.squeeze(corners[i])[2]
 
     # extract the bottom-left marker
     i = np.squeeze(np.where(ids == 1007))
     if not i.size:
-        raise Exception('Bottom-left marker not found')
+        raise CardReadException('Bottom-left marker not found')
     bottomLeft = np.squeeze(corners[i])[3]
 
     # build our list of reference points and apply a perspective
@@ -181,8 +191,12 @@ class ColorCorrector():
                 interpb.append(interp)
             self.interpb = interpb
             return True
+        except CardNotFoundException:
+            # be silent about this failure
+            # logger.debug(f'No color card found: {e}')
+            return False
         except Exception as e:
-            logger.debug(f'No color card found: {e}')
+            logger.debug(f'Color card error: {e}')
             return False
 
     def save_state(self):
